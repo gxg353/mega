@@ -1,8 +1,15 @@
+import os
 #bool
+DEBUG=True
+#DEBUG=False
 #log
+DEAFULT_LOG_DEBUG=DEBUG
+LOG_FILE_NAME=os.path.abspath('../log/mega.log')
 #Service
-DEFAULT_TCP_PORT=5527
+DEFAULT_TCP_PORT=1104
 DEFAULT_TCP_HOST=''
+TCP_HEADER={'HEAD':'MEGA'}
+
 #default values
 DEFAULT_OS='Linux'
 DEFAULT_LEVEL=1

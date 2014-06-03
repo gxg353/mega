@@ -1,13 +1,18 @@
 import time
+import types
 import multiprocessing
+from lib.logs import Logger
+from apis import resource
+
+MODEL='Worker'
+log = Logger(MODEL).log()
 
 class Worker():
     def __init__(self,queue):
         self.queue=queue    
     def worker(self):
         self._name=multiprocessing.current_process().name
-        print("%s is Working...")% self._name            
-        f = open("/tmp/%s.log" % self._name, "w")
+        log.info("%s is Working..." % self._name)           
         data=None
         while 1:
             try:
@@ -15,36 +20,34 @@ class Worker():
                     data=self.queue.get()
                     if data:
                         self.work_deliver(data)
-                        f.write('%s %s \n' % (self._name,data))
-                        f.flush()
                 time.sleep(1)
             except KeyboardInterrupt:
-                print("%s is Quitting...")% self._name
+                log.error("%s is Quitting..." % self._name)
                 break
     def work_resolve(self,data):
         """        work instance:{'HEAD':'MEGA','TYPE':'CMD','VALUE':'ls'}
         keys:
-            HEAD:    for safe interactive,should be MEGA
-            TYPE:    cmd,task,other
-            VALUE:   what to do : ls
-            TIME:    when to do : 0 once  ,
+        *    HEAD:    for safe interactive,should be MEGA
+        *   TYPE:    0 internal server task,1 remote task
+        *   VALUE:   what to do : ls
+        *   TIME:    when to do : 0 once  ,
             CYCLE:  lifecycle of job   day,week,month
             TARGET:    unique identify for server or instance or database.
         """
         if len(data)==0:
             return False
+        d=None
         try :
-            print data
+#            print data
 #            d=simplejson.loads(data)
             d=eval(data)
-            print type(d)
-            if type(d)=='dict':
+            if type(d)== types.DictionaryType:
                 if not (d.has_key('TYPE') or d.has_key('VALUE')):
                     return False
             else:
                 return False
         except Exception as ex:
-            print ex    
+            log.error("Resolve the data failed as : %s" % ex)
         self.task=d
         return True
         
@@ -52,18 +55,22 @@ class Worker():
     #1.run the command
     #2.save task into db
         if not self.work_resolve(work):
+            print 1
             return False
         #real time job
-        if self.task.get('TIME')=='0':
+        print self.task.get('TIME')
+        if self.task.get('TIME') == 0:
         #subthread
-            result=Executor()
+            print 2
+            result=Executor_Local(self.task.get('VALUE')).do_cmd()
         else:
         #save into db
+            print 3
             pass
     def close(self):
         self.close()
 
-class Executor():
+class Executor_remote():
     '''
      Run the task on the remote server in subprocess
     '''
@@ -73,6 +80,17 @@ class Executor():
         pass
     def salt_loader(self):
         pass
+class Executor_Local():
+    def __init__(self,cmd):
+        self.cmd=cmd
+    def do_cmd(self):
+        func=getattr(resource,self.cmd,None)
+        print func,'a'
+        func()
+#mark  do the command
+#return all the funcs
+
+
 class Saver():
     '''
     save task into database if it need to be rerun  

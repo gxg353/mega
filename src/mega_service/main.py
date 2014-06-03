@@ -1,6 +1,11 @@
+import datetime
 import multiprocessing
 from listener import tcp_server
 from worker import Worker 
+from lib.logs import Logger
+
+MODEL='MAIN'
+log=Logger(MODEL).log()
 
 def sub_process():
     global queue
@@ -8,6 +13,7 @@ def sub_process():
     worker=Worker(queue).worker
     threads=[]
     try:
+        log.debug('Start Subprocess: ')
         workers=multiprocessing.Process(target=worker,args=(),name="Main Worker")
         threads.append(workers)
         listens=multiprocessing.Process(target=tcp_server,args=(queue,),name="TCP Listener")
@@ -17,9 +23,11 @@ def sub_process():
         for t in threads:
             t.join()
     except KeyboardInterrupt:
+        log.debug('Get interrupt from keyboard,quit now')
         return
  
 def main():
+    log.info('Mega server start at %s ' % datetime.datetime.now())
     sub_process()
 if __name__ == "__main__":
     main()

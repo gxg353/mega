@@ -5,12 +5,14 @@ import socket
 import multiprocessing   
 import SocketServer
 from SocketServer import StreamRequestHandler as SRH
-from conf.GlobalConf import DEFAULT_TCP_PORT,DEFAULT_TCP_HOST
+from conf.GlobalConf import DEFAULT_TCP_PORT,DEFAULT_TCP_HOST,DEBUG
+from lib.logs import Logger
 
 ERROR='-1'
 SUCCESS='0'
 TCP_HEADER=['HEAD','MEGA']
-
+MODEL='Listener'
+log = Logger(MODEL).log()
 
 def tcp_listen(queue,host='',port=555):
     _name=multiprocessing.current_process().name    
@@ -39,15 +41,15 @@ def tcp_listen(queue,host='',port=555):
  
 class Servers(SRH):
     def handle(self):
-        print 'got connection from ',self.client_address
+        log.debug('Get connection from %s' % str(self.client_address))
         global q
         while True:
             data = self.request.recv(1024)
             if not data: 
                 break
-            print data             
-            #for debug
-            q.put(data)
+            if DEBUG:
+                log.debug(data)
+                q.put(data)
             if self.data_check(data):
                 result=SUCCESS
                 q.put(data)
@@ -69,15 +71,14 @@ def tcp_server(queue,host=DEFAULT_TCP_HOST,port=DEFAULT_TCP_PORT):
     global q
     q=queue
     addr = (host,port)
-    print 'TCP server listen on',addr
-    server = SocketServer.ThreadingTCPServer(addr,Servers)
+    log.info('TCP server listen on %s ...' % str(addr))
     try:  
+        server = SocketServer.ThreadingTCPServer(addr,Servers)
         server.serve_forever()
     except Exception as ex:
-        print ex
-        server.server_close()
-    finally:
-        server.server_close()
+        log.error('TCP server start failed as: %s',ex)
+        sys.exit(1)
+
 
 if __name__=="__main__":
     tcp_server()

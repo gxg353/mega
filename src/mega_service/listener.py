@@ -7,7 +7,9 @@ import SocketServer
 from SocketServer import StreamRequestHandler as SRH
 from conf.GlobalConf import DEFAULT_TCP_PORT,DEFAULT_TCP_HOST,DEBUG
 from lib.logs import Logger
+from worker import Worker
 
+END_SIGN='EOF'
 ERROR='-1'
 SUCCESS='0'
 TCP_HEADER=['HEAD','MEGA']
@@ -51,11 +53,13 @@ class Servers(SRH):
                 log.debug(data)
                 q.put(data)
             if self.data_check(data):
-                result=SUCCESS
+                _w=Worker(None).work_deliver(data)
+                result=str(_w)
                 q.put(data)
             else:
-                result=ERROR 
-            self.request.send(result)
+                result=ERROR
+            self.request.sendall(result)
+            self.request.send(END_SIGN)
             
     def data_check(self,data):
         if len(data) == 0:

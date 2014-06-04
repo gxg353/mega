@@ -2,7 +2,7 @@ import time
 import types
 import multiprocessing
 from lib.logs import Logger
-from apis import resource
+from apis.resource import * 
 
 MODEL='Worker'
 log = Logger(MODEL).log()
@@ -58,15 +58,14 @@ class Worker():
             print 1
             return False
         #real time job
-        print self.task.get('TIME')
+        #print self.task.get('TIME')
         if self.task.get('TIME') == 0:
         #subthread
-            print 2
-            result=Executor_Local(self.task.get('VALUE')).do_cmd()
+            result=Executor_Local(self.task.get('VALUE')).do_cmd(self.task.get('ARGS'))
         else:
         #save into db
-            print 3
             pass
+        return result
     def close(self):
         self.close()
 
@@ -83,10 +82,11 @@ class Executor_remote():
 class Executor_Local():
     def __init__(self,cmd):
         self.cmd=cmd
-    def do_cmd(self):
-        func=getattr(resource,self.cmd,None)
-        print func,'a'
-        func()
+    def do_cmd(self,func_args=None):
+#        func=getattr(resource,self.cmd,None)
+        print func_args
+        return eval("%s(%s)" % (self.cmd,func_args))
+        #return func(func_args.split(','))
 #mark  do the command
 #return all the funcs
 

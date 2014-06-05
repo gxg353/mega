@@ -14,7 +14,11 @@ ERROR='-1'
 SUCCESS='0'
 TCP_HEADER=['HEAD','MEGA']
 MODEL='Listener'
+BUFFER_SIZE=10
+HEADER_LENGTH=10
+
 log = Logger(MODEL).log()
+
 
 def tcp_listen(queue,host='',port=555):
     _name=multiprocessing.current_process().name    
@@ -45,21 +49,36 @@ class Servers(SRH):
     def handle(self):
         log.debug('Get connection from %s' % str(self.client_address))
         global q
-        while True:
-            data = self.request.recv(1024)
-            if not data: 
+        result=''
+        data=''
+        header=''
+        
+        header=int(self.request.recv(HEADER_LENGTH))
+        while header>0:
+            _d= self.request.recv(BUFFER_SIZE)
+            data+=_d
+            if _d.find(END_SIGN) > 0:
                 break
-            if DEBUG:
-                log.debug(data)
-                q.put(data)
-            if self.data_check(data):
-                _w=Worker(None).work_deliver(data)
-                result=str(_w)
-                q.put(data)
-            else:
-                result=ERROR
-            self.request.sendall(result)
-            self.request.send(END_SIGN)
+            header=header-BUFFER_SIZE
+        data=data.replace('EOF', '')
+        if DEBUG:
+            log.debug(data)
+            q.put(data)
+        if self.data_check(data):
+            _w=Worker(None).work_deliver(data)
+            result=str(_w)
+
+            q.put(data)
+        else:
+            result=ERROR
+#todo : 
+#    get the len(result),add the length to the head of packget, 
+#    chancel the end sign
+        _len=len(result)
+        _header=str(_len)
+        for i in range(HEADER_LENGTH - len(str(_len))):
+            _header='0'+_header
+        self.request.sendall(_header+result+END_SIGN)
             
     def data_check(self,data):
         if len(data) == 0:

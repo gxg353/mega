@@ -433,5 +433,6 @@ def del_database(ip,port,db):
         err_code=ERR_CODE_UNKOWN
         log.error(ex)
     return err_code        
-    
+def get_all_backup():
+    pass 
     

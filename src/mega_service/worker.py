@@ -1,11 +1,23 @@
 import time
 import types
+import inspect
 import multiprocessing
 from lib.logs import Logger
-from apis.resource import * 
+from apis import api as apis
 
 MODEL='Worker'
 log = Logger(MODEL).log()
+
+
+def _get_func_list(object):
+        _funcs=[]
+        if not object:
+            return _funcs
+        for o in dir(object):
+            obj_func=getattr(object,o,None)
+            if inspect.isfunction(obj_func):
+                _funcs.append({"name":"%s" % obj_func.__name__,"args":"%s" % str(inspect.getargspec(obj_func))})                 
+        return _funcs    
 
 class Worker():
     def __init__(self,queue):
@@ -27,12 +39,14 @@ class Worker():
     def work_resolve(self,data):
         """        work instance:{'HEAD':'MEGA','TYPE':'CMD','VALUE':'ls'}
         keys:
-        *    HEAD:    for safe interactive,should be MEGA
+        *   HEAD:    for safe interactive,should be MEGA
         *   TYPE:    0 internal server task,1 remote task
         *   VALUE:   what to do : ls
-        *   TIME:    when to do : 0 once  ,
+        *   TIME:    when to do : 0 once  , relay to the CYCLE
             CYCLE:  lifecycle of job   day,week,month
             TARGET:    unique identify for server or instance or database.
+            TOOL:    Internal func calls
+            _item=['TYPE','TIME','VALUE','CYCLE','TARGET','ARGS']
         """
         if len(data)==0:
             return False
@@ -55,13 +69,19 @@ class Worker():
     #1.run the command
     #2.save task into db
         if not self.work_resolve(work):
-            print 1
             return False
-        #real time job
-        #print self.task.get('TIME')
-        if self.task.get('TIME') == 0:
+        #internal funcs invoke,the task should include key : TOOL True
+        if self.task.has_key('TOOL'):
+            if self.task.get('VALUE')=='get_all_funcs':
+                return _get_func_list(apis)
+
+        #real time job    
+        if self.task.get('TIME') == 0 :
         #subthread
-            result=Executor_Local(self.task.get('VALUE')).do_cmd(self.task.get('ARGS'))
+            if self.task.get('TYPE')==0:
+                result=Executor_Local(self.task.get('VALUE')).do_cmd(self.task.get('ARGS'))
+            else:
+                result=Executor_remote().run()
         else:
         #save into db
             pass
@@ -80,12 +100,14 @@ class Executor_remote():
     def salt_loader(self):
         pass
 class Executor_Local():
+    '''
+    request of mega server ,invoke func inside mega server
+    '''
     def __init__(self,cmd):
         self.cmd=cmd
     def do_cmd(self,func_args=None):
 #        func=getattr(resource,self.cmd,None)
-        print func_args
-        return eval("%s(%s)" % (self.cmd,func_args))
+        return eval("apis.%s(%s)" % (self.cmd,func_args))
         #return func(func_args.split(','))
 #mark  do the command
 #return all the funcs

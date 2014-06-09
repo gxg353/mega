@@ -2,7 +2,7 @@
 from django.shortcuts import render_to_response,RequestContext
 
 from resource import instance_manage,server_manage,business_manage,database_manage,resource_manage
-
+from console.backup import Backup
 def home(request):
     if request.method=="GET":
         return render_to_response('home.html')
@@ -13,16 +13,17 @@ def monitor(request):
         return render_to_response('monitor.html')
     else:
         return render_to_response('monitor.html')
-def manage(request):
+def console(request):
     if request.method=="GET":
-        return render_to_response('manage.html')
+        return render_to_response('console.html')
     else:
-        return render_to_response('manage.html')
+        return render_to_response('console.html')
 def portal(request):
     if request.method=="GET":
         return render_to_response('portal.html')
     else:
         return render_to_response('portal.html')
+
 
 def fun(request):
     if request.method=="GET":
@@ -135,7 +136,7 @@ def database(request):
         database_list=database_manage.DatabaseGet().get_database_list(None, 10)
         return render_to_response('database.html',{"database_list":database_list},context_instance=RequestContext(request))
     else:
-        return render_to_response('server.html')
+        return render_to_response('database.html')
 def database_add(request):
     instance_list=instance_manage.InstanceGet().get_instance_list(None) #.values("id","ip","port")
     business_list=business_manage.BusinessGet().get_business_list(None).values("id","name")
@@ -160,7 +161,23 @@ def database_detail(request):
         stat_action='上'
     return render_to_response('database_detail.html',{"database":database,"stat_action":stat_action},context_instance=RequestContext(request))
 
-#
+#backup
+
+def backup(request):
+    if request.method=="GET":
+        backup_list=Backup().get_newest_backup_list()
+        for i in  backup_list:
+            print i
+        return render_to_response('backup.html',{"backup_list_all":backup_list},context_instance=RequestContext(request))
+    else:
+        return render_to_response('backup.html')
+
+def backup_config(request):
+    if request.method=="GET":
+        return render_to_response('backup_config.html',context_instance=RequestContext(request))
+    else:
+        return render_to_response('backup_config.html')
+
 def my_404_view(request):
         return render_to_response('404.html')
 def my_500_view(request):

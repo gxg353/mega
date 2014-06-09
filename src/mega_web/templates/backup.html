@@ -1,0 +1,61 @@
+{% extends "console.html" %}
+{% block subcontent %}
+<div class="well">备份状态:已配置备份实例最近一次备份信息</div>
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+      	<th></th>
+        <th>IP</th>
+        <th>PORT</th>
+        <th>DB_TYPE</th>
+        <th>METHOD</th>
+        <th>LEVEL</th>
+        <th>VALUE</th>
+        <th>TYPE</th>
+        <th>BEGIN_TIME</th>
+        <th>END_TIME</th>
+        <th>SIZE</th>
+        <th>STAT</th>
+      </tr>
+    </thead>
+    <tbody>
+    	{% for backup_list in backup_list_all %}
+	     <tr>
+	     	<td>
+					<span class="glyphicon glyphicon-cog"></span>
+			</td>
+			<td><a href="/resource/server_detail?server_ip={{ backup_list.host_ip }}">{{ backup_list.host_ip }}</a></td>
+			<td><a href="/console/backup_config?instance={{ backup_list.host_ip}}&port={{backup_list.port}}">{{ backup_list.port }}</a> </td>
+			<td> {{ backup_list.db_type }} </td>
+			<td> {{ backup_list.backup_tool }} </td>
+			<td> {{ backup_list.backup_level }} </td>
+			<td> {{ backup_list.level_value }} </td>
+			<td> {{ backup_list.backup_type }} </td>
+			<td> {{ backup_list.backup_begine_time }} </td>
+			<td> {{ backup_list.backup_end_time }} </td>
+			<td> {{ backup_list.file_size }} </td>
+			<td> {{ backup_list.status }} </td>
+		</tr>
+	   {% endfor %}
+     </tbody>
+  </table>
+</div>
+<ul class="pagination">
+  <li><a href="#">&laquo;</a></li>
+  <li><a href="#">1</a></li>
+  <li><a href="#">2</a></li>
+  <li><a href="#">3</a></li>
+  <li><a href="#">4</a></li>
+  <li><a href="#">5</a></li>
+  <li><a href="#">&raquo;</a></li>
+</ul>
+
+
+
+
+
+
+
+
+    {% endblock %}

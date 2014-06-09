@@ -73,5 +73,8 @@ class Business(models.Model):
     phone = models.IntegerField()
     stat= models.IntegerField(default=1)
 
-    
+class Backup_History_Info(models.Model):
+    class Meta(object):
+        db_table='backup_history_info'
+     
     

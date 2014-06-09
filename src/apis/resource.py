@@ -90,6 +90,7 @@ def get_all_db(model=None,stat=0,count=0):
     """
     err_code=ERR_CODE_DEFAULT
     result=[]
+    
     try :
         if stat ==1:
             filter='stat=1'

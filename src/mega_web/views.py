@@ -173,10 +173,16 @@ def backup(request):
         return render_to_response('backup.html')
 
 def backup_config(request):
+    print request
     if request.method=="GET":
-        return render_to_response('backup_config.html',context_instance=RequestContext(request))
+        ip=request.GET.get("ip")
+        port=request.GET.get("port")
+        instance={"ip":ip,"port":port}
+        config_list=Backup().get_config_by_instance(ip,port)
+        
+        return render_to_response('backup_config.html',{"config_list":config_list,"instance":instance},context_instance=RequestContext(request))
     else:
-        return render_to_response('backup_config.html')
+        return render_to_response('backup_config.html',context_instance=RequestContext(request))
 
 def my_404_view(request):
         return render_to_response('404.html')

@@ -45,7 +45,7 @@ urlpatterns = patterns('',
     url(r'^resource/database_detail/$',database_detail),
 
     url(r'^console/backup/$',backup),
-    url(r'^console/backup_config/$',backup_config),
+    url(r'^console/backup/backup_config/$',backup_config),
 
 #for static like css ,js ,ima,music     
     url(r'^static/(?P<path>.*)$', 'django.views.static.serve',{'document_root': settings.STATIC_URL },name="static"),

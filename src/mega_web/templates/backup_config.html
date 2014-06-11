@@ -17,11 +17,16 @@
 <span class="label label-default">{{ instance.port }}</span>
 <span class="label label-default">{{ instance.db_type }}</span>
 <hr>
+
 <div class="table-responsive">
   <table class="table table-striped">
     <thead>
       <tr>
-      	<th></th>
+      	<th>
+      	<button type="button" class="btn btn-default btn-sm" onclick="call_div()">
+  			<span class="glyphicon glyphicon-plus"></span> Add
+		</button>
+      	</th>
         <th>TOOL</th>
         <th>LEVEL</th>
         <th>VALUE</th>
@@ -49,41 +54,74 @@
 </div>	
 </div>
 <br>
+<div  id="sub_div" style="display:none;">
 <div>
-<div>
-<button  class="btn btn-default btn" disabled="disabled" >
-  		<span class=" glyphicon glyphicon-off" > {{ stat }}</span>
+<button id="btn-switch" class="btn btn-default btn" >
+  		<span class=" glyphicon glyphicon-off" > {{ backup.stat }}</span>
 </button>
 </div>
 <br>
 <div class="input-group">
-  <span class="input-group-addon">*</span>
-  <input type="text" class="form-control" name="backup_tool" placeholder='BACKUP_TOOL' style="width:200px;" maxlength=20 value='{{ backup.backup_tool }}' readonly= 'readonly' >
-  <span class="input-group-addon">*</span>
-  <input type="text" class="form-control" name="backup_type" placeholder='BACKUP_TYPE' style="width:200px;" maxlength=20 value='{{ backup.backup_type }}' readonly= 'readonly' >
-  <span class="input-group-addon">*</span>
-  <input type="text" class="form-control" name="backup_level" placeholder='BACKUP_LEVEL' style="width:200px;" maxlength=20 value='{{ backup.backup_level }}' readonly= 'readonly' >
+  <div class="input-group">
+	<span class="input-group-addon">*</span>
+	<select name="backup_tool" class="form-control" style="width:200px;">
+		{% for backup in backup_tool %}
+		   <option value={{ backup }}>{{ backup }}</option>
+		{% endfor %}
+	</select> 	
+	<span class="input-group-addon">*</span>
+	<select name="backup_type" class="form-control" style="width:200px;">
+		{% for backup in backup_type %}
+		   <option value={{ backup }}>{{ backup }}</option>
+		{% endfor %}
+	</select> 	
+	<span class="input-group-addon">*</span>
+	<select name="backup_level" class="form-control" style="width:200px;">
+		{% for backup in backup_level %}
+		   <option value={{ backup }}>{{ backup }}</option>
+		{% endfor %}
+	</select> 	
   <span class="input-group-addon">*</span>
   <input type="text" class="form-control" name="level_value" placeholder='LEVEL_VALUE' style="width:200px;" maxlength=20 value='{{ backup.level_value }}' readonly= 'readonly' >
 </div>
 <br>
 <div class="input-group">
-  <span class="input-group-addon">*</span>
-  <input type="text" class="form-control" name="need_data" placeholder='NEED_DATA' style="width:200px;" maxlength=20 value='{{ backup.need_data }}' readonly= 'readonly' >
+	<span class="input-group-addon">NEED_DATA:</span>
+	<select name="need_data" class="form-control" style="width:50px;">
+		<option value=1>Y</option>
+		<option value=0>N</option>
+	</select>
 
-  <span class="input-group-addon">*</span>
-  <input type="text" class="form-control" name="need_schema" placeholder='SCHEMA_ONLY' style="width:200px;" maxlength=20 value='{{ backup.need_schema }}' readonly= 'readonly' >
-  <span class="input-group-addon">*</span>
-  <input type="text" class="form-control" name="iscompressed" placeholder='ISCOMPRESSED' style="width:200px;" maxlength=20 value='{{ backup.iscompressed }}' readonly= 'readonly' >
-  <span class="input-group-addon">*</span>
-  <input type="text" class="form-control" name="isencrypted" placeholder='isencrypted' style="width:200px;" maxlength=20 value='{{ backup.isencrypted }}' readonly= 'readonly' >
+	<span class="input-group-addon">NEED_SCHEMA:</span>
+	<select name="need_shema" class="form-control" style="width:50px;">
+		<option value=1>Y</option>
+		<option value=0>N</option>
+	</select>
+	<span class="input-group-addon">ISCOMPRESSED:</span>
+	<select name="iscompressed" class="form-control" style="width:50px;">
+		<option value=1>Y</option>
+		<option value=0>N</option>
+	</select>
+	<span class="input-group-addon">ISENCRYPTED:</span>
+	<select name="isencrypted" class="form-control" style="width:50px;">
+		<option value=1>Y</option>
+		<option value=0>N</option>
+	</select>
+	
 </div>
+
 <br>
 <div class="input-group">
   <span class="input-group-addon">*</span>
   <input type="text" class="form-control" name="retention" placeholder='RETENTION' style="width:200px;" maxlength=20 value='{{ backup.retention }}' readonly= 'readonly' >
-  <span class="input-group-addon">*</span>
-  <input type="text" class="form-control" name="cycle" placeholder='CYCLE' style="width:200px;" maxlength=20 value='{{ backup.cycle }}' readonly= 'readonly' >
+</div><br>
+<div class="input-group">
+<span class="input-group-addon">*</span>
+	<select name="backup_cycle" class="form-control" style="width:200px;">
+		{% for backup in backup_cycle %}
+		   <option value={{ backup }}>{{ backup }}</option>
+		{% endfor %}
+	</select> 	
   <span class="input-group-addon">*</span>
   <input type="text" class="form-control" name="backup_time" placeholder='BACKUP_TIME' style="width:200px;" maxlength=20 value='{{ backup.backup_time }}' readonly= 'readonly' >
   <span class="input-group-addon">*</span>
@@ -93,7 +131,7 @@
 
 <form action="/console/backup_config/" method="post">
 
-<button type="button" class="btn btn-default btn" onclick="change_readonly('all')">
+<button type="button" class="btn btn-default btn" id='mod' onclick="change_readonly('all')" disabled='disabled'>
   		<span class="glyphicon glyphicon-wrench"></span>编辑
 </button>
 <button type="submit" class="btn btn-default btn" id='commit' disabled="disabled">
@@ -114,6 +152,11 @@ function change_readonly(id){
 	}
 	var btn_submit=document.getElementById("commit");  
     btn_submit.disabled='';
+}
+function call_div(){
+	var div_sub=document.getElementById("sub_div");
+	div_sub.style.display='block';
+	change_readonly('all');
 }
 </script>
 

@@ -41,3 +41,8 @@ MSG_ERR_BUSINESS_EXITST='Business already exists !'
 MSG_ERR_DB_EXITST='Database already exists !'
 MSG_ERR_SERVER_EXITST='Server already exists !'
 
+#backup
+BACKUP_TOOL=['xtrabackup','mysqldump','mysqlbinlog','mydumper','rman','expdp','exp']
+BACKUP_TYPE=['full','increment','binlog','archivelog']
+BACKUP_LEVEL=['instance','db','table']
+BACKUP_CYCLE=['day','week','month']

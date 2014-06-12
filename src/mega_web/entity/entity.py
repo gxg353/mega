@@ -77,4 +77,31 @@ class Backup_History_Info(models.Model):
     class Meta(object):
         db_table='backup_history_info'
      
+class Backup_Policy(models.Model):
+    class Meta(object):
+        db_table='backup_policy'
+    id = models.AutoField(primary_key=True)
+    host_ip=models.CharField(max_length=20)
+    port=models.IntegerField(default=0)
+    db_type=models.CharField(max_length=20)
+    backup_tool=models.CharField(max_length=20)
+    backup_level=models.CharField(max_length=20)
+    level_value=models.CharField(max_length=8000)
+    backup_type=models.CharField(max_length=20)
+    need_data=models.CharField(max_length=2)
+    need_schema=models.CharField(max_length=2)
+    iscompressed=models.CharField(max_length=2)
+    isencrypted=models.CharField(max_length=2)
+    retention=models.IntegerField()
+    is_schedule=models.IntegerField()
+    cycle=models.CharField(max_length=20)
+    backup_time=models.CharField(max_length=45)
+    schedule_time=models.CharField(max_length=45)
+    modify_time=models.DateTimeField(auto_now=True)
+    
+    
+    
+    
+    
+    
     

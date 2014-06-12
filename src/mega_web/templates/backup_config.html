@@ -8,9 +8,11 @@
           <input type="text" name="ip" class="form-control" placeholder="IP or NAME">
           <input type="text" name="port" class="form-control" placeholder="PORT">
         </div>        
-      	<button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
+      	<button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span>{{ backup.msg }}</button>
+      	
 {% csrf_token %}
 </form>
+		
 </div>
 <div class="well well-sm">
 <span class="label label-default">{{ instance.ip }}</span>
@@ -23,7 +25,7 @@
     <thead>
       <tr>
       	<th>
-      	<button type="button" class="btn btn-default btn-sm" onclick="call_div()">
+      	<button type="button" class="btn btn-default btn-sm" onclick="call_div()" disabled="{{ backup.msg }}">
   			<span class="glyphicon glyphicon-plus"></span> Add
 		</button>
       	</th>
@@ -32,21 +34,23 @@
         <th>VALUE</th>
         <th>TYPE</th>
         <th>NEED_DATA</th>
-        <th>NEED_SHEMA</th>
+        <th>NEED_SCHEMA</th>
        </tr>
     </thead>
     <tbody>
     	{% for config in config_list %}
     		<tr>
     			<td>
+    			<button type="button" class="btn btn-default btn-sm" onclick="call_div_mod('{{config}}')">
     				<span class="glyphicon glyphicon-hand-right"></span>
+    			</button>
     			</td>
     			<td>{{ config.backup_tool }}</td>
     			<td>{{ config.backup_level }}</td>
     			<td>{{ config.level_value }}</td>
     			<td>{{ config.backup_type }}</td>
     			<td>{{ config.need_data }}</td>
-    			<td>{{ config.need_shema }}</td>    			
+    			<td>{{ config.need_schema }}</td>    			
     		</tr>
     {% endfor %}
     </tbody>
@@ -54,15 +58,24 @@
 </div>	
 </div>
 <br>
+<form action="/console/backup/backup_config/" method="post">
+<input type='hidden' name='ip' value={{ instance.ip }}>
+<input type='hidden' name='port' value={{ instance.port }}>
+<input type='hidden' name='type' id='type' value='None'>
+<input type='hidden' name='db_type'  value='mysql'>
+
 <div  id="sub_div" style="display:none;">
 <div>
-<button id="btn-switch" class="btn btn-default btn" >
-  		<span class=" glyphicon glyphicon-off" > {{ backup.stat }}</span>
+<button id="btn-switch" type="button" class="btn btn-default btn" onclick="change_stat()">
+  		<span class=" glyphicon glyphicon-off" ></span>
+    	<input type='text' id='is_scheduled' size='3' name='is_scheduled'   readonly="readonly" value='{{ backup.stat }}'>
+  		
 </button>
+
 </div>
+
 <br>
 <div class="input-group">
-  <div class="input-group">
 	<span class="input-group-addon">*</span>
 	<select name="backup_tool" class="form-control" style="width:200px;">
 		{% for backup in backup_tool %}
@@ -74,7 +87,10 @@
 		{% for backup in backup_type %}
 		   <option value={{ backup }}>{{ backup }}</option>
 		{% endfor %}
-	</select> 	
+	</select>
+</div>
+<br>
+<div class="input-group">
 	<span class="input-group-addon">*</span>
 	<select name="backup_level" class="form-control" style="width:200px;">
 		{% for backup in backup_level %}
@@ -86,6 +102,24 @@
 </div>
 <br>
 <div class="input-group">
+<span class="input-group-addon">*</span>
+	<select name="backup_cycle" class="form-control" style="width:200px;">
+		{% for backup in backup_cycle %}
+		   <option value={{ backup }}>{{ backup }}</option>
+		{% endfor %}
+	</select> 	
+  <span class="input-group-addon">*</span>
+  <input type="text" class="form-control" name="backup_time" placeholder='BACKUP_TIME' style="width:200px;" maxlength=20 value='{{ backup.backup_time }}' readonly= 'readonly' >
+</div>
+<br>
+<div class="input-group">
+  <span class="input-group-addon">*</span>
+  <input type="text" class="form-control" name="retention" placeholder='RETENTION' style="width:200px;" maxlength=20 value='{{ backup.retention }}' readonly= 'readonly' >
+  <span class="input-group-addon">*</span>
+  <input type="text" class="form-control" name="schedule_time" placeholder='SCHEDULE_TIME' style="width:200px;" maxlength=20 value='{{ backup.schedule_time }}' readonly= 'readonly' > 
+</div>
+<br>
+<div class="input-group">
 	<span class="input-group-addon">NEED_DATA:</span>
 	<select name="need_data" class="form-control" style="width:50px;">
 		<option value=1>Y</option>
@@ -93,7 +127,7 @@
 	</select>
 
 	<span class="input-group-addon">NEED_SCHEMA:</span>
-	<select name="need_shema" class="form-control" style="width:50px;">
+	<select name="need_schema" class="form-control" style="width:50px;">
 		<option value=1>Y</option>
 		<option value=0>N</option>
 	</select>
@@ -111,25 +145,7 @@
 </div>
 
 <br>
-<div class="input-group">
-  <span class="input-group-addon">*</span>
-  <input type="text" class="form-control" name="retention" placeholder='RETENTION' style="width:200px;" maxlength=20 value='{{ backup.retention }}' readonly= 'readonly' >
-</div><br>
-<div class="input-group">
-<span class="input-group-addon">*</span>
-	<select name="backup_cycle" class="form-control" style="width:200px;">
-		{% for backup in backup_cycle %}
-		   <option value={{ backup }}>{{ backup }}</option>
-		{% endfor %}
-	</select> 	
-  <span class="input-group-addon">*</span>
-  <input type="text" class="form-control" name="backup_time" placeholder='BACKUP_TIME' style="width:200px;" maxlength=20 value='{{ backup.backup_time }}' readonly= 'readonly' >
-  <span class="input-group-addon">*</span>
-  <input type="text" class="form-control" name="schedule_time" placeholder='SCHEDULE_TIME' style="width:200px;" maxlength=20 value='{{ backup.schedule_time }}' readonly= 'readonly' >
-</div>
-<br>
 
-<form action="/console/backup_config/" method="post">
 
 <button type="button" class="btn btn-default btn" id='mod' onclick="change_readonly('all')" disabled='disabled'>
   		<span class="glyphicon glyphicon-wrench"></span>编辑
@@ -137,11 +153,11 @@
 <button type="submit" class="btn btn-default btn" id='commit' disabled="disabled">
   		<span class="glyphicon glyphicon-ok"></span> 提交
 </button>
+</div>
 
 {% csrf_token %}
 </form>
-</div>
-<br>
+
 <script>
 function change_readonly(id){
 	if (id == 'all')
@@ -152,11 +168,40 @@ function change_readonly(id){
 	}
 	var btn_submit=document.getElementById("commit");  
     btn_submit.disabled='';
+    
 }
 function call_div(){
 	var div_sub=document.getElementById("sub_div");
 	div_sub.style.display='block';
 	change_readonly('all');
+	var is_scheduled=document.getElementById("is_scheduled");
+	is_scheduled.readOnly='readonly';
+	var type=document.getElementById("type");
+	type.value='add';
+
+}
+function call_div_mod(config){
+	var div_sub=document.getElementById("sub_div");
+	div_sub.style.display='block';
+	var is_scheduled=document.getElementById("is_scheduled");
+	is_scheduled.readOnly='readonly';
+	var mod=document.getElementById("mod");
+	mod.disabled='';
+	var type=document.getElementById("type");
+	type.value='mod';
+	
+
+}
+function change_stat(){
+	var is_scheduled=document.getElementById("is_scheduled");
+	if (is_scheduled.value=='ON')
+	{
+		is_scheduled.value='OFF';
+	}
+	else
+	{
+		is_scheduled.value='ON';	
+	}	
 }
 </script>
 

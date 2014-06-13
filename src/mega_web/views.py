@@ -184,13 +184,18 @@ def backup_config(request):
         instance={"ip":ip,"port":port}
         config_list,msg=Backup().get_config_by_instance(ip,port)
         backup["msg"]=msg
-        print msg
         return render_to_response('backup_config.html',{"config_list":config_list,"instance":instance,"backup_tool":backup_tool,
                                                         "backup_type":backup_type,"backup_level":backup_level,"backup_cycle":backup_cycle,
                                                         "backup":backup},context_instance=RequestContext(request))
     else:
+        ip=request.POST.get("ip")
+        port=request.POST.get("port")
+        instance={"ip":ip,"port":port}
+        config_list,msg=Backup().get_config_by_instance(ip,port)
+        backup["msg"]=msg
         result=Backup_Config().config_deliver(request.POST)
-        return render_to_response('backup_config.html',context_instance=RequestContext(request))
+        return render_to_response('backup_config.html',{"instance":instance,"config_list":config_list,"backup_tool":backup_tool,
+                                                        "backup_type":backup_type,"backup_level":backup_level,"backup_cycle":backup_cycle},context_instance=RequestContext(request))
 
 def my_404_view(request):
         return render_to_response('404.html')

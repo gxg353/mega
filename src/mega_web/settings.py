@@ -3,6 +3,8 @@ import os
 DEBUG = True
 #DEBUG = False
 
+TIME_FORMAT="%H:%M:%S"
+
 TEMPLATE_DEBUG = DEBUG
 
 PROJECT_PATH=os.path.dirname(__file__)

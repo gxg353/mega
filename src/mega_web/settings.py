@@ -3,7 +3,6 @@ import os
 DEBUG = True
 #DEBUG = False
 
-TIME_FORMAT="%H:%M:%S"
 
 TEMPLATE_DEBUG = DEBUG
 

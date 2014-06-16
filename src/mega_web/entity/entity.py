@@ -1,5 +1,6 @@
 from django.db import models
 
+
 class Server(models.Model):
     class Meta(object):
         db_table='server'

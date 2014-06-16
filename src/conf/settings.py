@@ -1,3 +1,6 @@
+TRACKER_LIFCYCLE=10
+
+
 class DbConfig():
     def __init__(self):
         pass

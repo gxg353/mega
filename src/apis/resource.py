@@ -1,6 +1,6 @@
 from mega_web.resource import instance_manage,server_manage,database_manage
 import logging
-log = logging.getLogger("api")
+log = logging.getLogger("API")
 
 ERR_CODE_DEFAULT=None  #INIT CODE :Noenmeaning
 ERR_CODE_UNKOWN=-1  #UNKONW ERROR

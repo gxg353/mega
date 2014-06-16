@@ -13,7 +13,6 @@ class Backup():
             return None,''
         if not port:
             port=3306
-
         instance_id=InstanceGet().get_instance_by_ip_port(ip, port)
         if not instance_id:
             instance_id=None
@@ -77,7 +76,7 @@ class Backup_Config():
             self.backup_policy.is_schedule=1
         else:
             self.backup_policy.is_schedule=0
-        _time=time.strftime(self.config.get("schedule_time").replace('.',''),"%I:%M %p")
+#        _time=time.strftime(self.config.get("schedule_time").replace('.',''),"%I:%M %p")
         
         backup_policy.backup_tool=self.config.get("backup_tool")
         backup_policy.backup_type=self.config.get("backup_type")

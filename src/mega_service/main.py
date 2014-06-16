@@ -3,7 +3,8 @@ sys.path.append("..")
 import datetime
 import multiprocessing
 from listener import tcp_server
-from worker import Worker 
+from worker import Worker
+from tracker import  Tracker
 from lib.logs import Logger
 #from backup.Backuper import backuper
 
@@ -14,6 +15,7 @@ def sub_process():
     global queue
     queue = multiprocessing.Queue()
     worker=Worker(queue).worker
+    tracker=Tracker(queue).tracker
     threads=[]
     try:
         log.debug('Start Subprocess: ')
@@ -21,6 +23,8 @@ def sub_process():
         threads.append(workers)
         listens=multiprocessing.Process(target=tcp_server,args=(queue,),name="TCP Listener")
         threads.append(listens)
+        trackers=multiprocessing.Process(target=tracker,args=(),name="Tracker")
+        threads.append(trackers)
         #backuper=multiprocessing.Process(target=backuper,args=(),name="Backup worker")
         #threads.append(backuper)
 
@@ -33,8 +37,10 @@ def sub_process():
         return
  
 def main():
+    log.info("=============BEGIN===========")
     log.info('Mega server start at %s ' % datetime.datetime.now())
     sub_process()
+    
 if __name__ == "__main__":
     main()
 

@@ -26,7 +26,7 @@ def tcp_listen(queue,host='',port=555):
     s.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
     s.bind((host,port))   
     s.listen(10)
-    print "%s Listen on %s:%s" %(_name,host,port)
+#    print "%s Listen on %s:%s" %(_name,host,port)
     while 1:
         try:
             conn,addr=s.accept()            
@@ -94,7 +94,7 @@ def tcp_server(queue,host=DEFAULT_TCP_HOST,port=DEFAULT_TCP_PORT):
     global q
     q=queue
     addr = (host,port)
-    log.info('TCP server listen on %s ...' % str(addr))
+    log.info('TCP Server listen on %s ...' % str(addr))
     try:  
         server = SocketServer.ThreadingTCPServer(addr,Servers)
         server.serve_forever()

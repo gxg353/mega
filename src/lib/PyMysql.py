@@ -1,11 +1,11 @@
 #coding:utf-8
 import sys
-from lib.settings import DbConfig
+from conf.settings import DbConfig
 try:
     import MySQLdb
 except ImportError:
     sys.exit("Exceptions.ImportError: No module named MySQLdb\n");
-class pymysql(object):
+class PyMySQL(object):
     conn   = None
     
     def __init__(self):

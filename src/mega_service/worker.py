@@ -24,13 +24,14 @@ class Worker():
         self.queue=queue    
     def worker(self):
         self._name=multiprocessing.current_process().name
-        log.info("%s is Working..." % self._name)           
+        log.info("%s is Starting..." % self._name)           
         data=None
         while 1:
             try:
                 if not self.queue.empty():
                     data=self.queue.get()
                     if data:
+                        log.debug(data)
                         self.work_deliver(data)
                 time.sleep(1)
             except KeyboardInterrupt:
@@ -54,7 +55,10 @@ class Worker():
         try :
 #            print data
 #            d=simplejson.loads(data)
-            d=eval(data)
+            if type(data) == types.DictionaryType:
+                d=data
+            else:
+                d=eval(data)                
             if type(d)== types.DictionaryType:
                 if not (d.has_key('TYPE') or d.has_key('VALUE')):
                     return False
@@ -62,6 +66,8 @@ class Worker():
                 return False
         except Exception as ex:
             log.error("Resolve the data failed as : %s" % ex)
+            log.error(data)
+            return False
         self.task=d
         return True
         
@@ -69,6 +75,7 @@ class Worker():
     #1.run the command
     #2.save task into db
         if not self.work_resolve(work):
+            log.error("Task resovle failed!")
             return False
         #internal funcs invoke,the task should include key : TOOL True
         if self.task.has_key('TOOL'):
@@ -105,12 +112,11 @@ class Executor_Local():
     '''
     def __init__(self,cmd):
         self.cmd=cmd
-    def do_cmd(self,func_args=None):
-#        func=getattr(resource,self.cmd,None)
-        return eval("apis.%s(%s)" % (self.cmd,func_args))
+    def do_cmd(self,_args=None):
+#       func=getattr(resource,self.cmd,None)
+        log.debug("Call API: apis.%s()" % self.cmd)
+        return eval("apis.%s(%s)" % (self.cmd,_args))
         #return func(func_args.split(','))
-#mark  do the command
-#return all the funcs
 
 
 class Saver():

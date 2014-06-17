@@ -22,21 +22,20 @@ class Tracker():
         self._name=multiprocessing.current_process().name
         log.info("%s is Starting..." % self._name)           
         data=None
-        while 1:
-            try:
+        try:
+            while 1:
                 data=self.routine_task()
                 for d in data:
                     self.queue.put(d)
                 time.sleep(TRACKER_LIFCYCLE)
-            except KeyboardInterrupt:
-                log.error("%s is Quitting..." % self._name)
-                break
+        except KeyboardInterrupt:
+            log.error("%s is Quitting..." % self._name)
     def routine_task(self):
         _task=[]
         _t={}
         sql="select * from task where timestampdiff(second,last_time,now())>=cycle;"
         for t in self.q.fetchAll(sql):
-            _t["ID"]=t[0]
+            _t["ARGS"]=t[0] #id  use to update the config table in api.mange
             _t["NAME"]=t[1]
             _t["TYPE"]=t[2]
             _t["VALUE"]=t[3]
@@ -44,7 +43,8 @@ class Tracker():
             _t["CYCLE"]=t[5]
             _t["TIME"]=0
             _task.append(_t)
-        log.debug(_task)
+        if _task:
+            log.debug(_task)
         return _task
     def retry_task(self):
         return 

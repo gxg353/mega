@@ -13,10 +13,10 @@ END_SIGN='EOF'
 ERROR='-1'
 SUCCESS='0'
 TCP_HEADER=['HEAD','MEGA']
-MODEL='Listener'
 BUFFER_SIZE=10
 HEADER_LENGTH=10
 
+MODEL='Listener'
 log = Logger(MODEL).log()
 
 

@@ -114,7 +114,7 @@ class Executor_Local():
         self.cmd=cmd
     def do_cmd(self,_args=None):
 #       func=getattr(resource,self.cmd,None)
-        log.debug("Call API: apis.%s()" % self.cmd)
+        log.debug("Call API: apis.%s(%s)" % (self.cmd,_args))
         return eval("apis.%s(%s)" % (self.cmd,_args))
         #return func(func_args.split(','))
 

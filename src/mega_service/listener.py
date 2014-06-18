@@ -60,6 +60,7 @@ class Servers(SRH):
             if _d.find(END_SIGN) > 0:
                 break
             header=header-BUFFER_SIZE
+#            print header,_d
         data=data.replace('EOF', '')
         if DEBUG:
             log.debug(data)
@@ -74,7 +75,7 @@ class Servers(SRH):
 #todo : 
 #    get the len(result),add the length to the head of packget, 
 #    chancel the end sign
-        _len=len(result)
+        _len=len(result)+HEADER_LENGTH
         _header=str(_len)
         for i in range(HEADER_LENGTH - len(str(_len))):
             _header='0'+_header

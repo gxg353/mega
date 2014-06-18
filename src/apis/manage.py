@@ -42,19 +42,43 @@ def backup_routine(task_id,**args):
             log.warn("%s backup tasks are invoked,%s are successed." %(len(instance_list),len(result)))
     Task().stat_task_by_id(task_id)
 
-def update_backupinfo(task_info,type='INSERT'):
+def update_backupinfo(task_info,action='INSERT'):
     if not task_info :
-        return
+        return False
+
     db_conn=PyMySQL()
-    task_info=eval(task_info)
-    if type=='INSERT':
-        sql="insert into backup_history_info(host_ip,port,db_type,backup_tool,backup_level,level_value,backup_type,\
-        need_data,need_schema,status,rsync,delete,backup_begin_time,backup_end_time,rsync_begin_time,rsync_end_time,file_size) \
-        values();select last_insert_id();"
+    task=eval(str(task_info))
+    if action.upper()=='INSERT':
+        columns="host_ip,port,db_type,backup_tool,backup_level,level_value,backup_type,need_data,need_schema,status,rsync,message"
+        values=[]
+        data=(columns,)
+        for c in columns.split(','):
+            _d=task.get(c)
+            values.append(_d)
+        data=data+tuple(values)
+        sql="insert into backup_history_info(%s)\
+            values('%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');" % data        
+        log.debug(sql)
+        db_conn.execute(sql)
+        task_id=db_conn.fetchOne("select last_insert_id()")        
+        log.debug("New backup task id : %s  " %task_id)
+        return task_id
     else:
-        sql="update backup_history_info set where id="
-    
-    return 
+        id=task.get("id")
+        if not id:
+            return False
+        columns="status,is_delete,backup_begin_time,backup_end_time,rsync_begin_time,rsync_end_time,file_size,message"
+        values=[]
+        data=""
+        for c in columns.split(','):
+            _d=task.get(c)
+            data=data+c+" = '" + _d + '\' ,'
+        data=data.rstrip(',')
+        sql="update backup_history_info set %s where id=%s" %(data,id)
+        log.debug(sql)
+        if db_conn.execute(sql):
+            return True
+    return False
     
     
     

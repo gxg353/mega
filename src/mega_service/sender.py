@@ -49,7 +49,7 @@ class MegaClient():
         try:
             cmd_with_pack=self._cmd_pack(cmd)
             if cmd_with_pack:
-                _len=len(str(cmd_with_pack))
+                _len=len(str(cmd_with_pack))+HEADER_LENGTH
                 _header=str(_len)
                 for i in range(HEADER_LENGTH - len(str(_len))):
                     _header='0'+_header
@@ -93,10 +93,11 @@ class MegaTool():
         cmd='get_all_funcs'
         self.c=MegaClient(cmd=cmd)
         func_list=self.c.run(TOOL=True)
-        i=1
-        for f in eval(func_list):
-            print i,f['name'],f['args']
-            i+=1
+        if func_list:
+            i=1
+            for f in eval(func_list):
+                print i,f['name'],f['args']
+                i+=1
     def close(self):
         c.close
 

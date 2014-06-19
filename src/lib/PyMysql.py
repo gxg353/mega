@@ -52,10 +52,11 @@ class PyMySQL(object):
                 return False
                 sys.exit("MySQL Query Error:\n"+sql+str(ex)+"\n")
     def execute(self,sql):
+        ex=''
         try:
-            return self.conn.cursor().execute(sql)
+            return self.conn.cursor().execute(sql),ex
         except Exception,ex:
-            return False
+            return False,ex
             sys.exit("MySQL Query Error:\n"+str(ex)+"\n")
 
     def fetch(self,cursor):

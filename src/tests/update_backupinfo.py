@@ -19,14 +19,14 @@ var='''task_info={ "backup_tool": "xtrabackup",
 "retention": "7", 
 "status": 1},action='insert'
 '''
-var_update='''task_info={"id":81,
+var_update='''task_info={"id":82,
 "status": 'Y',
 "is_delete":'Y',
-"backup_begin_time":'0',
-"backup_end_time":'0',
-"rsync_begin_time":'0',
-"rsync_end_time":'0',
-'file_size':'0',
+"backup_begin_time":'2013:01:01 02:02:02',
+"backup_end_time":'2013:01:01 02:02:02',
+"rsync_begin_time":'2013:01:01 02:02:02',
+"rsync_end_time":'2013:01:01 02:02:02',
+'file_size':'2013:01:01 02:02:02',
 'message':'test update'},action='update'
 '''
 
@@ -43,5 +43,5 @@ def test_update():
 
 
 if __name__=="__main__":
-    #test_insert()
+    test_insert()
     test_update()

@@ -68,8 +68,6 @@ class Servers(SRH):
         if self.data_check(data):
             _w=Worker(None).work_deliver(data)
             result=str(_w)
-
-            q.put(data)
         else:
             result=ERROR
 #todo : 

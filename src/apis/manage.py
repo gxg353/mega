@@ -43,6 +43,14 @@ def backup_routine(task_id,**args):
     Task().stat_task_by_id(task_id)
 
 def update_backupinfo(task_info,action='INSERT'):
+    '''
+    task_info : update items
+    action: INSERT OR UPDATE 
+    
+    return :
+        task id : insert or update success
+        False :   unexpected errors occurs
+    '''
     if not task_info :
         return False
 
@@ -76,8 +84,14 @@ def update_backupinfo(task_info,action='INSERT'):
         data=data.rstrip(',')
         sql="update backup_history_info set %s where id=%s" %(data,id)
         log.debug(sql)
-        if db_conn.execute(sql):
-            return True
+        rows,msg=db_conn.execute(sql)   
+        if rows or rows==0:
+            if msg:
+                log.debug(msg)
+            return id
+        else:
+            log.warn("Update task %s : " % id +str(msg))
+            return False
     return False
     
     

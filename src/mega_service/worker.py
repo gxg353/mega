@@ -9,10 +9,13 @@ MODEL='Worker'
 log = Logger(MODEL).log()
 
 
+#===============================================================================
+# _get_func_list
+#===============================================================================
 def _get_func_list(object):
         _funcs=[]
         if not object:
-            return _funcs
+            return _funcs   
         for o in dir(object):
             obj_func=getattr(object,o,None)
             if inspect.isfunction(obj_func):
@@ -32,13 +35,15 @@ class Worker():
                     data=self.queue.get()
                     if data:
                         log.debug(data)
+#                        log.info('got task from the queue')
                         self.work_deliver(data)
                 time.sleep(1)
             except KeyboardInterrupt:
                 log.error("%s is Quitting..." % self._name)
                 break
     def work_resolve(self,data):
-        """        work instance:{'HEAD':'MEGA','TYPE':'CMD','VALUE':'ls'}
+        '''
+        work instance:{'HEAD':'MEGA','TYPE':'CMD','VALUE':'ls'}
         keys:
         *   HEAD:    for safe interactive,should be MEGA
         *   TYPE:    0 internal server task,1 remote task
@@ -48,13 +53,12 @@ class Worker():
             TARGET:    unique identify for server or instance or database.
             TOOL:    Internal func calls
             _item=['TYPE','TIME','VALUE','CYCLE','TARGET','ARGS']
-        """
+        
+        '''
         if len(data)==0:
             return False
         d=None
         try :
-#            print data
-#            d=simplejson.loads(data)
             if type(data) == types.DictionaryType:
                 d=data
             else:
@@ -62,6 +66,11 @@ class Worker():
             if type(d)== types.DictionaryType:
                 if not (d.has_key('TYPE') or d.has_key('VALUE')):
                     return False
+                else:
+                    for _d in d:
+                        if type(d[_d]) == types.StringType:
+                            d[_d].replace('\n','')
+                            ' '.join(d[_d].split())
             else:
                 return False
         except Exception as ex:
@@ -91,7 +100,8 @@ class Worker():
                 result=Executor_remote().run()
         else:
         #save into db
-            pass
+            self.queue.put(work)
+            result=1
         return result
     def close(self):
         self.close()
@@ -113,10 +123,12 @@ class Executor_Local():
     def __init__(self,cmd):
         self.cmd=cmd
     def do_cmd(self,_args=None):
-#       func=getattr(resource,self.cmd,None)
-        log.debug("Call API: apis.%s(%s)" % (self.cmd,_args))
-        return eval("apis.%s(%s)" % (self.cmd,_args))
-        #return func(func_args.split(','))
+        func=getattr(apis,self.cmd,None)
+        if func:
+            log.debug("Call API: apis.%s(%s)" % (self.cmd,_args))
+            return eval("apis.%s(%s)" % (self.cmd,_args))
+        else:
+            return False
 
 
 class Saver():

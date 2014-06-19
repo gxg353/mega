@@ -62,7 +62,7 @@ class MegaClient():
                         break
                     header=header-HEADER_LENGTH
             else:
-                data='-1'
+                data=False
             return self._data_unpack(data)
         except Exception as ex:
             print ex

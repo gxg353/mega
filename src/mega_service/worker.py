@@ -38,8 +38,8 @@ class Worker():
 #                        log.info('got task from the queue')
                         self.work_deliver(data)
                 time.sleep(1)
-            except KeyboardInterrupt:
-                log.error("%s is Quitting..." % self._name)
+            except Exception as ex:
+                log.error(ex)
                 break
     def work_resolve(self,data):
         '''

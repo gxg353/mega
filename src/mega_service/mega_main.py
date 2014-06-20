@@ -22,25 +22,29 @@ def sub_process():
         workers=multiprocessing.Process(target=worker,args=(),name="Main Worker")
         threads.append(workers)
         listens=multiprocessing.Process(target=tcp_server,args=(queue,),name="TCP Listener")
+        
         threads.append(listens)
         trackers=multiprocessing.Process(target=tracker,args=(),name="Tracker")
         threads.append(trackers)
         #backuper=multiprocessing.Process(target=backuper,args=(),name="Backup worker")
         #threads.append(backuper)
-
+        
         for t in threads:
             t.start()
-        for t in threads:
-            t.join()
-    except KeyboardInterrupt:
+    except Exception as ex:
         log.debug('Get interrupt from keyboard,quit now')
+        log.error(ex)
         return
- 
+    
+
 def main():
     log.info("=============BEGIN===========")
     log.info('Mega server start at %s ' % datetime.datetime.now())
+
     sub_process()
     
 if __name__ == "__main__":
-    main()
+    if len(sys.argv) >1: 
+        pid_file=sys.argv[1]
+    main(pid_file)
 

@@ -76,7 +76,7 @@ class Daemon:
         # Get the pid from the pidfile
         try:
             pf = file(self.pidfile,'r')
-            pid = int(pf.read().strip())
+            pid = pf.readlines()
             pf.close()
         except IOError:
             pid = None
@@ -85,11 +85,13 @@ class Daemon:
             message = "pidfile %s does not exist. Daemon not running?\n"
             sys.stderr.write(message % self.pidfile)
             return # not an error in a restart
-        # Try killing the daemon process    
+        # Try killing the daemon process
+            
         try:
             while 1:
-                os.kill(pid, SIGTERM)
-                time.sleep(0.1)
+                for p in pid:
+                    os.kill(int(p.strip()), SIGTERM)
+                    time.sleep(0.1)
         except OSError, err:    
             err = str(err)
             if err.find("No such process") > 0:
@@ -102,7 +104,9 @@ class Daemon:
         self.stop()
         self.start()
     def _run(self):
-        mega_main()
+        child_pid=mega_main()
+        for pid in child_pid:
+            file(self.pidfile,'a+').write("%s\n" % pid)
         
 if __name__ == "__main__":
     daemon = Daemon(SERVICE_PID_FILE)

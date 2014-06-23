@@ -10,7 +10,7 @@
 
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 NAME=mega
-DESC='Mega service '
+DESC='Mega Service '
 #APP_DIR='/export/servers/script/mega-master/src/'
 APP_DIR='..'
 
@@ -52,19 +52,19 @@ case "$1" in
 	start)
 		echo -n "Starting $DESC..."
 		start_mega
-		echo "Done."
+		echo -e "\033[32m Done \033[0m"
 		;;
 	stop)
 		echo -n "Stopping $DESC..."
 		stop_mega
-		echo "Done."
+		echo -e "\033[32m Done \033[0m"
 		;;
 	restart)
 		echo -n "Restarting $DESC..."
 		stop_mega
 		sleep 6
 		start_mega
-		echo "Done."
+		echo -e "\033[32m Done \033[0m"
 		;;
 	status)
 		status_of_proc -p $PID_FILE "$DAEMON" uwsgi && exit 0 || exit $?

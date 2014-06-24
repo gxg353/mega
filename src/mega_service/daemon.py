@@ -7,7 +7,7 @@ Created on Jun 20, 2014
 import sys, os, time, atexit
 from signal import SIGTERM
 from mega_main import main as mega_main
-from conf.settings import SERVICE_PID_FILE,DAEMON_LOG
+from conf.settings import DAEMON_PID,DAEMON_LOG
 
 
 class Daemon:
@@ -28,7 +28,6 @@ class Daemon:
         os.setsid()
         os.chdir("/")
         os.umask(0)
-
         try:
             pid = os.fork()
             if pid > 0:
@@ -36,7 +35,6 @@ class Daemon:
         except OSError, e:
             sys.stderr.write("fork #2 failed: %d (%s)\n" % (e.errno, e.strerror))
             sys.exit(1)
-
         sys.stdout.flush()
         sys.stderr.flush()
         si = file(self.stdin, 'r')
@@ -49,17 +47,22 @@ class Daemon:
         atexit.register(self.delpid)
         pid = str(os.getpid())
         file(self.pidfile,'w+').write("%s\n" % pid)
+        
     def delpid(self):
         return
         os.remove(self.pidfile)
+    #===========================================================================
+    # start
+    #===========================================================================
     def start(self):
+        
         """
         Start the daemon
         """
         # Check for a pidfile to see if the daemon already runs
         try:
             pf = file(self.pidfile,'r')
-            pid = int(pf.read().strip())
+            pid = pf.read().strip()
             pf.close()
         except IOError:
             pid = None
@@ -68,10 +71,10 @@ class Daemon:
             message = "pidfile %s already exist. Daemon already running?\n"
             sys.stderr.write(message % self.pidfile)
             sys.exit(1)
-
         # Start the daemon
         self._daemonize()
         self._run()
+        
     def stop(self):
         # Get the pid from the pidfile
         try:
@@ -85,8 +88,7 @@ class Daemon:
             message = "pidfile %s does not exist. Daemon not running?\n"
             sys.stderr.write(message % self.pidfile)
             return # not an error in a restart
-        # Try killing the daemon process
-            
+        # Try killing the daemon process            
         try:
             while 1:
                 for p in pid:
@@ -100,16 +102,22 @@ class Daemon:
             else:
                 print str(err)
                 sys.exit(1)
+        
     def restart(self):
         self.stop()
         self.start()
+        
     def _run(self):
+        '''
+        Call the main service ,put the child pid into pid file
+        '''
         child_pid=mega_main()
+        
         for pid in child_pid:
             file(self.pidfile,'a+').write("%s\n" % pid)
         
 if __name__ == "__main__":
-    daemon = Daemon(SERVICE_PID_FILE)
+    daemon = Daemon(DAEMON_PID)
     if len(sys.argv) == 2:
         if 'start' == sys.argv[1]:
             daemon.start()

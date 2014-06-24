@@ -128,6 +128,7 @@ class Executor_Local():
             log.debug("Call API: apis.%s(%s)" % (self.cmd,_args))
             return eval("apis.%s(%s)" % (self.cmd,_args))
         else:
+            log.error("Function %s not found" % self.cmd)
             return False
 
 

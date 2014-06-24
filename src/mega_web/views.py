@@ -3,27 +3,30 @@ from django.shortcuts import render_to_response,RequestContext
 
 from resource import instance_manage,server_manage,business_manage,database_manage,resource_manage
 from console.backup import Backup,Backup_Config
+
 def home(request):
     if request.method=="GET":
         return render_to_response('home.html')
     else:
         return render_to_response('home.html')
+
 def monitor(request):
     if request.method=="GET":
         return render_to_response('monitor.html')
     else:
         return render_to_response('monitor.html')
+
 def console(request):
     if request.method=="GET":
         return render_to_response('console.html')
     else:
         return render_to_response('console.html')
+
 def portal(request):
     if request.method=="GET":
         return render_to_response('portal.html')
     else:
         return render_to_response('portal.html')
-
 
 def fun(request):
     if request.method=="GET":
@@ -43,9 +46,11 @@ def resource(request):
 def instance(request):
     if request.method=="GET":
         instance_list=instance_manage.InstanceGet().get_instance_list(None,10)
-        return render_to_response('instance.html',{'instance_list':instance_list})
+        return render_to_response('instance.html',{'instance_list':instance_list},context_instance=RequestContext(request))
     else:
-        return render_to_response('instance.html')
+        ip=request.POST.get("ip")
+        instance=instance_manage.InstanceGet().get_instance_list({"ip":ip})
+        return render_to_response('instance.html',{"instance_list":instance},context_instance=RequestContext(request))
 def instance_add(request):
     if request.method=="GET":
         business_list=business_manage.BusinessGet().get_business_list(None).values("id","name")
@@ -202,6 +207,3 @@ def my_404_view(request):
 def my_500_view(request):
         return render_to_response('500.html')
 
-#t = get_template('current_datetime.html')
-#    html = t.render(Context({'current_date': now}))
-#    return HttpResponse(html)

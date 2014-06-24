@@ -1,7 +1,10 @@
+import os
 SERVICE_NAME='mega'
 TRACKER_LIFCYCLE=10
-SERVICE_PID_FILE='/var/run/%s.pid' % SERVICE_NAME
+DAEMON_PID='/var/run/%s.pid' % SERVICE_NAME
 DAEMON_LOG='/var/log/%s.log' % SERVICE_NAME
+LOG_FILE_NAME=os.path.abspath('../log/mega.log')
+
 class DbConfig():
     def __init__(self):
         pass

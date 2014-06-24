@@ -3,24 +3,16 @@
 <div class="well well-lg">快速添加实例</div>
 <form action="/resource/instance_add/" method="post">
 	<div class="input-group">
-  		<span class="input-group-addon">*</span>
+  		<span class="input-group-addon"></span>
   		<input type="text" class="form-control" name="instance_name" placeholder="NAME" style="width:200px;" maxlength=15>
 	</div>
 	<br>
 	<div class="input-group">
   		<span class="input-group-addon">*</span>
   		<input type="text" class="form-control" name="instance_ip" placeholder="IP" style="width:200px;" maxlength=15>
-	</div>
-	<br>
-	<div class="input-group">
-  		<span class="input-group-addon">*</span>
+		<span class="input-group-addon">*</span>
   		<input type="text" class="form-control" name="instance_port" placeholder="PORT" style="width:200px;" maxlength=6>
 	</div>
-<br>
-<div class="input-group">
-  <span class="input-group-addon">*</span>
-  <input type="text" class="form-control" name="instance_level" placeholder="LEVEL" style="width:200px;" maxlength=2>
-</div>
 <br>
 <div class="input-group">
 	<span class="input-group-addon">*</span>
@@ -29,11 +21,26 @@
 		   <option value={{ bus.id }}>{{ bus.name }}</option>
 		{% endfor %}
 	</select> 	
+  <span class="input-group-addon"></span>
+  <input type="text" class="form-control" name="instance_level" placeholder="LEVEL" style="width:200px;" maxlength=2>
+
+</div>
+<br>
+<div class="input-group">
+  		<span class="input-group-addon"></span>
+  		<input type="text" class="form-control" name="instance_owner" placeholder="OWNER" style="width:200px;" maxlength=15>
+  		<span class="input-group-addon"></span>
+  		<input type="text" class="form-control" name="instance_db_type" placeholder="DB_TYPE" style="width:200px;" maxlength=15>
 </div>
 <br>
 <div class="input-group">
   		<span class="input-group-addon">*</span>
   		<input type="text" class="form-control" name="instance_online" placeholder="ONLINE_DATE" style="width:200px;" maxlength=20 onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',isShowClear:false,readOnly:true})" readonly='readonly'>
+</div>
+<br>
+<div class="input-group">
+  		<span class="input-group-addon"></span>
+  		<input type="text" class="form-control" name="instance_ha_type" placeholder="HA_TYPE" style="width:200px;" maxlength=15>
 </div>
 <br>
 <button type="submit" class="btn btn-default btn">

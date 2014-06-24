@@ -12,7 +12,6 @@ class Tracker():
         '''
         Two type tasks would be tracked :
             1.cycle task on the specified time
-        
             2.realtime task need to be retry
         '''
         self.queue=queue  
@@ -30,6 +29,7 @@ class Tracker():
                 time.sleep(TRACKER_LIFCYCLE)
         except KeyboardInterrupt:
             log.error("%s is Quitting..." % self._name)
+    
     def routine_task(self):
         _task=[]
         _t={}
@@ -46,6 +46,7 @@ class Tracker():
         if _task:
             log.debug(_task)
         return _task
+    
     def retry_task(self):
         return 
         

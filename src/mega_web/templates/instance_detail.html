@@ -33,7 +33,7 @@
   <span class="input-group-addon">*</span>
   <input type="text" class="form-control" name="instance_level"  placeholder='LEVEL' style="width:200px;" maxlength=2 value='{{ instance.level }}' readonly= {{ readonly }}>
   <span class="input-group-addon">*</span>
-  <input type="datetime" class="form-control" name="instance_online" placeholder='ONLINE_DATE' style="width:200px;" maxlength=20 value='{{ instance.online_date|date:"Y-m-d H:i:s" }}' readonly= {{ readonly }} >
+  <input type="datetime" class="form-control" name="instance_online" placeholder='ONLINE_DATE' style="width:200px;" maxlength=20 value='{{ instance.online_date|date:"Y-m-d H:i:s" }}' onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',isShowClear:false,readOnly:true})" readonly= {{ readonly }} >
 
 </div>
 <br>

@@ -141,7 +141,9 @@ def database(request):
         database_list=database_manage.DatabaseGet().get_database_list(None, 10)
         return render_to_response('database.html',{"database_list":database_list},context_instance=RequestContext(request))
     else:
-        return render_to_response('database.html')
+        ip=request.POST.get("ip")
+        database_list=database_manage.DatabaseGet().get_database_list({"ip":ip})
+        return render_to_response('database.html',{"database_list":database_list},context_instance=RequestContext(request))
 def database_add(request):
     instance_list=instance_manage.InstanceGet().get_instance_list(None) #.values("id","ip","port")
     business_list=business_manage.BusinessGet().get_business_list(None).values("id","name")

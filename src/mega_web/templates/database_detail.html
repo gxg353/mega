@@ -31,7 +31,7 @@
   <span class="input-group-addon">*</span>
   <input type="text" class="form-control" name="database_business" placeholder='BUSINESS' style="width:200px;" maxlength=20 value='{{ database.business }}' readonly= {{ readonly }} >
   <span class="input-group-addon">*</span>
-  <input type="datetime" class="form-control" name="database_online" placeholder='ONLINE_DATE' style="width:200px;" maxlength=20 value='{{ database.online_date|date:"Y-m-d H:i:s" }}' readonly= {{ readonly }} >
+  <input type="datetime" class="form-control" name="database_online" placeholder='ONLINE_DATE' style="width:200px;" maxlength=20 value='{{ database.online_date|date:"Y-m-d H:i:s" }}' onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',isShowClear:false,readOnly:true})" readonly= {{ readonly }} >
 
 </div>
 <br>

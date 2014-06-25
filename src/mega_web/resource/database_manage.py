@@ -125,13 +125,15 @@ class DatabaseGet():
         return self.db.objects.filter(instance_id=instance_id,name=name).values()
     def get_database_list(self,str_filter,count=10,offset=0):
         result=None
+        if not str_filter:
+            str_filter=''
         sql="select d.* ,i.ip,i.port,b.name as business,u.name as owner_name from `databases` d left join \
-         instance i on d.instance_id=i.id left join business b on d.business_id=b.id left join user u on d.owner=u.id"
-        if str_filter:
-            column=str_filter[0]
-            value=str_filter[1]
-            sql+="and %s=%s"(column,value)
+         instance i on d.instance_id=i.id left join business b on d.business_id=b.id left join user u on d.owner=u.id where 1=1 "
+        if len(str_filter):
+            for f in str_filter:
+                sql+=" and %s='%s'" % (f,str_filter[f])
         sql+=" order by stat desc"
+        print sql
         if count==0:
             result=self.db.objects.raw(sql)
         else:

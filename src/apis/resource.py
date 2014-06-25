@@ -1,6 +1,6 @@
 from mega_web.resource import instance_manage,server_manage,database_manage
 import logging
-log = logging.getLogger("api")
+log = logging.getLogger("API")
 
 ERR_CODE_DEFAULT=None  #INIT CODE :Noenmeaning
 ERR_CODE_UNKOWN=-1  #UNKONW ERROR
@@ -90,6 +90,7 @@ def get_all_db(model=None,stat=0,count=0):
     """
     err_code=ERR_CODE_DEFAULT
     result=[]
+    
     try :
         if stat ==1:
             filter='stat=1'

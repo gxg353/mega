@@ -2,22 +2,26 @@
 from django.shortcuts import render_to_response,RequestContext
 
 from resource import instance_manage,server_manage,business_manage,database_manage,resource_manage
+from console.backup import Backup,Backup_Config
 
 def home(request):
     if request.method=="GET":
         return render_to_response('home.html')
     else:
         return render_to_response('home.html')
+
 def monitor(request):
     if request.method=="GET":
         return render_to_response('monitor.html')
     else:
         return render_to_response('monitor.html')
-def manage(request):
+
+def console(request):
     if request.method=="GET":
-        return render_to_response('manage.html')
+        return render_to_response('console.html')
     else:
-        return render_to_response('manage.html')
+        return render_to_response('console.html')
+
 def portal(request):
     if request.method=="GET":
         return render_to_response('portal.html')
@@ -42,9 +46,11 @@ def resource(request):
 def instance(request):
     if request.method=="GET":
         instance_list=instance_manage.InstanceGet().get_instance_list(None,10)
-        return render_to_response('instance.html',{'instance_list':instance_list})
+        return render_to_response('instance.html',{'instance_list':instance_list},context_instance=RequestContext(request))
     else:
-        return render_to_response('instance.html')
+        ip=request.POST.get("ip")
+        instance=instance_manage.InstanceGet().get_instance_list({"ip":ip})
+        return render_to_response('instance.html',{"instance_list":instance},context_instance=RequestContext(request))
 def instance_add(request):
     if request.method=="GET":
         business_list=business_manage.BusinessGet().get_business_list(None).values("id","name")
@@ -135,7 +141,9 @@ def database(request):
         database_list=database_manage.DatabaseGet().get_database_list(None, 10)
         return render_to_response('database.html',{"database_list":database_list},context_instance=RequestContext(request))
     else:
-        return render_to_response('server.html')
+        ip=request.POST.get("ip")
+        database_list=database_manage.DatabaseGet().get_database_list({"ip":ip})
+        return render_to_response('database.html',{"database_list":database_list},context_instance=RequestContext(request))
 def database_add(request):
     instance_list=instance_manage.InstanceGet().get_instance_list(None) #.values("id","ip","port")
     business_list=business_manage.BusinessGet().get_business_list(None).values("id","name")
@@ -160,12 +168,44 @@ def database_detail(request):
         stat_action='上'
     return render_to_response('database_detail.html',{"database":database,"stat_action":stat_action},context_instance=RequestContext(request))
 
-#
+#backup
+
+def backup(request):
+    if request.method=="GET":
+        backup_list=Backup().get_newest_backup_list()
+        for i in  backup_list:
+            print i
+        return render_to_response('backup.html',{"backup_list_all":backup_list},context_instance=RequestContext(request))
+    else:
+        return render_to_response('backup.html')
+
+def backup_config(request):
+    backup_type=Backup_Config().backup_type
+    backup_tool=Backup_Config().backup_tool
+    backup_level=Backup_Config().backup_level
+    backup_cycle=Backup_Config().backup_cycle
+    backup={"stat":'ON'}
+    if request.method=="GET":
+        ip=request.GET.get("ip")
+        port=request.GET.get("port")
+        instance={"ip":ip,"port":port}
+        config_list,msg=Backup().get_config_by_instance(ip,port)
+        backup["msg"]=msg
+        return render_to_response('backup_config.html',{"config_list":config_list,"instance":instance,"backup_tool":backup_tool,
+                                                        "backup_type":backup_type,"backup_level":backup_level,"backup_cycle":backup_cycle,
+                                                        "backup":backup},context_instance=RequestContext(request))
+    else:
+        ip=request.POST.get("ip")
+        port=request.POST.get("port")
+        instance={"ip":ip,"port":port}
+        config_list,msg=Backup().get_config_by_instance(ip,port)
+        backup["msg"]=msg
+        result=Backup_Config().config_deliver(request.POST)
+        return render_to_response('backup_config.html',{"instance":instance,"config_list":config_list,"backup_tool":backup_tool,
+                                                        "backup_type":backup_type,"backup_level":backup_level,"backup_cycle":backup_cycle},context_instance=RequestContext(request))
+
 def my_404_view(request):
         return render_to_response('404.html')
 def my_500_view(request):
         return render_to_response('500.html')
 
-#t = get_template('current_datetime.html')
-#    html = t.render(Context({'current_date': now}))
-#    return HttpResponse(html)

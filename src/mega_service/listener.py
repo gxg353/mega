@@ -13,10 +13,10 @@ END_SIGN='EOF'
 ERROR='-1'
 SUCCESS='0'
 TCP_HEADER=['HEAD','MEGA']
-MODEL='Listener'
 BUFFER_SIZE=10
 HEADER_LENGTH=10
 
+MODEL='Listener'
 log = Logger(MODEL).log()
 
 
@@ -26,7 +26,7 @@ def tcp_listen(queue,host='',port=555):
     s.setsockopt(socket.SOL_SOCKET,socket.SO_REUSEADDR,1)
     s.bind((host,port))   
     s.listen(10)
-    print "%s Listen on %s:%s" %(_name,host,port)
+#    print "%s Listen on %s:%s" %(_name,host,port)
     while 1:
         try:
             conn,addr=s.accept()            
@@ -60,6 +60,7 @@ class Servers(SRH):
             if _d.find(END_SIGN) > 0:
                 break
             header=header-BUFFER_SIZE
+#            print header,_d
         data=data.replace('EOF', '')
         if DEBUG:
             log.debug(data)
@@ -67,14 +68,12 @@ class Servers(SRH):
         if self.data_check(data):
             _w=Worker(None).work_deliver(data)
             result=str(_w)
-
-            q.put(data)
         else:
             result=ERROR
 #todo : 
 #    get the len(result),add the length to the head of packget, 
 #    chancel the end sign
-        _len=len(result)
+        _len=len(result)+HEADER_LENGTH
         _header=str(_len)
         for i in range(HEADER_LENGTH - len(str(_len))):
             _header='0'+_header
@@ -94,7 +93,7 @@ def tcp_server(queue,host=DEFAULT_TCP_HOST,port=DEFAULT_TCP_PORT):
     global q
     q=queue
     addr = (host,port)
-    log.info('TCP server listen on %s ...' % str(addr))
+    log.info('TCP Server listen on %s ...' % str(addr))
     try:  
         server = SocketServer.ThreadingTCPServer(addr,Servers)
         server.serve_forever()

@@ -1,0 +1,229 @@
+{% extends "console.html" %}
+{% block subcontent %}
+<div class="well well-sm">备份配置:
+<span class="label label-default">{{ instance.ip }}</span>
+<span class="label label-default">{{ instance.port }}</span>
+<span class="label label-default">{{ instance.db_type }}</span>
+
+</div>
+
+<div class="input-group">
+<form class="navbar-form navbar-left" role="search" action="/console/backup/backup_config/" method="get">
+        <div class="form-group">
+          <input type="text" name="ip" class="form-control" placeholder="IP or NAME">
+          <input type="text" name="port" class="form-control" placeholder="PORT">
+        </div>        
+      	<button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
+      	<span class="glyphicon glyphicon-info-sign" style="color:red"> {{ backup.msg }}</span>
+      	
+{% csrf_token %}
+</form>
+		
+</div>
+<div class="well well-sm">
+
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+      	<th>
+      	<button type="button" class="btn btn-default btn-sm" onclick="call_div()" >
+  			<span class="glyphicon glyphicon-plus"></span> Add
+		</button>
+      	</th>
+        <th>TOOL</th>
+        <th>LEVEL</th>
+        <th>VALUE</th>
+        <th>TYPE</th>
+        <th>NEED_DATA</th>
+        <th>NEED_SCHEMA</th>
+       </tr>
+    </thead>
+    <tbody>
+    	{% for config in config_list %}
+    		<tr>
+    			<td>
+    			<button type="button" class="btn btn-default btn-sm" onclick="call_div_mod('{{ config.backup_tool }}','{{ config.backup_type }}','{{ config.backup_level }}','{{ config.level_value }}','{{ config.cycle }}','{{ config.backup_time }}','{{ config.retention }}','{{ config.schedule_time }}','{{ config.need_data }}','{{ config.need_schema }}','{{ config.Iscompressed }}','{{ config.isEncrypted }}','{{ config.id }}')">
+    				<span class="glyphicon glyphicon-hand-right"></span>
+    			</button>
+    			</td>
+    			<td>{{ config.backup_tool }}</td>
+    			<td>{{ config.backup_level }}</td>
+    			<td>{{ config.level_value }}</td>
+    			<td>{{ config.backup_type }}</td>
+    			<td>{{ config.need_data }}</td>
+    			<td>{{ config.need_schema }}</td>    			
+    		</tr>
+    {% endfor %}
+    </tbody>
+    </table>
+</div>	
+</div>
+<br>
+<form action="/console/backup/backup_config/" method="post">
+<input type='hidden' name='ip' value={{ instance.ip }}>
+<input type='hidden' name='port' value={{ instance.port }}>
+<input type='hidden' name='type' id='type' value='None'>
+<input type='hidden' name='db_type'  value='mysql'>
+
+<div  id="sub_div" style="display:none;">
+<div>
+<button id="btn-switch" type="button" class="btn btn-default btn" onclick="change_stat()">
+  		<span class=" glyphicon glyphicon-off" ></span>
+    	<input type='text' id='is_scheduled' size='3' name='is_scheduled'   readonly="readonly" value='{{ backup.stat }}'>
+  		
+</button>
+
+</div>
+<input type='hidden' name='id'  value=0>
+
+<br>
+<div class="input-group">
+	<span class="input-group-addon">*</span>
+	<select id='backup_tool' name="backup_tool" class="form-control" style="width:200px;">
+		{% for backup in backup_tool %}
+		   <option value={{ backup }}>{{ backup }}</option>
+		{% endfor %}
+	</select> 	
+	<span class="input-group-addon">*</span>
+	<select id='backup_type' name="backup_type" class="form-control" style="width:200px;">
+		{% for backup in backup_type %}
+		   <option value={{ backup }}>{{ backup }}</option>
+		{% endfor %}
+	</select>
+</div>
+<br>
+<div class="input-group">
+	<span class="input-group-addon">*</span>
+	<select id='backup_level' name="backup_level" class="form-control" style="width:200px;">
+		{% for backup in backup_level %}
+		   <option value={{ backup }}>{{ backup }}</option>
+		{% endfor %}
+	</select> 	
+  <span class="input-group-addon">*</span>
+  <input type="text" class="form-control" id='level_value' name="level_value" placeholder='LEVEL_VALUE' style="width:200px;" maxlength=20 value='{{ backup.level_value }}' readonly= 'readonly' >
+</div>
+<br>
+<div class="input-group">
+<span class="input-group-addon">*</span>
+	<select id='cycle' name="backup_cycle" class="form-control" style="width:200px;">
+		{% for backup in backup_cycle %}
+		   <option value={{ backup }}>{{ backup }}</option>
+		{% endfor %}
+	</select> 	
+  <span class="input-group-addon">*</span>
+  <input type="text" id='backup_time' class="form-control" name="backup_time" placeholder='BACKUP_TIME' style="width:200px;" maxlength=20 value='{{ backup.backup_time }}' readonly= 'readonly' >
+</div>
+<br>
+<div class="input-group">
+  <span class="input-group-addon">*</span>
+  <input type="text" class="form-control" id='retention' name="retention" placeholder='RETENTION' style="width:200px;" maxlength=20 value='{{ backup.retention }}' readonly= 'readonly' >
+  <span class="input-group-addon">*</span>
+  <input type='text' class="form-control" id='schedule_time' name="schedule_time" placeholder='SCHEDULE_TIME' style="width:200px;" maxlength=20 value="{{ backup.schedule_time}}" onClick="WdatePicker({dateFmt:'HH:mm',isShowClear:false,readOnly:true})" readonly= 'readonly' > 
+</div>
+<br>
+<div class="input-group">
+	<span class="input-group-addon">NEED_DATA:</span>
+	<select id='need_data' name="need_data" class="form-control" style="width:50px;">
+		<option value=Y>Y</option>
+		<option value=N>N</option>
+	</select>
+
+	<span class="input-group-addon">NEED_SCHEMA:</span>
+	<select id='need_schema' name="need_schema" class="form-control" style="width:50px;">
+		<option value=Y>Y</option>
+		<option value=N>N</option>
+	</select>
+	<span class="input-group-addon">ISCOMPRESSED:</span>
+	<select id='iscompressed' name="iscompressed" class="form-control" style="width:50px;">
+		<option value=Y>Y</option>
+		<option value=N>N</option>
+	</select>
+	<span class="input-group-addon">ISENCRYPTED:</span>
+	<select id='isencrypted' name="isencrypted" class="form-control" style="width:50px;">
+		<option value=Y>Y</option>
+		<option value=N>N</option>
+	</select>
+	
+</div>
+
+<br>
+
+
+<button type="button" class="btn btn-default btn" id='mod' onclick="change_readonly('all')" disabled='disabled'>
+  		<span class="glyphicon glyphicon-wrench"></span>编辑
+</button>
+<button type="submit" class="btn btn-default btn" id='commit' disabled="disabled">
+  		<span class="glyphicon glyphicon-ok"></span> 提交
+</button>
+</div>
+
+{% csrf_token %}
+</form>
+
+<script>
+function change_readonly(id){
+	if (id == 'all')
+	{
+	    var arrAll=document.all;  
+	    for (i=0;i <arrAll.length;i++)  
+	    	arrAll[i].readOnly= false		
+	}
+	document.all.is_scheduled.readOnly= true
+	var btn_submit=document.getElementById("commit");  
+    btn_submit.disabled='';
+    
+}
+function call_div(){
+	var div_sub=document.getElementById("sub_div");
+	div_sub.style.display='block';
+	change_readonly('all');
+	var is_scheduled=document.getElementById("is_scheduled");
+	is_scheduled.readOnly='readonly';
+	var type=document.getElementById("type");
+	type.value='add';
+
+}
+function call_div_mod(tool,backup_type,level,value,cycle,time,retention,schedule_time,need_data,need_schema,iscompressed,isencrypted,id){
+	
+	var div_sub=document.getElementById("sub_div");
+	div_sub.style.display='block';
+	var is_scheduled=document.getElementById("is_scheduled");
+	is_scheduled.readOnly='readonly';
+	var mod=document.getElementById("mod");
+	mod.disabled='';
+	var type=document.getElementById("type");
+	type.value='mod';
+	document.all.backup_tool.value=tool;
+	document.all.backup_type.value=backup_type;
+	document.all.backup_level.value=level;
+	document.all.level_value.value=value;
+	document.all.cycle.value=cycle;
+	document.all.backup_time.value=time;
+	document.all.retention.value=retention;
+	document.all.need_data.value=need_data;
+	document.all.need_schema.value=need_schema;
+	document.all.iscompressed.value=iscompressed;
+	document.all.isencrypted.value=isencrypted;
+	document.all.schedule_time.value=schedule_time;
+	document.all.id.value=id;
+}
+function change_stat(){
+	var is_scheduled=document.getElementById("is_scheduled");
+	if (is_scheduled.value=='ON')
+	{
+		is_scheduled.value='OFF';
+	}
+	else
+	{
+		is_scheduled.value='ON';	
+	}	
+}
+</script>
+
+
+
+
+
+
+    {% endblock %}

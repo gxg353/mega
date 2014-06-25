@@ -2,7 +2,8 @@ import sys
 sys.path.append('..')
 import logging
 try:
-    from conf.GlobalConf import DEAFULT_LOG_DEBUG,LOG_FILE_NAME
+    from conf.GlobalConf import DEAFULT_LOG_DEBUG
+    from conf.settings import LOG_FILE_NAME
 except:
     DEAFULT_LOG_DEBUG=False
     LOG_FILE_NAME='/tmp/mega.log'

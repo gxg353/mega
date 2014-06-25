@@ -1,4 +1,5 @@
 #开发规范
+
 ##目录说明
 * api  公用调用接口
 * docs 各类文档
@@ -14,6 +15,21 @@ Django-1.6.5
 
 python-daemon 1.5.5  <a>https://pypi.python.org/pypi/python-daemon/1.5.5]</a>
 
+##代码规范
+
+* 字符集：utf8	# -*- coding: UTF-8 -*-
+
+
+###定义
+
+* 类命规则：单词首字母大写，无连接符，空2行，必须有`__init__`函数  class Daemon()
+* 函数规则：小写，下划线连接，空1行，必须有`__doc__`   def mega_daemon(**argv)
+* 内部函数：同函数，以下划线开头		def _run(self)
+
+###参数：
+*
+###返回值
+ 
 ##api
 接口规范
 ##docs

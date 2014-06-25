@@ -4,7 +4,6 @@ DEBUG=True
 #DEBUG=False
 #log
 DEAFULT_LOG_DEBUG=DEBUG
-LOG_FILE_NAME=os.path.abspath('../log/mega.log')
 #Service
 DEFAULT_TCP_PORT=1104
 DEFAULT_TCP_HOST=''
@@ -41,3 +40,8 @@ MSG_ERR_BUSINESS_EXITST='Business already exists !'
 MSG_ERR_DB_EXITST='Database already exists !'
 MSG_ERR_SERVER_EXITST='Server already exists !'
 
+#backup
+BACKUP_TOOL=['xtrabackup','mysqldump','mysqlbinlog','mydumper','rman','expdp','exp']
+BACKUP_TYPE=['full','increment','binlog','archivelog']
+BACKUP_LEVEL=['instance','db','table']
+BACKUP_CYCLE=['day','week','month']

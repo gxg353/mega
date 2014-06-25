@@ -3,6 +3,7 @@ import os
 DEBUG = True
 #DEBUG = False
 
+
 TEMPLATE_DEBUG = DEBUG
 
 PROJECT_PATH=os.path.dirname(__file__)
@@ -64,7 +65,7 @@ STATIC_ROOT = ''
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
-STATIC_URL = os.path.join(PROJECT_PATH,'static')
+STATIC_URL = os.path.join(PROJECT_PATH,'static/')
 
     # Additional locations of static files
 STATICFILES_DIRS = (
@@ -117,14 +118,14 @@ TEMPLATE_DIRS = (
 INSTALLED_APPS = (
      'mega_web',
      'mega_web.entity',             
-#    'django.contrib.auth',
-#    'django.contrib.contenttypes',
-#    'django.contrib.sessions',
-#    'django.contrib.sites',
-#    'django.contrib.messages',
-#    'django.contrib.staticfiles',
+#     'django.contrib.auth',
+     #'django.contrib.contenttypes',
+     #'django.contrib.sessions',
+     #'django.contrib.sites',
+     #'django.contrib.messages',
+     #'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
-    # 'django.contrib.admin',
+     #'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )

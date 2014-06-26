@@ -5,6 +5,7 @@ from views import server,server_add,server_detail
 from views import business,business_add,business_detail
 from views import database,database_add,database_detail
 from views import backup,backup_config
+from views import user,user_add,user_detail
 from views import my_404_view,my_500_view
 from django.conf import settings
 # Uncomment the next two lines to enable the admin:
@@ -43,7 +44,12 @@ urlpatterns = patterns('',
     url(r'^resource/database/$',database),
     url(r'^resource/database_add/$',database_add),
     url(r'^resource/database_detail/$',database_detail),
-
+    
+    url(r'^resource/user/$',user),
+    url(r'^resource/user_add/$',user_add),
+    url(r'^resource/user_detail/$',user_detail),
+    
+    
     url(r'^console/backup/$',backup),
     url(r'^console/backup/backup_config/$',backup_config),
 

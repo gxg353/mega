@@ -17,7 +17,7 @@ DEFAULT_DBTYPE='MySQL'
 DEFAULT_HATYPE='MS'
 DEFAULT_BUSINESS=1
 DEFAULT_DB_PORT=3306
-
+DEFAULT_PWD='123'
 #STAT
 STAT_ONLINE=1
 STAT_OFFLINE=0
@@ -45,3 +45,8 @@ BACKUP_TOOL=['xtrabackup','mysqldump','mysqlbinlog','mydumper','rman','expdp','e
 BACKUP_TYPE=['full','increment','binlog','archivelog']
 BACKUP_LEVEL=['instance','db','table']
 BACKUP_CYCLE=['day','week','month']
+
+#meta data
+LEVEL=[1,2,3]
+DB_TYPE=['MySQL','Oracle','Other']
+HA_TYPE=['MS','None']

@@ -1,7 +1,7 @@
 #-*- coding: utf-8 -*-
 from django.shortcuts import render_to_response,RequestContext
 
-from resource import instance_manage,server_manage,business_manage,database_manage,resource_manage
+from resource import instance_manage,server_manage,business_manage,database_manage,resource_manage,user_manage
 from console.backup import Backup,Backup_Config
 
 def home(request):
@@ -45,7 +45,7 @@ def resource(request):
 ##resource
 def instance(request):
     if request.method=="GET":
-        instance_list=instance_manage.InstanceGet().get_instance_list(None,10)
+        instance_list=instance_manage.InstanceGet().get_instance_list(None,0)
         return render_to_response('instance.html',{'instance_list':instance_list},context_instance=RequestContext(request))
     else:
         ip=request.POST.get("ip")
@@ -168,6 +168,42 @@ def database_detail(request):
         stat_action='上'
     return render_to_response('database_detail.html',{"database":database,"stat_action":stat_action},context_instance=RequestContext(request))
 
+#user
+def user(request):
+    if request.method=="GET":
+        user_list=user_manage.UserGet().get_user_list('')
+        return render_to_response('user.html',{"user_list":user_list},context_instance=RequestContext(request))
+    else:
+        user=request.POST.get("user")
+        user_list=user_manage.UserGet().get_user_list({"name":user})
+        return render_to_response('user.html',{"user_list":user_list},context_instance=RequestContext(request))
+
+def user_add(request):
+    if request.method=="GET":
+        user_list=user_manage.UserGet().get_user_list('')
+        return render_to_response('user_add.html',{"user_list":user_list},context_instance=RequestContext(request))
+    else:
+        result,msg=user_manage.UserManage(request.POST).user_add()
+        return render_to_response('user_add.html',{"msg":msg},context_instance=RequestContext(request))
+
+
+def user_detail(request):
+    msg=''
+    if request.method=="POST":
+        user_id=request.POST.get('user_id')
+        if request.POST.get("type")=='mod':
+            result,msg=user_manage.UserManage(request.POST).user_mod()
+        else:
+            result,msg=user_manage.UserManage(request.POST).user_stat()  
+    else:
+        user_id=request.GET.get('user_id')
+    user=user_manage.UserGet().get_user_by_id(user_id)
+    if user.get("stat")==1:
+        stat_action='禁用'
+    else:
+        stat_action='启用'
+    return render_to_response('user_detail.html',{"user":user,"msg":msg,"stat_action":stat_action},context_instance=RequestContext(request))
+
 #backup
 
 def backup(request):
@@ -203,6 +239,7 @@ def backup_config(request):
         result=Backup_Config().config_deliver(request.POST)
         return render_to_response('backup_config.html',{"instance":instance,"config_list":config_list,"backup_tool":backup_tool,
                                                         "backup_type":backup_type,"backup_level":backup_level,"backup_cycle":backup_cycle},context_instance=RequestContext(request))
+
 
 def my_404_view(request):
         return render_to_response('404.html')

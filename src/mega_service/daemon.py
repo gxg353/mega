@@ -5,6 +5,8 @@ Created on Jun 20, 2014
 '''
 
 import sys, os, time, atexit
+app_path=os.path.dirname(sys.path[0])
+sys.path.append(app_path)
 from signal import SIGTERM
 from mega_main import main as mega_main
 from conf.settings import DAEMON_PID,DAEMON_LOG

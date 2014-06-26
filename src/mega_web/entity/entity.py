@@ -100,8 +100,18 @@ class Backup_Policy(models.Model):
     schedule_time=models.CharField(max_length=45)
     modify_time=models.DateTimeField(auto_now=True)
     
+class Users(models.Model):
+    class Meta(object):
+        db_table='user'
     
-    
+    id = models.AutoField(primary_key=True)   
+    name=models.CharField(max_length=20)
+    role=models.CharField(max_length=20)
+    sign=models.CharField(max_length=20)
+    pwd=models.CharField(max_length=20)
+    p_id=models.IntegerField(default=1)
+    phone=models.IntegerField()
+    stat=models.IntegerField()
     
     
     

@@ -1,0 +1,40 @@
+{% extends "resource_base.html" %}
+{% block subcontent %}
+<div class="well well-lg">用户管理</div>
+<form action="/resource/user_add/" method="post">
+	<div class="input-group">
+  		<span class="input-group-addon">*</span>
+  		<input type="text" class="form-control" name="name" placeholder="NAME" style="width:200px;" maxlength=15>
+  		<span class="input-group-addon">*</span>
+  		<input type="text" class="form-control" name="sign" placeholder="SIGN" style="width:200px;" maxlength=15>
+  	</div>
+  	<br>
+<div class="input-group">
+  		<span class="input-group-addon">*</span>
+  		<input type="text" class="form-control" name="role" placeholder="ROLE" style="width:200px;" maxlength=15>
+		<span class="input-group-addon">*</span>
+  		<input type="text" class="form-control" name="pwd" placeholder="PWD" style="width:200px;" maxlength=15>
+</div>
+
+<br>
+<div class="input-group">
+  <span class="input-group-addon">*</span>
+  <input type="text" class="form-control" name="phone" placeholder="PHONE" style="width:200px;" maxlength=11>
+</div>
+<br>
+<!--  
+<div class="input-group">
+  <span class="input-group-addon">*</span>
+  <input type="text" class="form-control" name="user_bussiness" placeholder="BUSSINESS" style="width:200px;" maxlength=20>
+</div>
+-->
+<br>
+<button type="submit" class="btn btn-default btn">
+  		<span class="glyphicon glyphicon-plus"></span> 添加
+</button>
+{% csrf_token %}
+</form>
+<br>
+<div class="well well-sm" style="width:200px">提示信息：{{ msg }}</div>
+
+{% endblock %}

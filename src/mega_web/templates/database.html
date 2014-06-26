@@ -30,12 +30,12 @@
     <tbody>
        {% for database in database_list %}
 	     <tr>
-	     	<td><a href="/resource/database_detail?database_id={{ database.id }}">{{ database.name }}</a></td>
-	     	<td><a href="/resource/server_detail?server_ip={{ database.ip }}">{{ database.ip }}</a></td>
-	     	<td><a href="/resource/instance_detail?instance_id={{ database.instance_id }}">{{ database.port }}</a></td>
+	     	<td><a href="/resource/database_detail/?database_id={{ database.id }}">{{ database.name }}</a></td>
+	     	<td><a href="/resource/server_detail/?server_ip={{ database.ip }}">{{ database.ip }}</a></td>
+	     	<td><a href="/resource/instance_detail/?instance_id={{ database.instance_id }}">{{ database.port }}</a></td>
 	     	<td>{{ database.level }}</td>
-			<td><a href="/resource/user_detail?user_id={{ database.owner }}">{{ database.owner_name }}</a></td>
-			<td><a href="/resource/business_detail?business_id={{ database.business_id }}">{{ database.business }}</a></td>
+			<td><a href="/resource/user_detail/?user_id={{ database.owner }}">{{ database.owner_name }}</a></td>
+			<td><a href="/resource/business_detail/?business_id={{ database.business_id }}">{{ database.business }}</a></td>
 			<td> {{ database.stat }} </td>
          </tr>
 	   {% endfor %}

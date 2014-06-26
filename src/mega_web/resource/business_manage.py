@@ -73,7 +73,8 @@ class BusinessGet():
         else:
             result=self.busi.objects.all().order_by('-stat')[offset:count].values()
         for r in result:
-            owner=User.objects.filter(id=r['owner']).values('name')[0]
-            r['owner_name']=owner['name']
+            owner=User.objects.filter(id=r['owner']).values('name')
+            if len(owner)>0:
+                r['owner_name']=owner[0]['name']
         return result        
             

@@ -50,15 +50,26 @@
     <tbody>
        {% for instance in instance_list %}
 	     <tr>
-	     	<td><a href="/resource/instance_detail?instance_id={{ instance.id }}">{{ instance.name }}</a></td>
-			<td><a href="/resource/server_detail?server_ip={{ instance.ip }}">{{ instance.ip }}</a></td>
+	     	<td><a href="/resource/instance_detail/?instance_id={{ instance.id }}">{{ instance.name }}</a></td>
+			<td><a href="/resource/server_detail/?server_ip={{ instance.ip }}">{{ instance.ip }}</a></td>
 			<td> {{ instance.port }} </td>
-			<td> {{ instance.role }} </td>
+			<td> {% ifequal instance.role 1 %} 
+					Master
+				{% else %}
+					Slave
+				{% endifequal %}
+			 </td>
 			<td> {{ instance.level }} </td>
-			<td><a href="/resource/user_detail?user_id={{ instance.owner_id }}">{{ instance.owner }}</a></td>
+			<td><a href="/resource/user_detail/?user_id={{ instance.owner_id }}">{{ instance.owner }}</a></td>
 			<td> {{ instance.business }}
 			<td> {{ instance.online_date|date:"Y-m-d H:i:s" }} </td>
-			<td> {{ instance.stat }} </td>
+			<td>
+			{% ifequal instance.stat 1 %} 
+				<span style="color:green">Online</span>
+			{% else %}
+				<span style="color:red">Offline</span>
+			{% endifequal %}
+			  </td>
 		</tr>
 	   {% endfor %}
      </tbody>

@@ -131,7 +131,8 @@ class DatabaseGet():
          instance i on d.instance_id=i.id left join business b on d.business_id=b.id left join user u on d.owner=u.id where 1=1 "
         if len(str_filter):
             for f in str_filter:
-                sql+=" and %s='%s'" % (f,str_filter[f])
+                if len(str_filter[f]) <>0:
+                    sql+=" and %s='%s'" % (f,str_filter[f])
         sql+=" order by stat desc"
         print sql
         if count==0:

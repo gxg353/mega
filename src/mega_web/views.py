@@ -3,6 +3,9 @@ from django.shortcuts import render_to_response,RequestContext
 
 from resource import instance_manage,server_manage,business_manage,database_manage,resource_manage,user_manage
 from console.backup import Backup,Backup_Config
+from lib import paginator
+from lib.meta_data import MetaData as meta_data
+
 
 def home(request):
     if request.method=="GET":
@@ -45,37 +48,48 @@ def resource(request):
 ##resource
 def instance(request):
     if request.method=="GET":
-        instance_list=instance_manage.InstanceGet().get_instance_list(None,0)
-        return render_to_response('instance.html',{'instance_list':instance_list},context_instance=RequestContext(request))
+        page_num=request.GET.get('page')
+        instance_list_all=instance_manage.InstanceGet().get_instance_list(None,0)
+        if not page_num:
+            page_num=1
+        page_data=paginator.paginator(instance_list_all, page_num)
+        instance_list=page_data.get('page_data')
+        page_range=page_data.get('page_range')
+        return render_to_response('instance.html',{'instance_list':instance_list,'page_range':page_range},context_instance=RequestContext(request))
     else:
         ip=request.POST.get("ip")
         instance=instance_manage.InstanceGet().get_instance_list({"ip":ip})
         return render_to_response('instance.html',{"instance_list":instance},context_instance=RequestContext(request))
+
 def instance_add(request):
-    if request.method=="GET":
-        business_list=business_manage.BusinessGet().get_business_list(None).values("id","name")
-        return render_to_response('instance_add.html',{"business_list":business_list},context_instance=RequestContext(request))
-    else:
+    msg=''
+    if request.method=="POST":
         result,msg=instance_manage.InstanceManage(request.POST).add_instance()
         if result:
             msg='Sucess'  
-        business_list=business_manage.BusinessGet().get_business_list(None).values("id","name")  
-        return render_to_response('instance_add.html',{"msg":msg,"business_list":business_list},context_instance=RequestContext(request))
+    return render_to_response('instance_add.html',{"business_list":meta_data.business_list,"owner_list":meta_data.owner_list,
+                                                       "db_type":meta_data.db_type,"level":meta_data.level,
+                                                       "ha_type":meta_data.ha_type,"msg":msg
+                                                       },context_instance=RequestContext(request))
+
 def instance_detail(request):
     if request.method=="GET":
         instance=instance_manage.InstanceGet().get_instance(request.GET)
     else:
         if request.POST.get("type")=="mod":
             instance_manage.InstanceManage(request.POST).mod_instance()    
-            instance=instance_manage.InstanceGet().get_instance(request.POST)
         else:
             instance_manage.InstanceManage(request.POST).stat_instance()
-            instance=instance_manage.InstanceGet().get_instance_by_id()
+        instance=instance_manage.InstanceGet().get_instance(request.POST)
     if instance.get("stat")==1:
         stat_action='下'
     else:
         stat_action='上'
-    return render_to_response('instance_detail.html',{"instance":instance,"readonly":"true","stat_action":stat_action},context_instance=RequestContext(request))
+    return render_to_response('instance_detail.html',{"instance":instance,"readonly":"true","stat_action":stat_action,
+                                                      "business_list":meta_data.business_list,"owner_list":meta_data.owner_list,
+                                                       "db_type":meta_data.db_type,"level":meta_data.level,
+                                                       "ha_type":meta_data.ha_type
+                                                   },context_instance=RequestContext(request))
 
 ##server
 def server(request):

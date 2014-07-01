@@ -15,23 +15,7 @@
 </div>
 
 <br>
-<!--  
-<div class="btn-group">
-  <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
-    Action <span class="caret"></span>
-  </button>
-  <ul class="dropdown-menu" role="menu">
-    <li><a href="#">Action</a></li>
-    <li><a href="#">Another action</a></li>
-    <li><a href="#">Something else here</a></li>
-    <li class="divider"></li>
-    <li><a href="#">Separated link</a></li>
-  </ul>
-</div>
--->
-<!--
-<h2 class="sub-header">Server List</h2> 
--->
+
 <div class="table-responsive">
   <table class="table table-striped">
     <thead>
@@ -76,12 +60,10 @@
   </table>
 </div>
 <ul class="pagination">
-  <li><a href="#">&laquo;</a></li>
-  <li><a href="#page=1">1</a></li>
-  <li><a href="#">2</a></li>
-  <li><a href="#">3</a></li>
-  <li><a href="#">4</a></li>
-  <li><a href="#">5</a></li>
-  <li><a href="#">&raquo;</a></li>
+  <li><a href="?page=1">&laquo;</a></li>
+  {% for page in page_range %}
+  	<li><a href="?page={{ page }}">{{ page }}</a></li>
+  {% endfor%}
+  <li><a href="?page=1">&raquo;</a></li>
 </ul>
 {% endblock %}

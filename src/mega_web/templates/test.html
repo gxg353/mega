@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title></title>
+    <script src="../Script/jquery-1.8.3.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        $(function () {
+            $.post("Test.ashx", { "action": "getpagecount" }, function (data, status) {
+                for (var i = 1; i <= data; i++) {
+                    var td = $("<td><a href=''>" + i + "</a></td>");
+                    $("#trpage").append(td);
+                }
+
+           $("#trpage td").click(function (e) {
+
+            e.preventDefault();
+
+           $.post("Test.ashx", { "action": "getpagedata", "pagenum": $(this).text() },
+             function (data, status) 
+           {
+            var comments = $.parseJSON(data);
+
+             $("#ulorderlist").empty();
+
+             for (var i = 0; i < comments.length; i++) {
+             var comment = comments[i];
+             var li = $("<li>" + comment.OrderID + "--" + comment.OrderDate + "</li>");
+                            $("#ulorderlist").append(li);
+                        }
+
+                    });
+
+                })
+            });
+
+
+        });
+    </script>
+</head>
+<body>
+    <ul id="ulorderlist">
+    </ul>
+    <table>
+        <tr id="trpage">
+        </tr>
+    </table>
+</body>
+</html>

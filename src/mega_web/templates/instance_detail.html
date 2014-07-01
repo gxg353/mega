@@ -9,7 +9,12 @@
 		<span class="input-group-addon">*</span>
   		<input type="text" class="form-control" name="instance_name" placeholder='NAME' style="width:200px;" maxlength=20 value='{{ instance.name }}' readonly= {{ readonly }}>
   		<span class="input-group-addon">*</span>
-  		<input type="text" class="form-control"  name="instance_db_type" placeholder= "TYPE" style="width:200px;" maxlength=15 value='{{ instance.db_type }}' readonly= {{ readonly }} >
+  		<select name="instance_db_type" class="form-control" style="width:200px;" readonly= {{ readonly }}>
+			<option value={{ instance.db_type }} selected="selected">{{ instance.db_type }}</option>
+			{% for d in db_type %}
+		   		<option value={{ d }}>{{ d }}</option>
+			{% endfor %}
+		</select>
   		
   	</div>
   	<br>
@@ -17,7 +22,13 @@
   		<span class="input-group-addon">*</span>
   		<input type="text" class="form-control"  name="instance_ip" placeholder= "IP" style="width:200px;" maxlength=15 value='{{ instance.ip }}' readonly= {{ readonly }} >
   		<span class="input-group-addon">*</span>
-  		<input type="text" class="form-control"  name="instance_owner" placeholder= "OWNER" style="width:200px;" maxlength=15 value='{{ instance.owner_name }}' readonly= {{ readonly }} >
+  		 <select name="instance_owner" class="form-control" style="width:200px;"readonly= {{ readonly }}>
+		<option value={{ instance.owner }} selected="selected">{{ instance.owner }}</option>
+		{% for owner in owner_list %}
+		   <option value={{ owner.id }}>{{ owner.name }}</option>
+		{% endfor %}
+		</select> 
+  		
   		
 	</div>
 	<br>
@@ -25,13 +36,22 @@
   		<span class="input-group-addon">*</span>
   		<input type="text" class="form-control" name="instance_port" placeholder='PORT' style="width:200px;" maxlength=6 value='{{ instance.port }}' readonly= {{ readonly }} >
 		<span class="input-group-addon">*</span>
-  		<input type="text" class="form-control"  name="instance_ha_type" placeholder= "HA_TYPE" style="width:200px;" maxlength=15 value='{{ instance.ha_type }}' readonly= {{ readonly }} >
-  		
+		<select name="instance_ha_type" class="form-control" style="width:200px;"readonly= {{ readonly }}>
+		<option value={{ instance.level }} selected="selected">{{ instance.ha_type }}</option>
+		{% for ha in ha_type %}
+		   <option value={{ ha }}>{{ ha }}</option>
+		{% endfor %}
+  </select>
 	</div>
 <br>
 <div class="input-group">
   <span class="input-group-addon">*</span>
-  <input type="text" class="form-control" name="instance_level"  placeholder='LEVEL' style="width:200px;" maxlength=2 value='{{ instance.level }}' readonly= {{ readonly }}>
+    <select name="instance_level" class="form-control" style="width:200px;"readonly= {{ readonly }}>
+		<option value={{ instance.level }} selected="selected">{{ instance.level }}</option>
+		{% for l in level %}
+		   <option value={{ l }}>{{ l }}</option>
+		{% endfor %}
+  </select>
   <span class="input-group-addon">*</span>
   <input type="datetime" class="form-control" name="instance_online" placeholder='ONLINE_DATE' style="width:200px;" maxlength=20 value='{{ instance.online_date|date:"Y-m-d H:i:s" }}' onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',isShowClear:false,readOnly:true})" readonly= {{ readonly }} >
 
@@ -39,7 +59,13 @@
 <br>
 <div class="input-group">
   <span class="input-group-addon">*</span>
-  <input type="text" class="form-control" name="instance_bussiness" placeholder='BUSINESS' style="width:200px;" maxlength=20 value='{{ instance.business }}' readonly= {{ readonly }} >
+  	<select name="instance_bussiness" class="form-control" style="width:200px;"readonly= {{ readonly }}>
+		<option value={{ instance.bussiness }} selected="selected">{{ instance.bussiness }}</option>
+		{% for bus in business_list %}
+		   <option value={{ bus.id }}>{{ bus.name }}</option>
+		{% endfor %}
+	</select> 
+  
 </div>
 <br>
 

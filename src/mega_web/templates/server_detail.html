@@ -17,12 +17,24 @@
 	<br>
 	<div class="input-group">
   		<span class="input-group-addon">*</span>
-  		<input type="text" class="form-control" name="server_os" placeholder='OS' style="width:200px;" maxlength=20 value='{{ server.os }}' readonly= {{ readonly }} >
+  		<select name="server_os" class="form-control" style="width:200px;" readonly= {{ readonly }}>
+  		<option value={{ server.os }}>{{ server.os }}</option>
+		{% for os in os_list %}
+		   <option value={{ os }}>{{ os }}</option>
+		{% endfor %}
+		</select> 
+  		
 	</div>
 <br>
 <div class="input-group">
   <span class="input-group-addon">*</span>
-  <input type="text" class="form-control" name="server_owner"  placeholder='owner' style="width:200px;" maxlength=20 value='{{ server.owner }}' readonly= {{ readonly }}>
+    	<select name="server_owner" class="form-control" style="width:200px;"readonly= {{ readonly }}>
+    	<option  value={{ server.owner }}>{{ server.owner_name }}</option>
+		{% for owner in owner_list %}
+		   <option value={{ owner.id }}>{{ owner.name }}</option>
+		{% endfor %}
+		</select> 
+  
 </div>
 <br>
 <div class="input-group">

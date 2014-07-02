@@ -17,5 +17,6 @@ class MetaData(object):
     db_type=GlobalConf.DB_TYPE
     ha_type=GlobalConf.HA_TYPE
     level=GlobalConf.LEVEL
+    os=GlobalConf.OS
     business_list=business_manage.BusinessGet().get_business_list(None).values("id","name")
     owner_list=user_manage.UserGet().get_user_list(None,0)

@@ -47,6 +47,7 @@ BACKUP_LEVEL=['instance','db','table']
 BACKUP_CYCLE=['day','week','month']
 
 #meta data
+OS=['Linux','Other']
 LEVEL=[1,2,3]
 DB_TYPE=['MySQL','Oracle','Other']
 HA_TYPE=['MS','None']

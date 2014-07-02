@@ -76,6 +76,7 @@ def instance_detail(request):
     if request.method=="GET":
         instance=instance_manage.InstanceGet().get_instance(request.GET)
     else:
+        print request.POST
         if request.POST.get("type")=="mod":
             instance_manage.InstanceManage(request.POST).mod_instance()    
         else:
@@ -94,16 +95,31 @@ def instance_detail(request):
 ##server
 def server(request):
     if request.method=="GET":
-        server_list=server_manage.ServerGet().get_server_list(None, 10)
-        return render_to_response('server.html',{"server_list":server_list},context_instance=RequestContext(request))
+        page_num=request.GET.get('page')
+        server_list_all=server_manage.ServerGet().get_server_list(None, 0)
+        if not page_num:
+            page_num=1
+        page_data=paginator.paginator(server_list_all, page_num)
+        server_list=page_data.get('page_data')
+        page_range=page_data.get('page_range')
+        return render_to_response('server.html',{"server_list":server_list,'page_range':page_range},context_instance=RequestContext(request))
     else:
-        return render_to_response('server.html')
+        ip=request.POST.get('ip')
+        if not ip :
+            server=server_manage.ServerGet().get_server_list(None, 0)
+        else:
+            server=[]
+            server_id =server_manage.ServerGet().get_server_by_ip(request.POST.get("ip"))
+            if server_id:
+                server.append(server_manage.ServerGet().get_server_by_id(server_id))
+        return render_to_response('server.html',{'server_list':server},context_instance=RequestContext(request))
 def server_add(request):
-    if request.method=="GET":
-        return render_to_response('server_add.html',context_instance=RequestContext(request))
-    else:
-        server_manage.ServerManage(request.POST).add_server()
-        return render_to_response('server_add.html',context_instance=RequestContext(request))
+    msg=''
+    if request.method=="POST":
+        result,msg=server_manage.ServerManage(request.POST).add_server()
+        if result:
+            msg='Sucess'
+    return render_to_response('server_add.html',{'owner_list':meta_data.owner_list,'os_list':meta_data.os,'msg':msg},context_instance=RequestContext(request))
 def server_detail(request):
     if request.method=="GET":
         server=server_manage.ServerGet().get_server(request.GET)
@@ -118,21 +134,36 @@ def server_detail(request):
         stat_action='下'
     else:
         stat_action='上'
-    return render_to_response('server_detail.html',{"server":server,"stat_action":stat_action},context_instance=RequestContext(request))
+    return render_to_response('server_detail.html',{"server":server,"stat_action":stat_action,
+                                                    'os_list':meta_data.os,'owner_list':meta_data.owner_list
+                                                    },context_instance=RequestContext(request))
    
 #business
 def business(request):
     if request.method=="GET":
-        business_list=business_manage.BusinessGet().get_business_list(None, 10)
-        return render_to_response('business.html',{"business_list":business_list},context_instance=RequestContext(request))
+        page_num=request.GET.get('page')
+        business_list_all=business_manage.BusinessGet().get_business_list(None, 100)
+        if not page_num:
+            page_num=1
+        page_data=paginator.paginator(business_list_all,page_num)
+        business_list=page_data.get('page_data')
+        page_range=page_data.get('page_range')
+        return render_to_response('business.html',{"business_list":business_list,'page_range':page_range},context_instance=RequestContext(request))
     else:
-        return render_to_response('server.html')
+        business=request.POST.get('business')
+        if not business:
+            business_list=business_manage.BusinessGet().get_business_list(None, 10)
+        else:
+            business_list=business_manage.BusinessGet().get_business_list([business], 10)
+        return render_to_response('business.html',{"business_list":business_list},context_instance=RequestContext(request))
 def business_add(request):
     if request.method=="GET":
-        return render_to_response('business_add.html',context_instance=RequestContext(request))
+        return render_to_response('business_add.html',{'owner_list':meta_data.owner_list},context_instance=RequestContext(request))
     else:
         result,msg=business_manage.BusinessManage(request.POST).add_business()
-        return render_to_response('business_add.html',{"msg":msg},context_instance=RequestContext(request))
+        if result:
+            msg='Success'
+        return render_to_response('business_add.html',{"msg":msg,'owner_list':meta_data.owner_list},context_instance=RequestContext(request))
 def business_detail(request):
     if request.method=="GET":
         business=business_manage.BusinessGet().get_business(request.GET)
@@ -147,7 +178,7 @@ def business_detail(request):
         stat_action='下'
     else:
         stat_action='上'
-    return render_to_response('business_detail.html',{"business":business,"stat_action":stat_action},context_instance=RequestContext(request))
+    return render_to_response('business_detail.html',{"business":business,"stat_action":stat_action,'owner_list':meta_data.owner_list},context_instance=RequestContext(request))
 
 #database
 def database(request):

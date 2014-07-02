@@ -48,8 +48,9 @@ class BusinessGet():
     def get_business(self,business):
         busi_id=business.get("business_id")
         result=self.get_business_by_id(busi_id)
-        owner=User.objects.filter(id=result['owner']).values('name')[0]
-        result["owner_name"]=owner['name']
+        owner=User.objects.filter(id=result['owner']).values('name')
+        if len(owner)>0:
+            result["owner_name"]=owner[0]['name']
         return result
     def get_business_by_id(self,busi_id=0):
         if busi_id:
@@ -67,14 +68,15 @@ class BusinessGet():
     def get_business_list(self,str_filter,count=10,offset=0):
         result=None
         if str_filter:
-            column=str_filter[0]
-            value=str_filter[1]
-            result=self.busi.objects.filter(column=value)[offset:count]
+            value=str_filter[0]
+            result=self.busi.objects.filter(name=value)[offset:count].values()
         else:
             result=self.busi.objects.all().order_by('-stat')[offset:count].values()
         for r in result:
             owner=User.objects.filter(id=r['owner']).values('name')
             if len(owner)>0:
                 r['owner_name']=owner[0]['name']
+            else:
+                r['owner_name']='--'
         return result        
             

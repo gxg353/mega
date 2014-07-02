@@ -13,7 +13,13 @@
 	<br>
 <div class="input-group">
   <span class="input-group-addon">*</span>
-  <input type="text" class="form-control" name="business_owner"  placeholder='OWNER' style="width:200px;" maxlength=2 value='{{ business.owner_name }}' readonly= {{ readonly }}>
+      	<select name="business_owner" class="form-control" style="width:200px;"readonly= {{ readonly }}>
+    	<option  value={{ business.owner }}>{{ business.owner_name }}</option>
+		{% for owner in owner_list %}
+		   <option value={{ owner.id }}>{{ owner.name }}</option>
+		{% endfor %}
+		</select> 
+  
 </div>
 <br>
 <div class="input-group">

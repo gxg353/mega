@@ -78,7 +78,9 @@ class ServerGet():
             result=self.server.objects.filter(id=server_id).values()[0]
         else:
             result=self.server.objects.all()[0:1].values()[0]
-        result['online_date']=result["online_date"].strftime(DATETIME_FORMATE)   
+        result['online_date']=result["online_date"].strftime(DATETIME_FORMATE)
+        owner=User.objects.filter(id=result['owner']).values('name')[0]
+        result['owner_name']=owner['name']   
         return result
     def get_server_by_ip(self,server_ip=''):
         result=''

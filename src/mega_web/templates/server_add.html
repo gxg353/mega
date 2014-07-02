@@ -13,20 +13,30 @@
 	</div>
 <br>
 <div class="input-group">
+  		<span class="input-group-addon"></span>
+  		<select name="server_owner" class="form-control" style="width:200px;">
+		{% for owner in owner_list %}
+		   <option value={{ owner.id }}>{{ owner.name }}</option>
+		{% endfor %}
+		</select> 
+</div>
+<br>
+<div class="input-group">
+  		<span class="input-group-addon"></span>
+  		<select name="server_os" class="form-control" style="width:200px;">
+		{% for os in os_list %}
+		   <option value={{ os }}>{{ os }}</option>
+		{% endfor %}
+		</select> 
+
+</div>
+<br>
+<div class="input-group">
   		<span class="input-group-addon">*</span>
   		<input type="text" class="form-control" name="server_online" placeholder="ONLINE_DATE" style="width:200px;" maxlength=20 onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',isShowClear:false,readOnly:true})" readonly='readonly'>
 </div>
 <br>
-<div class="input-group">
-  		<span class="input-group-addon">*</span>
-  		<input type="text" class="form-control" name="server_owner" placeholder="OWNER" style="width:200px;" maxlength=6>
-</div>
-<br>
-<div class="input-group">
-  <span class="input-group-addon">*</span>
-  <input type="text" class="form-control" name="server_os" placeholder="OS" style="width:200px;" maxlength=10>
-</div>
-<br>
+
 <!--  
 <div class="input-group">
   <span class="input-group-addon">*</span>

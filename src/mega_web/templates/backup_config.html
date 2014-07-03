@@ -1,6 +1,8 @@
 {% extends "console.html" %}
 {% block subcontent %}
-<div class="well well-sm">备份配置:
+<div class="well well-sm">
+ <button type="button" class="btn btn-default navbar-btn" onclick="window.location.href='/console/backup/backup_config_list/'">配置管理</button>
+
 <span class="label label-default">{{ instance.ip }}</span>
 <span class="label label-default">{{ instance.port }}</span>
 <span class="label label-default">{{ instance.db_type }}</span>

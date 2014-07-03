@@ -182,21 +182,31 @@ def business_detail(request):
 
 #database
 def database(request):
+    page_range=[]
     if request.method=="GET":
-        database_list=database_manage.DatabaseGet().get_database_list(None, 10)
-        return render_to_response('database.html',{"database_list":database_list},context_instance=RequestContext(request))
+        page_num=request.GET.get('page')
+        database_list_all=database_manage.DatabaseGet().get_database_list(None, 0)
+        if not page_num:
+            page_num=1
+        page_data=paginator.paginator(database_list_all, page_num)
+        database_list=page_data.get('page_data')
+        page_range=page_data.get('page_range')
+        return render_to_response('database.html',{"database_list":database_list,'page_range':page_range},context_instance=RequestContext(request))
     else:
         ip=request.POST.get("ip")
         database_list=database_manage.DatabaseGet().get_database_list({"ip":ip})
-        return render_to_response('database.html',{"database_list":database_list},context_instance=RequestContext(request))
+        if not ip :
+            page_range=paginator.paginator(database_list)['page_range']
+        return render_to_response('database.html',{"database_list":database_list,'page_range':page_range},context_instance=RequestContext(request))
 def database_add(request):
     instance_list=instance_manage.InstanceGet().get_instance_list(None) #.values("id","ip","port")
-    business_list=business_manage.BusinessGet().get_business_list(None).values("id","name")
     if request.method=="GET":
-        return render_to_response('database_add.html',{"instance_list":instance_list,"business_list":business_list},context_instance=RequestContext(request))
+        return render_to_response('database_add.html',{"instance_list":instance_list,"business_list":meta_data.business_list,
+                                                       "level":meta_data.level,'owner_list':meta_data.owner_list},context_instance=RequestContext(request))
     else:
         (result,msg)=database_manage.DatabaseManage(request.POST).add_database()
-        return render_to_response('database_add.html',{"msg":msg,"instance_list":instance_list,"business_list":business_list},context_instance=RequestContext(request))
+        return render_to_response('database_add.html',{"msg":msg,"instance_list":instance_list,"business_list":meta_data.business_list,
+                                                       "level":meta_data.level,'owner_list':meta_data.owner_list},context_instance=RequestContext(request))
 def database_detail(request):
     if request.method=="GET":       
         database=database_manage.DatabaseGet().get_database(request.GET)
@@ -211,7 +221,10 @@ def database_detail(request):
         stat_action='下'
     else:
         stat_action='上'
-    return render_to_response('database_detail.html',{"database":database,"stat_action":stat_action},context_instance=RequestContext(request))
+    
+    return render_to_response('database_detail.html',{"database":database,"stat_action":stat_action,
+                                                      "instance_list":meta_data.instance_list,"business_list":meta_data.business_list,
+                                                      "level":meta_data.level,'owner_list':meta_data.owner_list},context_instance=RequestContext(request))
 
 #user
 def user(request):
@@ -253,12 +266,18 @@ def user_detail(request):
 
 def backup(request):
     if request.method=="GET":
-        backup_list=Backup().get_newest_backup_list()
-        for i in  backup_list:
-            print i
-        return render_to_response('backup.html',{"backup_list_all":backup_list},context_instance=RequestContext(request))
+        page=request.GET.get('page')
+        backup_list_all=Backup().get_newest_backup_list()
     else:
-        return render_to_response('backup.html')
+        page=request.POST.get('page')
+        ip=request.POST.get('ip')
+        backup_list_all=Backup().get_newest_backup_list(ip=ip)
+    if not page:
+        page=1
+    page_data=paginator.paginator(backup_list_all, page)
+    page_range=page_data.get('page_range')
+    backup_list=page_data.get('page_data')
+    return render_to_response('backup.html',{"backup_list_all":backup_list,"page_range":page_range},context_instance=RequestContext(request))
 
 def backup_config(request):
     backup_type=Backup_Config().backup_type
@@ -284,6 +303,20 @@ def backup_config(request):
         result=Backup_Config().config_deliver(request.POST)
         return render_to_response('backup_config.html',{"instance":instance,"config_list":config_list,"backup_tool":backup_tool,
                                                         "backup_type":backup_type,"backup_level":backup_level,"backup_cycle":backup_cycle},context_instance=RequestContext(request))
+def backup_config_list(request):
+    if request.method=="GET":
+        page=request.GET.get('page')
+        backup_list_all=Backup().get_config_list()
+    else:
+        page=request.POST.get('page')
+        ip=request.POST.get('ip')
+        backup_list_all=Backup().get_config_list(ip=ip)
+    if not page:
+        page=1
+    page_data=paginator.paginator(backup_list_all, page)
+    page_range=page_data.get('page_range')
+    backup_list=page_data.get('page_data')
+    return render_to_response('backup_config_list.html',{"backup_list_all":backup_list,"page_range":page_range},context_instance=RequestContext(request))
 
 
 def my_404_view(request):

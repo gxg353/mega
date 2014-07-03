@@ -2,7 +2,7 @@ from mega_service.backup import Backuper
 from lib.logs import Logger
 from mega_service.task import Task
 from lib.PyMysql import PyMySQL
-
+from scripts.mega_salt import backup_salt_client as mega_salt
 MODEL='API-manage'
 log = Logger(MODEL).log()
 
@@ -30,8 +30,9 @@ def backup_routine(task_id,**args):
                   'retention' : inst[12], 
                   } 
         instance_list.append(instance)
-#    result=mega_salt(instance_list)
-    result=[]
+    if len(instance_list)>0:
+        result=mega_salt(instance_list)
+#    result=[]
     if result:
         log.debug(result)
     if len(instance_list) >0:

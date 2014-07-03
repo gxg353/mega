@@ -4,7 +4,7 @@ from views import instance,instance_add,instance_detail
 from views import server,server_add,server_detail
 from views import business,business_add,business_detail
 from views import database,database_add,database_detail
-from views import backup,backup_config
+from views import backup,backup_config,backup_config_list
 from views import user,user_add,user_detail
 from views import my_404_view,my_500_view
 from django.conf import settings
@@ -52,6 +52,7 @@ urlpatterns = patterns('',
     
     url(r'^console/backup/$',backup),
     url(r'^console/backup/backup_config/$',backup_config),
+    url(r'^console/backup/backup_config_list/$',backup_config_list),
 
 #for static like css ,js ,ima,music     
     url(r'^static/(?P<path>.*)$', 'django.views.static.serve',{'document_root': settings.STATIC_URL },name="static"),

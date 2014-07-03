@@ -1,10 +1,10 @@
 {% extends "console.html" %}
 {% block subcontent %}
-<div class="well">备份状态:已配置备份实例最近一次备份信息
+<div class="well">备份配置列表
 </div>
-<button type="button" class="btn btn-default navbar-btn" onclick="window.location.href='backup_config_list/'">配置管理</button>
+{# <button type="button" class="btn btn-default navbar-btn" onclick="window.location.href='backup_config/'">配置管理</button> #}
 
-<form class="navbar-form navbar-left" role="search" action="/console/backup/" method='post' >
+<form class="navbar-form navbar-left" role="search" action="/console/backup/backup_config_list/" method='post' >
         <div class="form-group">
           <input name='ip' type="text" class="form-control" placeholder="IP">
         </div>        
@@ -21,13 +21,15 @@
         <th>IP</th>
         <th>PORT</th>
         <th>DB_TYPE</th>
-        <th>METHOD</th>
+        <th>TOOL</th>
         <th>LEVEL</th>
         <th>VALUE</th>
         <th>TYPE</th>
-        <th>BEGIN_TIME</th>
-        <th>END_TIME</th>
-        <th>SIZE</th>
+        <th>NEED_DATA</th>
+        <th>NEED_SCHEMA</th>
+        <th>CYCLE</th>
+        <th>CYCLE_TIME</th>
+        <th>TIME</th>
         <th>STAT</th>
       </tr>
     </thead>
@@ -44,10 +46,19 @@
 			<td> {{ backup_list.backup_level }} </td>
 			<td> {{ backup_list.level_value }} </td>
 			<td> {{ backup_list.backup_type }} </td>
-			<td> {{ backup_list.backup_begine_time }} </td>
-			<td> {{ backup_list.backup_end_time }} </td>
-			<td> {{ backup_list.file_size }} </td>
-			<td> {{ backup_list.status }} </td>
+			<td> {{ backup_list.need_data }}</td>
+			<td> {{ backup_list.need_schema }}</td>
+			<td>{{ backup_list.cycle }}</td>
+			<td> {{ backup_list.backup_time }} </td>
+			<td> {{ backup_list.schedule_time }} </td>
+			<td> 
+			{% ifequal backup_list.is_schedule 1 %} 
+				<span style="color:green">ON</span>
+			{% else %}
+				<span style="color:red">OFF</span>
+			{% endifequal %}
+			
+			 </td>
 		</tr>
 	   {% endfor %}
      </tbody>

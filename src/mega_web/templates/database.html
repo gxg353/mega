@@ -36,19 +36,23 @@
 	     	<td>{{ database.level }}</td>
 			<td><a href="/resource/user_detail/?user_id={{ database.owner }}">{{ database.owner_name }}</a></td>
 			<td><a href="/resource/business_detail/?business_id={{ database.business_id }}">{{ database.business }}</a></td>
-			<td> {{ database.stat }} </td>
-         </tr>
+			<td>
+				{% ifequal instance.stat 1 %} 
+				<span style="color:green">Online</span>
+			{% else %}
+				<span style="color:red">Offline</span>
+			{% endifequal %}
+		</td>
+		 </tr>
 	   {% endfor %}
      </tbody>
   </table>
 </div>
 <ul class="pagination">
-  <li><a href="#">&laquo;</a></li>
-  <li><a href="#">1</a></li>
-  <li><a href="#">2</a></li>
-  <li><a href="#">3</a></li>
-  <li><a href="#">4</a></li>
-  <li><a href="#">5</a></li>
-  <li><a href="#">&raquo;</a></li>
+  <li><a href="?page=1">&laquo;</a></li>
+  {% for page in page_range %}
+  	<li><a href="?page={{ page }}">{{ page }}</a></li>
+  {% endfor%}
+  <li><a href="?page=1">&raquo;</a></li>
 </ul>
 {% endblock %}

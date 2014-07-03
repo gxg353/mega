@@ -67,22 +67,21 @@ class DatabaseManage():
         if not self.db_id:
             return MSG_ERR_DATABASE_NOT_EXITST
         db=Database.objects.get(id=self.db_id)   
-        instance_id=InstanceGet().get_instance_by_ip_port(self.db_ip, self.db_port)
-        if instance_id:
-            db.instance_id=instance_id[0]["id"]
 #         db.ip=self.db_ip
 #        db.port=self.db_port
-#        db.name=self.db_name        
+        if self.db_name:
+            db.name=self.db_name        
+        if self.db_instance:
+            db.instance_id=self.db_instance
         if self.db_level:
             db.level=self.db_level
         if self.db_owner:
-            db.onwer=self.db_owner
+            db.owner=self.db_owner
         if self.db_business:
-            business_id=BusinessGet().get_business_by_name(self.db_business)
-            if business_id:
-                db.business_id=business_id[0]["id"] 
+                db.business_id=self.db_business 
         if self.db_online:
             db.online_date=self.db_online
+        
         db.save()
         return True,self.msg
     def stat_database(self,action=None):

@@ -1,12 +1,17 @@
 from mega_web.entity.models import Backup_History_Info,Backup_Policy
 from conf.GlobalConf import BACKUP_TOOL,BACKUP_TYPE,BACKUP_LEVEL,BACKUP_CYCLE,DEFAULT_DB_PORT
 from mega_web.resource.instance_manage import InstanceGet
-import time
+
 class Backup():
     def __init__(self):
         self.backup_info=Backup_History_Info
-    def get_newest_backup_list(self):
-        sql="select * from backup_history_info group by host_ip,port having(max(id));"
+        self.backup_policy=Backup_Policy
+
+    def get_newest_backup_list(self,ip=None):
+        if (not ip) or (ip == ''):
+            sql="select * from backup_history_info group by host_ip,port having(max(id));"
+        else:
+            sql="select * from backup_history_info where host_ip='%s';" % ip 
         return self.backup_info.objects.raw(sql)
     def get_config_by_instance(self,ip='',port=3306):
         if not ip:
@@ -20,6 +25,12 @@ class Backup():
         else:
             sql="select * from backup_policy where host_ip='%s' and port=%s;" % (ip ,port)
             return self.backup_info.objects.raw(sql),''
+    def get_config_list(self,ip=None):
+        if not ip :
+            sql="select * from backup_policy"
+        else:
+            sql="select * from backup_policy where host_ip='%s';" % ip
+        return self.backup_policy.objects.raw(sql)
     
 class Backup_Config():
     def __init__(self):

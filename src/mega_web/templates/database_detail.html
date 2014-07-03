@@ -9,27 +9,42 @@
   		<span class="input-group-addon">*</span>
   		<input type="text" class="form-control" name="database_name" placeholder='NAME' style="width:200px;" maxlength=20 value='{{ database.name }}' readonly= {{ readonly }}>
 	<span class="input-group-addon">*</span>
-  <input type="text" class="form-control" name="database_owner"  placeholder='OWNER' style="width:200px;" maxlength=20 value='{{ database.owner_name }}' readonly= {{ readonly }}>
+	<select name="database_owner" class="form-control" style="width:200px;"readonly= {{ readonly }}>
+	<option value={{ database.owner }} >{{ database.owner_name }}</option>
+	{% for owner in owner_list %}
+		   <option value={{ owner.id }}>{{ owner.name }}</option>
+	{% endfor %}
+	</select>   		
+	
 </div>
 <br>
 <div class="input-group">
   <span class="input-group-addon">*</span>
-  <input type="text" class="form-control" name="database_ip"  placeholder='IP' style="width:200px;" maxlength=2 value='{{ database.ip }}' readonly= {{ readonly }}>
+  <select name="database_instance" class="form-control" style="width:200px;"readonly={{ readonly}}>
+	<option value={{ database.instance }}>{{ database.ip }}:{{ database.port }}</option>
+		{% for ist in instance_list %}
+		   <option value={{ ist.id }}>{{ ist.ip }}:{{ ist.port }}</option>
+		{% endfor %}
+ </select> 	
+    <span class="input-group-addon">*</span>
+    <select name="database_level" class="form-control" style="width:200px;"readonly= {{ readonly }}>
+		<option value={{ database.level }} selected="selected">{{ database.level }}</option>
+		{% for l in level %}
+		   <option value={{ l }}>{{ l }}</option>
+		{% endfor %}
+  </select>
+
 </div>
 <br>
 <div class="input-group">
   <span class="input-group-addon">*</span>
-  <input type="text" class="form-control" name="database_port"  placeholder='PORT' style="width:200px;" maxlength=2 value='{{ database.port }}' readonly= {{ readonly }}>
-</div>
-<br>
-<div class="input-group">
-  <span class="input-group-addon">*</span>
-  <input type="text" class="form-control" name="database_level"  placeholder='LEVEL' style="width:200px;" maxlength=2 value='{{ database.level }}' readonly= {{ readonly }}>
-</div>
-<br>
-<div class="input-group">
-  <span class="input-group-addon">*</span>
-  <input type="text" class="form-control" name="database_business" placeholder='BUSINESS' style="width:200px;" maxlength=20 value='{{ database.business }}' readonly= {{ readonly }} >
+    	<select name="database_business" class="form-control" style="width:200px;"readonly= {{ readonly }}>
+		<option value={{ database.business_id }} selected="selected">{{ database.business }}</option>
+		{% for bus in business_list %}
+		   <option value={{ bus.id }}>{{ bus.name }}</option>
+		{% endfor %}
+	</select> 
+  
   <span class="input-group-addon">*</span>
   <input type="datetime" class="form-control" name="database_online" placeholder='ONLINE_DATE' style="width:200px;" maxlength=20 value='{{ database.online_date|date:"Y-m-d H:i:s" }}' onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',isShowClear:false,readOnly:true})" readonly= {{ readonly }} >
 

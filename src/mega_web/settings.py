@@ -117,7 +117,8 @@ TEMPLATE_DIRS = (
 
 INSTALLED_APPS = (
      'mega_web',
-     'mega_web.entity',             
+     'mega_web.entity',
+     'chartit',             
 #     'django.contrib.auth',
      #'django.contrib.contenttypes',
      #'django.contrib.sessions',

@@ -5,7 +5,7 @@ from resource import instance_manage,server_manage,business_manage,database_mana
 from console.backup import Backup,Backup_Config
 from lib import paginator
 from lib.meta_data import MetaData as meta_data
-
+from charts.visit import Visit
 
 def home(request):
     if request.method=="GET":
@@ -43,6 +43,10 @@ def resource(request):
         return render_to_response('resource.html',{'count':count})
     else:
         return render_to_response('resource.html')
+
+def charts(request):
+    cht=Visit(request)
+    return render_to_response('visit.html',{'weatherchart': cht})
 
 #Sub sites
 ##resource

@@ -27,7 +27,7 @@ class Backup():
             return self.backup_info.objects.raw(sql),''
     def get_config_list(self,ip=None):
         if not ip :
-            sql="select * from backup_policy"
+            sql="select * from backup_policy order by is_schedule desc;"
         else:
             sql="select * from backup_policy where host_ip='%s';" % ip
         return self.backup_policy.objects.raw(sql)

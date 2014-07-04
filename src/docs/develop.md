@@ -12,6 +12,7 @@
 python 2.6/2.7
 
 Django-1.6.5
+pip install django_chartit
 
 python-daemon 1.5.5  <a>https://pypi.python.org/pypi/python-daemon/1.5.5]</a>
 

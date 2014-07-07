@@ -2,14 +2,17 @@ from mega_service.backup import Backuper
 from lib.logs import Logger
 from mega_service.task import Task
 from lib.PyMysql import PyMySQL
-from scripts.mega_salt import backup_salt_client as mega_salt
+from conf.GlobalConf import DEV 
+if not DEV:
+    from scripts.mega_salt import backup_salt_client as mega_salt
+
 MODEL='API-manage'
 log = Logger(MODEL).log()
 
 
-def backup_routine(task_id,**args):
+def backup_routine(task_id,time=None,**args):
     instance_list=[]
-    config_list=Backuper().backuper()
+    config_list=Backuper().backuper(time)
     for inst in config_list:
         inst_id=inst[0]
         inst_ip=inst[1]
@@ -30,9 +33,10 @@ def backup_routine(task_id,**args):
                   'retention' : inst[12], 
                   } 
         instance_list.append(instance)
-    if len(instance_list)>0:
+    if len(instance_list)>0 and DEV==False:
         result=mega_salt(instance_list)
-#    result=[]
+    else:
+        result=[]
     if result:
         log.debug(result)
     if len(instance_list) >0:
@@ -58,15 +62,16 @@ def update_backupinfo(task_info,action='INSERT'):
     db_conn=PyMySQL()
     task=eval(str(task_info))
     if action.upper()=='INSERT':
-        columns="host_ip,port,db_type,backup_tool,backup_level,level_value,backup_type,need_data,need_schema,status,rsync,message"
+        columns="host_ip,port,db_type,backup_tool,backup_level,level_value,backup_type,need_data,need_schema,status,rsync,message,backup_status,is_delete"
         values=[]
         data=(columns,)
         for c in columns.split(','):
             _d=task.get(c)
-            values.append(_d)
+            if _d:
+                    values.append(_d)
         data=data+tuple(values)
         sql="insert into backup_history_info(%s)\
-            values('%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');" % data        
+            values('%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');" % data        
         log.debug(sql)
         db_conn.execute(sql)
         task_id=db_conn.fetchOne("select last_insert_id()")        
@@ -76,12 +81,12 @@ def update_backupinfo(task_info,action='INSERT'):
         id=task.get("id")
         if not id:
             return False
-        columns="status,is_delete,backup_begin_time,backup_end_time,rsync_begin_time,rsync_end_time,file_size,message"
+        columns="status,is_delete,backup_begin_time,backup_end_time,rsync_begin_time,rsync_end_time,file_size,message,backup_status"
         values=[]
         data=""
         for c in columns.split(','):
             _d=task.get(c)
-            data=data+c+" = '" + _d + '\' ,'
+            data=data+c+" = '" + str(_d) + '\' ,'
         data=data.rstrip(',')
         sql="update backup_history_info set %s where id=%s" %(data,id)
         log.debug(sql)

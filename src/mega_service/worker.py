@@ -40,7 +40,7 @@ class Worker():
                 time.sleep(1)
             except Exception as ex:
                 log.error(ex)
-                break
+
     def work_resolve(self,data):
         '''
         work instance:{'HEAD':'MEGA','TYPE':'CMD','VALUE':'ls'}

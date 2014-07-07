@@ -1,5 +1,6 @@
 import os
 #bool
+DEV=True
 DEBUG=True
 #DEBUG=False
 #log

@@ -2,7 +2,7 @@
 import os
 DEBUG = True
 #DEBUG = False
-
+from conf.settings import DbConfig
 
 TEMPLATE_DEBUG = DEBUG
 
@@ -17,11 +17,11 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'mega',                      # Or path to database file if using sqlite3.
-        'USER': 'root',                      # Not used with sqlite3.
-        'PASSWORD': '',                  # Not used with sqlite3.
-        'HOST': '',                      # Set to empty string for localhost. Not used with sqlite3.
-        'PORT': '',                      # Set to empty string for default. Not used with sqlite3.
+        'NAME': DbConfig.db_db,                      # Or path to database file if using sqlite3.
+        'USER': DbConfig.db_user,                      # Not used with sqlite3.
+        'PASSWORD': DbConfig.db_pwd,                  # Not used with sqlite3.
+        'HOST': DbConfig.db_host,                      # Set to empty string for localhost. Not used with sqlite3.
+        'PORT': DbConfig.db_port,                      # Set to empty string for default. Not used with sqlite3.
     }
 }
 

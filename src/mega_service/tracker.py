@@ -33,9 +33,10 @@ class Tracker():
     def routine_task(self):
         _task=[]
         _t={}
+        now=time.strftime('%H:%M',time.localtime(time.time()))
         sql="select * from task where timestampdiff(second,last_time,now())>=cycle;"
         for t in self.q.fetchAll(sql):
-            _t["ARGS"]=t[0] #id  use to update the config table in api.mange
+            _t["ARGS"]=str(t[0])+",'"+str(now)+"'" #id  use to update the config table in api.mange
             _t["NAME"]=t[1]
             _t["TYPE"]=t[2]
             _t["VALUE"]=t[3]

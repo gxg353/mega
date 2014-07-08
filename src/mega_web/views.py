@@ -46,7 +46,7 @@ def resource(request):
 
 def charts(request):
     cht=Visit(request)
-    return render_to_response('visit.html',{'weatherchart': cht})
+    return render_to_response('visit.html',{'visit': cht})
 
 #Sub sites
 ##resource

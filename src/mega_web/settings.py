@@ -7,7 +7,7 @@ from conf.settings import DbConfig
 TEMPLATE_DEBUG = DEBUG
 
 PROJECT_PATH=os.path.dirname(__file__)
-
+STATIC_URLS = os.path.join(PROJECT_PATH,'static/')
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
 )
@@ -65,7 +65,8 @@ STATIC_ROOT = ''
 
 # URL prefix for static files.
 # Example: "http://media.lawrence.com/static/"
-STATIC_URL = os.path.join(PROJECT_PATH,'static/')
+#STATIC_URL = os.path.join(PROJECT_PATH,'static/')
+STATIC_URL = "/static/"
 
     # Additional locations of static files
 STATICFILES_DIRS = (

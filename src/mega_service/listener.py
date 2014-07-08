@@ -64,7 +64,7 @@ class Servers(SRH):
         data=data.replace('EOF', '')
         if DEBUG:
             log.debug(data)
-            q.put(data)
+            #q.put(data)
         if self.data_check(data):
             _w=Worker(None).work_deliver(data)
             result=str(_w)

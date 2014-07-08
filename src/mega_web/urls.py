@@ -58,7 +58,7 @@ urlpatterns = patterns('',
     url(r'^console/backup/backup_config_list/$',backup_config_list),
 
 #for static like css ,js ,ima,music     
-    url(r'^static/(?P<path>.*)$', 'django.views.static.serve',{'document_root': settings.STATIC_URL },name="static"),
+    url(r'^static/(?P<path>.*)$', 'django.views.static.serve',{'document_root': settings.STATIC_URLS },name="static"),
 
 #other
     url(r'^fun/$',fun),

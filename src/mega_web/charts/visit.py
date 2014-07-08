@@ -18,8 +18,8 @@ def Visit(request):
                'source': Server.objects.all()},
               'terms': [
                 'id',
-                'ip',
-                'name']}
+                'ip'
+                ]}
              ])
     
     cht = Chart(
@@ -27,12 +27,21 @@ def Visit(request):
             series_options =
               [{'options':{
                   'type': 'line',
-                  'stacking': False},
+                  'stacking': True},
                 'terms':{
-                  'id': [
-                    'name',
-                    'ip']
-                  }}],
+                  'ip': [
+                    'id'
+                    ]
+                }},
+               {'options':{
+                  'type': 'column',
+                  'stacking': True},
+                'terms':{
+                  'ip': [
+                    'id'
+                    ]
+                }}
+               ],
             chart_options =
               {'title': {
                    'text': 'Weather Data of Boston and Houston'},

@@ -1,8 +1,9 @@
 {% extends "base.html" %}
 {% block content %}
+    <script src="/static/higncharts.js"></script>
     {% load chartit %}
-    {{ weatherchart|load_charts:"container" }}
-
+    {{ visit|load_charts:"container" }}
+    
     <div id='container'> Chart will be rendered here </div>
 {% endblock %}
     

@@ -62,9 +62,7 @@ class Servers(SRH):
             header=header-BUFFER_SIZE
 #            print header,_d
         data=data.replace('EOF', '')
-        if DEBUG:
-            log.debug(data)
-            #q.put(data)
+        log.debug(data)
         if self.data_check(data):
             _w=Worker(None).work_deliver(data)
             result=str(_w)

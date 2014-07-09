@@ -11,8 +11,8 @@ from views import my_404_view,my_500_view
 
 from django.conf import settings
 # Uncomment the next two lines to enable the admin:
-from django.contrib import admin
-admin.autodiscover()
+#from django.contrib import admin
+#admin.autodiscover()
 
 #for error catch
 handler404 = my_404_view

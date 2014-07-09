@@ -33,15 +33,7 @@ def Visit(request):
                     'id'
                     ]
                 }},
-               {'options':{
-                  'type': 'column',
-                  'stacking': True},
-                'terms':{
-                  'ip': [
-                    'id'
-                    ]
-                }}
-               ],
+                              ],
             chart_options =
               {'title': {
                    'text': 'Weather Data of Boston and Houston'},

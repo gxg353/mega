@@ -9,7 +9,7 @@ class Backup():
 
     def get_newest_backup_list(self,ip=None):
         if (not ip) or (ip == ''):
-            sql="select * from backup_history_info group by host_ip,port having(max(id));"
+            sql="select * from backup_history_info order by id desc;"
         else:
             sql="select * from backup_history_info where host_ip='%s';" % ip 
         return self.backup_info.objects.raw(sql)

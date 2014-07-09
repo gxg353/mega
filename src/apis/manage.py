@@ -1,6 +1,5 @@
 from mega_service.backup import Backuper
 from lib.logs import Logger
-from mega_service.task import Task
 from lib.PyMysql import PyMySQL
 from conf.GlobalConf import DEV 
 if not DEV:
@@ -10,7 +9,7 @@ MODEL='API-manage'
 log = Logger(MODEL).log()
 
 
-def backup_routine(task_id,time=None,**args):
+def backup_routine(time=None,**args):
     instance_list=[]
     config_list=Backuper().backuper(time)
     for inst in config_list:
@@ -33,24 +32,25 @@ def backup_routine(task_id,time=None,**args):
                   'retention' : inst[12], 
                   } 
         instance_list.append(instance)
-    if len(instance_list)>0 and DEV==False:
+    len_inst=len(instance_list)
+    if len_inst>0 and DEV==False:
         result=mega_salt(instance_list)
     else:
         result=[]
+    len_result=len(result)
     if result:
         log.debug(result)
-    if len(instance_list) >0:
+    if len_inst >0:
         log.debug(instance_list)
-        if len(instance_list)==len(result) :
-            log.info("%s backup tasks are invoked.",len(instance_list))
+        if len_inst==len_result :
+            log.info("%s backup tasks are invoked.",len_inst)
         else:
-            log.warn("%s backup tasks are invoked,%s are successed." %(len(instance_list),len(result)))
-    Task().stat_task_by_id(task_id)
+            log.warn("%s backup tasks are invoked,%s are successed." %(len_inst,len_result))
 
 def update_backupinfo(task_info,action='INSERT'):
     '''
-    task_info : update items
-    action: INSERT OR UPDATE 
+        task_info : update items
+        action: INSERT OR UPDATE 
     
     return :
         task id : insert or update success
@@ -68,13 +68,13 @@ def update_backupinfo(task_info,action='INSERT'):
         for c in columns.split(','):
             _d=task.get(c)
             if _d:
-                    values.append(_d)
+                values.append(_d)
         data=data+tuple(values)
         sql="insert into backup_history_info(%s)\
             values('%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');" % data        
-        log.debug(sql)
         db_conn.execute(sql)
-        task_id=db_conn.fetchOne("select last_insert_id()")        
+        task_id=db_conn.fetchOne("select last_insert_id()")
+        log.debug(sql)
         log.debug("New backup task id : %s  " %task_id)
         return task_id
     else:

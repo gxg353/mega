@@ -35,7 +35,6 @@ class Worker():
                     data=self.queue.get()
                     if data:
                         log.debug(data)
-#                        log.info('got task from the queue')
                         self.work_deliver(data)
                 time.sleep(1)
             except Exception as ex:
@@ -81,8 +80,10 @@ class Worker():
         return True
         
     def work_deliver(self,work):
-    #1.run the command
-    #2.save task into db
+        '''
+            1.run the command
+            2.save task into db
+        '''
         if not self.work_resolve(work):
             log.error("Task resovle failed!")
             return False
@@ -93,7 +94,7 @@ class Worker():
 
         #real time job    
         if self.task.get('TIME') == 0 :
-        #subthread
+            #execute on mega server or the remote instance
             if self.task.get('TYPE')==0:
                 result=Executor_Local(self.task.get('VALUE')).do_cmd(self.task.get('ARGS'))
             else:

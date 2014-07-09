@@ -26,7 +26,6 @@ class PyMySQL(object):
             self.__db_charset = db_charset
             return True
         except Exception,ex:
-            print ex
             return False
 
 
@@ -50,14 +49,14 @@ class PyMySQL(object):
                 return cursor
             else:
                 return False
-                sys.exit("MySQL Query Error:\n"+sql+str(ex)+"\n")
+    #            sys.exit("MySQL Query Error:\n"+sql+str(ex)+"\n")
     def execute(self,sql):
         ex=''
         try:
             return self.conn.cursor().execute(sql),ex
         except Exception,ex:
             return False,ex
-            sys.exit("MySQL Query Error:\n"+str(ex)+"\n")
+   #         sys.exit("MySQL Query Error:\n"+str(ex)+"\n")
 
     def fetch(self,cursor):
         return cursor.fetchone()

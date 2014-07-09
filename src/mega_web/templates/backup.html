@@ -35,9 +35,9 @@
     	{% for backup_list in backup_list_all %}
 	     <tr>
 	     	<td>
-					<a href="/console/backup/backup_config?ip={{ backup_list.host_ip}}&port={{backup_list.port}}"><span class="glyphicon glyphicon-cog"></span></a>
+					<a href="/console/backup/backup_config/?ip={{ backup_list.host_ip}}&port={{backup_list.port}}"><span class="glyphicon glyphicon-cog"></span></a>
 			</td>
-			<td><a href="/resource/server_detail?server_ip={{ backup_list.host_ip }}">{{ backup_list.host_ip }}</a></td>
+			<td><a href="/resource/server_detail/?server_ip={{ backup_list.host_ip }}">{{ backup_list.host_ip }}</a></td>
 			<td>{{ backup_list.port }}</td>	
 			<td> {{ backup_list.db_type }} </td>
 			<td> {{ backup_list.backup_tool }} </td>

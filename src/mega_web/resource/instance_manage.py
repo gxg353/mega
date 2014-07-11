@@ -139,13 +139,13 @@ class InstanceGet():
         result=None
         if not str_filter:
             str_filter=''
-        sql="select i.* ,i.business_id,b.name as business,i.owner as owner_id,u.name as owner from instance i left join business b on i.business_id=b.id left join user u on i.owner=u.id where 1=1 "
+        sql="select i.* ,i.business_id,b.name as business,i.owner as owner_id,u.name as owner from instance i \
+        left join business b on i.business_id=b.id left join user u on i.owner=u.id where 1=1 "
         if len(str_filter):
             for f in str_filter:
-                if len(str_filter[f]) <>0:
+                if len(str(str_filter[f])) <>0:
                     sql+=" and %s='%s'" % (f,str_filter[f])
         sql+=" order by i.stat desc"
-        
         if count==0:
             result=self.inst.objects.raw(sql)
         else:

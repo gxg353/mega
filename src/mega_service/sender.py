@@ -1,8 +1,5 @@
 # -*- coding: UTF-8 -*-
-#Change LOG
 
-import sys
-sys.path.append('..')
 import socket
 import types
 
@@ -14,33 +11,43 @@ HEADER_LENGTH=10
 
 
 class MegaClient():
+    '''
+        Client for mega servcie .
+    '''
     def __init__(self,host='localhost',port=1104,cmd=''):
         self._cmd={}
         self.host=host
         self.port=port
         if cmd:
             self._cmd['VALUE']=str(cmd)
+    
     def run(self,func_args=None,**args):
         if not self._cmd:
             return False
+        _d=[]
         if self.conn():
             if func_args:
                 self._cmd['ARGS']=str(func_args)
             if len(args)>0:
-                self._cmd=dict(self._cmd,**args)
-            
-            _d=self.cmd_run(self._cmd)
+                self._cmd=dict(self._cmd,**args)            
+
+            _d.append(1)
+            _d.append(self.cmd_run(self._cmd))
         else:
-            _d=None
-        return _d
+            _d.append(0)
+        if _d[0] == 1:
+            return _d[1]
+        else:
+            return _d[0]
+    
     def conn(self):
         try:
             self.s=socket.socket(socket.AF_INET,socket.SOCK_STREAM)      
             self.s.connect((self.host,self.port))
-            return self.s
-        except Exception as ex:
-            print ex
-#           log.error('Connect to server failed as : %s' % ex)
+            return True
+        except:
+            return False
+    
     def cmd_run(self,cmd=None):
         if not cmd:
             return False
@@ -61,12 +68,10 @@ class MegaClient():
                     if _d.find(END_SIGN) > 0:
                         break
                     header=header-HEADER_LENGTH
-            else:
-                data=False
             return self._data_unpack(data)
-        except Exception as ex:
-            print ex
-#            log.error("Interactive failed as : %s" % ex)
+        except:
+            return ''
+    
     def _cmd_pack(self,data):
         _d=None
         if type(data) == types.DictionaryType:
@@ -80,15 +85,21 @@ class MegaClient():
             if not _d.get(_i):
                 _d[_i]=DEFAULT_NONE            
         return _d
+    
     def _data_unpack(self,data):
         if not data:
-            return False
+            return ''
         return data.replace(END_SIGN,'')
+    
     def close(self):
         self.s.close()   
+
+
 class MegaTool():
+
     def __init__(self):
         pass
+
     def get_all_funcs(self):
         cmd='get_all_funcs'
         self.c=MegaClient(cmd=cmd)
@@ -98,10 +109,14 @@ class MegaTool():
             for f in eval(func_list):
                 print i,f['name'],f['args']
                 i+=1
+        self.close()
+    
     def close(self):
-        c.close
+        self.c.close
+
 
 if __name__=="__main__":
+    import sys
     cmd=''
     if len(sys.argv)>1:
         cmd=sys.argv[1]

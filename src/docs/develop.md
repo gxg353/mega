@@ -68,4 +68,7 @@ TCP 通信数据包规范：
 ####api
 * api_resource.py  资源池管理接口测试用例
 
-  
+##功能模块
+### [client](./client.md) 客户端
+### [slow log](./slow_log.md) 分析统计
+###  [server](./server.md)服务层设计

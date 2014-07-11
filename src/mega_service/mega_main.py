@@ -70,7 +70,5 @@ def main():
     return child_pid_list
 
 if __name__ == "__main__":
-    if len(sys.argv) >1: 
-        pid_file=sys.argv[1]
-        main(pid_file)
+        main()
 

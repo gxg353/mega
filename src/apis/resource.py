@@ -1,6 +1,6 @@
 from mega_web.resource import instance_manage,server_manage,database_manage
 import logging
-log = logging.getLogger("API")
+log = logging.getLogger("API-resource")
 
 ERR_CODE_DEFAULT=None  #INIT CODE :Noenmeaning
 ERR_CODE_UNKOWN=-1  #UNKONW ERROR
@@ -31,7 +31,9 @@ def get_all_instance(model=None,stat=0,count=0,role=None):
     if role == 1:
         filter['i.role']=1
     if role >1:
-        filter['i.role']=2            
+        filter['i.role']=2
+    else:
+        filter['i.role']=1
     try :
         data=instance_manage.InstanceGet().get_instance_list(filter,count)
         if data:
@@ -39,10 +41,9 @@ def get_all_instance(model=None,stat=0,count=0,role=None):
                 result.append(dict(d.__dict__))
         err_code=ERR_CODE_SUCCESS
         log.info('Get instance list success for %s',model)
-
     except Exception as ex:
         err_code=ERR_CODE_UNKOWN
-        log.error(ex)
+        log.error('Get instance list failed: %s' % ex)
     return result,err_code
 
 def get_all_server(model=None,stat=0,count=0):

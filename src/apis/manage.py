@@ -69,6 +69,8 @@ def update_backupinfo(task_info,action='INSERT'):
             _d=task.get(c)
             if _d:
                 values.append(_d)
+            else:
+                values.append('')
         data=data+tuple(values)
         sql="insert into backup_history_info(%s)\
             values('%s',%s,'%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s');" % data        
@@ -86,7 +88,8 @@ def update_backupinfo(task_info,action='INSERT'):
         data=""
         for c in columns.split(','):
             _d=task.get(c)
-            data=data+c+" = '" + str(_d) + '\' ,'
+            if _d:
+                data=data+c+" = '" + str(_d) + '\' ,'
         data=data.rstrip(',')
         sql="update backup_history_info set %s where id=%s" %(data,id)
         log.debug(sql)

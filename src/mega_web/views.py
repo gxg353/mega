@@ -72,7 +72,7 @@ def instance_add(request):
         if result:
             msg='Sucess'  
     return render_to_response('instance_add.html',{"business_list":meta_data.business_list,"owner_list":meta_data.owner_list,
-                                                       "db_type":meta_data.db_type,"level":meta_data.level,
+                                                        "db_type":meta_data.db_type,"level":meta_data.level,
                                                        "ha_type":meta_data.ha_type,"msg":msg
                                                        },context_instance=RequestContext(request))
 

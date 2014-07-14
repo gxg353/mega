@@ -1,4 +1,10 @@
 # -*- coding: UTF-8 -*-
+'''
+Created on Jul 1, 2014
+
+@author: xchliu
+
+'''
 
 import socket
 import types
@@ -13,6 +19,16 @@ HEADER_LENGTH=10
 class MegaClient():
     '''
         Client for mega servcie .
+        return a list d:
+            * if all runs success ,the list contain all the data required
+            * else only a 0 in the list means something goes into failure
+        code example: 
+            cmd='get_all_instance'
+                c=MegaClient(cmd=cmd)
+                if c:
+                    data=c.run(func_args="model='backup',stat=1,role=1",CYCLE=1)
+                    c.close()
+                    return data
     '''
     def __init__(self,host='localhost',port=1104,cmd=''):
         self._cmd={}
@@ -30,7 +46,6 @@ class MegaClient():
                 self._cmd['ARGS']=str(func_args)
             if len(args)>0:
                 self._cmd=dict(self._cmd,**args)            
-
             _d.append(1)
             _d.append(self.cmd_run(self._cmd))
         else:
@@ -114,20 +129,29 @@ class MegaTool():
     def close(self):
         self.c.close
 
+def get_help():
+    print 'usage:'
+    print 'python sender.py [help] -get this doc'
+    print 'python sender.py list -get all the supported fucntion and description'
+    print  MegaClient().__doc__
+    
 
 if __name__=="__main__":
     import sys
     cmd=''
     if len(sys.argv)>1:
         cmd=sys.argv[1]
-    if cmd.upper()=='HELP':
-        t=MegaTool()
-        t.get_all_funcs()
+        if cmd.upper()=='LIST':
+            t=MegaTool()
+            t.get_all_funcs()
 #for test
+        elif cmd.upper() == 'HELP' or '-H':
+            get_help()
+        else:
+            cmd='get_all_instance'
+            c=MegaClient(cmd=cmd)
+            if c:
+                print c.run(func_args="model='backup',stat=1,role=1",CYCLE=1)
+                c.close()
     else:
-        cmd='get_all_instance'
-        c=MegaClient(cmd=cmd)
-        if c:
-            print c.run(func_args="model='backup',stat=1,role=1",CYCLE=1)
-            c.close()
-    
+        get_help()

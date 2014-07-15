@@ -88,6 +88,16 @@ class MegaClient():
             return ''
     
     def _cmd_pack(self,data):
+        '''
+        keys:
+        *   TYPE:    0 internal server task,1 remote task
+        *   VALUE:    func name which be called
+        *   TIME:    when to do : 0 once  , relay to the CYCLE
+            CYCLE:  lifecycle of job   day,week,month
+            TARGET:    unique identify for server or instance or database.
+            ARGS:    args for the api func
+            TOOL:    Internal func calls
+        '''
         _d=None
         if type(data) == types.DictionaryType:
             _d=dict(TCP_HEADER,**data)

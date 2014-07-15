@@ -18,9 +18,41 @@
  
 ##接口定义
 
+	var='''
+    	{'db_host': '127.0.0.1',
+	     'port': 3306,
+    	'start_time':'0000-00-00 00:00:00',
+	    'user':'xchliu',
+	    'user_host':'127.0.0.1',
+    	'query_time': 20,
+	    'lock_time':12,
+	    'rows_sent':21,
+	    'rows_examined':22,
+	    'sql_text':'select 1',
+	    'sql_explained':"{test:test}"
+	}
+	'''
+
+
 ##统计项
 
 ##数据表设计
+
+	CREATE TABLE `slowlog_info` (
+	  `id` int(11) NOT NULL AUTO_INCREMENT,
+	  `db_host` varchar(200) COLLATE utf8_bin DEFAULT NULL,
+	  `port` int(11) DEFAULT NULL,
+	  `start_time` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+	  `user` varchar(200) COLLATE utf8_bin DEFAULT NULL,
+	  `user_host` varchar(200) COLLATE utf8_bin DEFAULT NULL,
+	  `query_time` float(10,4) DEFAULT NULL,
+	  `lock_time` float(10,4) DEFAULT NULL,
+	  `rows_sent` int(11) DEFAULT NULL,
+	  `rows_examined` int(11) DEFAULT NULL,
+	  `sql_text` mediumtext COLLATE utf8_bin,
+	  `sql_explained` mediumtext COLLATE utf8_bin,
+	  PRIMARY KEY (`id`)
+	) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COLLATE=utf8_bin
 
 ##元数据
 	

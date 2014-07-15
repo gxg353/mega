@@ -66,5 +66,16 @@ def close_conn(conn):
 if '__name__' == "__main__":
     ''''''
     print tbl_arc
+    
     set_rows(tbl_arc)
     
+{'HEAD': 'MEGA', 'TARGET': 0,
+ 'ARGS': 'task_info="{\'status\': 2, \'backup_status\': \'Y\', \'content\': \'\', \      'file_size\': \'32\', 
+ \'backup_begin_time\': \'2014-07-13 18:29:32\', \'backup_end_time\': \'2014-07-13 18:29:46\', \'id\': 
+ (\'30\',
+  \'task_info="{\\\'status\\      \': 1, \\\'backup_tool\\\': \\\'xtrabackup\\\', \\\'iscompress\\\': \\\'Y\\\',
+   \\\'isEncrypted\\\': \\\'Y\\\', \\\'db_type\\\': \\\'mysql\\\', \\\'host_ip\\\':       \\\'172.17.62.34\\\', 
+   \\\'port\\\': 3306, \\\'content\\\': \\\'\\\', \\\'backup_type\\\': \\\'full\\\', \\\'level_value\\\': \\\'\\\', 
+   \\\'backup_level\\\': \      \\'instance\\\', \\\'retention\\\': 8}",action=\\\'insert\\\' \')
+   }",action=\'update\' ',
+    'VALUE': 'update_backupinfo', 'TIME': 0, 'TYPE': 0, 'CYCLE': 0}

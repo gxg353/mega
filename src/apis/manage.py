@@ -1,3 +1,4 @@
+import types
 from mega_service.backup import Backuper
 from lib.logs import Logger
 from lib.PyMysql import PyMySQL
@@ -102,6 +103,39 @@ def update_backupinfo(task_info,action='INSERT'):
             log.warn("Update task %s : " % id +str(msg))
             return False
     return False
-    
-    
+
+def add_slow_log(log_info):
+    if not log_info:
+        return False 
+    db_conn=PyMySQL()
+    if not db_conn:
+        log.error('Failed connect to db server!')
+        return False
+    task=eval(str(log_info))
+    log.debug(task)
+    if type(task) != types.DictionaryType:
+        log.error('Failed to revert slow log data to dict !')
+        return False
+    columns="db_host,port,start_time,user,user_host,query_time,lock_time,rows_sent,rows_examined,sql_text,sql_explained"
+    values=[]
+    for c in columns.split(','):
+        _d=task.get(c)
+        if _d:
+            _d="'"+str(_d)+"'"
+            values.append(_d)
+        else:
+            values.append("''")
+    #todo 
+    #add proxy func    
+    table_name='slowlog_info'
+    sql="insert into %s(%s) values(%s)" %(table_name,columns,','.join(values))
+    log.debug(sql)
+    result,ex=db_conn.execute(sql)
+    if result:
+        task_id=db_conn.fetchOne("select last_insert_id()")
+        log.debug('New slow log task id: %s' % task_id)
+    else:
+        task_id=0
+        log.error(ex)
+    return task_id
     

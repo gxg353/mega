@@ -1,11 +1,13 @@
 import types
 from mega_service.backup import Backuper
+from mega_service.slow_log import SlowLog
 from lib.logs import Logger
 from lib.PyMysql import PyMySQL
+
 from conf.GlobalConf import DEV 
 if not DEV:
-    from scripts.mega_salt import backup_salt_client as mega_salt
-
+    from scripts.mega_salt import backup_salt_client 
+    from scripts.mega_salt import slowlog_salt_client
 MODEL='API-manage'
 log = Logger(MODEL).log()
 
@@ -35,7 +37,7 @@ def backup_routine(time=None,**args):
         instance_list.append(instance)
     len_inst=len(instance_list)
     if len_inst>0 and DEV==False:
-        result=mega_salt(instance_list)
+        result=backup_salt_client(instance_list)
     else:
         result=[]
     len_result=len(result)
@@ -138,4 +140,24 @@ def add_slow_log(log_info):
         task_id=0
         log.error(ex)
     return task_id
-    
+
+def slowlog_routine(time=None):
+    instance_list=[]    
+    config_list=SlowLog().get_instance_list()
+    for conf in config_list:
+        instance={"id":conf.get('id'),
+                  "ip":conf.get('ip'),
+                  "port":conf.get('port'),
+                  "version":conf.get('version')
+                  }
+        instance_list.append(instance)
+    inst_len=len(instance_list)
+    if inst_len>0 and DEV==False:
+        result=slowlog_salt_client(instance_list)
+    else:
+        result=[]
+    if inst_len >0:
+        log.debug(instance_list)
+    if result:
+        log.debug(result)
+    log.debug('%s instance slow log collect tasks are invoked.' % inst_len)

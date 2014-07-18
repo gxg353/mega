@@ -1,17 +1,22 @@
-'''
-Created on Jul 16, 2014
 
-@author: xchliu
-'''
-
-class MyClass(object):
+class SQLParse():
     '''
-    classdocs
+        parse sql 
     '''
-
-
-    def __init__(selfparams):
+    def __init__(self,sql):
         '''
-        Constructor
+        
         '''
+        self.sql=sql
+        
+    def _standard_format(self):
+        _sql=self.sql
+        if self.sql.find("'"):
+            _sql=_sql.replace("'","")
+        if self.sql.find('"'):
+            _sql=_sql.replace('"','')
+        if self.sql.find('"'):
+            _sql=_sql.replace('"','')
+        if self.sql.find('"'):
+            _sql=_sql.replace('"','')
         

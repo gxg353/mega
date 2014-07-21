@@ -21,6 +21,7 @@ class InstanceManage():
         self.inst_online_date=instance.get("instance_online")
         self.inst_dbtype=instance.get("instance_db_type")
         self.inst_hatype=instance.get("instance_ha_type")
+        self.inst_version=instance.get("instance_version")
         if not self.inst_id:
             self.inst_id=InstanceGet().get_instance_by_ip_port(self.inst_ip, self.inst_port)
         self.msg=''
@@ -45,6 +46,7 @@ class InstanceManage():
             self.inst_hatype=DEFAULT_HATYPE
         if not self.inst_business:
             self.inst_business=DEFAULT_BUSINESS
+        
         return True
     def add_instance(self):
         '''
@@ -79,7 +81,6 @@ class InstanceManage():
         #inst.ip=self.inst_ip
         #inst.port=self.inst_port
         if self.inst_business:
-            
             inst.business_id=self.inst_business
         if self.inst_level: 
             inst.level=self.inst_level
@@ -93,6 +94,8 @@ class InstanceManage():
             inst.online_date=self.inst_online_date
         if self.inst_owner:
             inst.owner=self.inst_owner
+        if self.inst_version:
+            inst.version=self.inst_version
         inst.save()
         return True,self.msg
     def stat_instance(self,action=False):

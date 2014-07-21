@@ -65,10 +65,16 @@
 		   <option value={{ bus.id }}>{{ bus.name }}</option>
 		{% endfor %}
 	</select> 
+    <span class="input-group-addon">VERSION</span>
+  	<select name="instance_version" class="form-control" style="width:200px;"readonly= {{ readonly }}>
+		<option value={{ instance.version }} selected="selected">{{ instance.version }}</option>
+		{% for ver in version_list %}
+		   <option value={{ ver }}>{{ ver }}</option>
+		{% endfor %}
+	</select> 
   
 </div>
 <br>
-
 <button type="button" class="btn btn-default btn" onclick="change_readonly('all')">
   		<span class="glyphicon glyphicon-wrench"></span>编辑
 </button>

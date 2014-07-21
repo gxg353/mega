@@ -72,3 +72,12 @@
 	|  1 | SIMPLE      | user  | ALL  | NULL          | NULL | NULL    | NULL |    7 |       |
 	+----+-------------+-------+------+---------------+------+---------+------+------+-------+
 	1 row in set (0.00 sec)
+
+##规则说明
+1.sql唯一性
+	使用sql解析时的timestamp和sql一起生成一个hash，用于标识一类唯一的sql：
+		     
+	return hash(str(time.time())+str)
+2.sql 解析
+
+配置所有变量并替换为N。不区分类型。样例sql可通过hash值获取。

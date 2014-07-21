@@ -73,14 +73,13 @@ def instance_add(request):
             msg='Sucess'  
     return render_to_response('instance_add.html',{"business_list":meta_data.business_list,"owner_list":meta_data.owner_list,
                                                         "db_type":meta_data.db_type,"level":meta_data.level,
-                                                       "ha_type":meta_data.ha_type,"msg":msg
+                                                       "ha_type":meta_data.ha_type,"msg":msg,"version_list":meta_data.version
                                                        },context_instance=RequestContext(request))
 
 def instance_detail(request):
     if request.method=="GET":
         instance=instance_manage.InstanceGet().get_instance(request.GET)
     else:
-        print request.POST
         if request.POST.get("type")=="mod":
             instance_manage.InstanceManage(request.POST).mod_instance()    
         else:
@@ -93,7 +92,7 @@ def instance_detail(request):
     return render_to_response('instance_detail.html',{"instance":instance,"readonly":"true","stat_action":stat_action,
                                                       "business_list":meta_data.business_list,"owner_list":meta_data.owner_list,
                                                        "db_type":meta_data.db_type,"level":meta_data.level,
-                                                       "ha_type":meta_data.ha_type
+                                                       "ha_type":meta_data.ha_type,"version_list":meta_data.version
                                                    },context_instance=RequestContext(request))
 
 ##server

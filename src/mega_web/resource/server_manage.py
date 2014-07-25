@@ -1,4 +1,4 @@
-from mega_web.entity.models import Server,User
+from mega_web.entity.models import Server,User,Instance
 from conf.GlobalConf import *
 from lib.utils import check_ip,is_int
 import datetime
@@ -42,6 +42,8 @@ class ServerManage():
         if not self.server_id:
             return False,MSG_ERR_SERVER_NOT_EXITST
         server=Server.objects.get(id=self.server_id)
+        if self.server_ip:
+            server.ip=self.server_ip
         if self.server_name:
             server.name=self.server_name
         if self.server_os:
@@ -51,7 +53,15 @@ class ServerManage():
         if self.server_online:
             server.online_date=self.server_online
         server.save()
+        
+        #change the ip of instance if the ip is changed
+        if self.server_id and self.server_ip:
+            print self.server_id
+            instances=Instance.objects.get(server_id=self.server_id)
+            instances.ip=self.server_ip
+            instances.save()            
         return True,self.msg
+   
     def stat_server(self,action=False):
         if not self.server_id:
             return False,MSG_ERR_SERVER_NOT_EXITST
@@ -64,6 +74,7 @@ class ServerManage():
             else:
                 server.stat=STAT_OFFLINE
         server.save()
+        
         return True,self.msg
     
 class ServerGet():

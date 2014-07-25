@@ -111,6 +111,8 @@ class InstanceManage():
                 inst.stat=STAT_ONLINE
         inst.save()
         return True,self.msg
+        
+    
 class InstanceGet():
     def __init__(self):
         self.inst=Instance

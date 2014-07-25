@@ -151,7 +151,7 @@ def slowlog_routine(time=None):
                   "version":conf.get('version')
                   }
         instance_list.append(instance)
-    inst_len=len(instance_list)
+    inst_len=len(instance_list) 
     if inst_len>0 and DEV==False:
         result=slowlog_salt_client(instance_list)
     else:

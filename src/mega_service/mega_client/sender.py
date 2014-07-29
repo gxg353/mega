@@ -30,10 +30,13 @@ class MegaClient():
                     c.close()
                     return data
     '''
-    def __init__(self,host='localhost',port=1104,cmd=''):
+    HOST='localhost'
+    PORT=1105
+    def __init__(self,host=HOST,port=PORT,cmd=''):
         self._cmd={}
         self.host=host
         self.port=port
+        
         if cmd:
             self._cmd['VALUE']=str(cmd)
     

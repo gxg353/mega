@@ -116,5 +116,9 @@ class Users(models.Model):
     stat=models.IntegerField()
     
     
-    
+class Document(models.Model):
+    class Meta(object):
+        db_table='document'
+    file = models.FileField(upload_to='documents/%Y/%m/%d')   
+
     

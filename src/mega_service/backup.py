@@ -41,6 +41,7 @@ class Backuper():
         else:
             log.debug(sql)
         return _data
+    
     def push_task(self):
         pass
     def log_task(self):

@@ -42,6 +42,7 @@ class Servers(SRH):
             result=str(_w)
         else:
             result=ERROR
+        #log.debug(result)
 #todo : 
 #    get the len(result),add the length to the head of packget, 
 #    chancel the end sign
@@ -58,6 +59,7 @@ class Servers(SRH):
             if eval(data).get(TCP_HEADER[0]).upper() != TCP_HEADER[1]:
                 return False
         except:
+            log.error('Invilid TCP header of packege!')
             return False
         return True
         

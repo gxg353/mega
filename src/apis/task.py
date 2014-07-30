@@ -6,11 +6,12 @@ Created on Jul 29, 2014
 
 @module:apis.task
 '''
-## to do 
-# import MegaClient
-from lib.logs import Logger
 
-from mega_service.mega_client.sender import MegaClient
+from lib.logs import Logger
+try:
+    from  mega_client.sender import MegaClient
+except:
+    from mega_client.mega_client.sender import MegaClient
 
 
 

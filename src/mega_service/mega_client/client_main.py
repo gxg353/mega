@@ -20,8 +20,6 @@ def main():
     log.info("=============BEGIN===========")
     log.info('Mega Client server start at %s ' % datetime.datetime.now())
     tcp_server()
-
-
     
 if __name__=='__main__':
     main()

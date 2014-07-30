@@ -10,4 +10,10 @@ class Task():
             if self.q.execute(sql):
                 return True
         return False
-        
+    
+    def get_task_by_name(self,name):
+        if name:
+            sql="select script from task where name='%s'" % name
+            return self.q.fetchOne(sql)
+        else:
+            return False

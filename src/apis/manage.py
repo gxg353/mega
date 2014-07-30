@@ -1,12 +1,15 @@
 import types
 from mega_service.backup import Backuper
 from mega_service.slow_log import SlowLog
+from mega_service.task import Task
 from lib.logs import Logger
 from lib.PyMysql import PyMySQL
 from task import remote_cmd
 
+
 MODEL='API-manage'
 log = Logger(MODEL).log()
+
 
 
 def backup_routine(time=None,**args):
@@ -35,8 +38,9 @@ def backup_routine(time=None,**args):
     len_inst=len(instance_list)
     result=[]
     if len_inst>0:
+        script=Task().get_task_by_name('backup')
         for instance in instance_list:
-            result.append(remote_cmd(instance['host_ip'],instance['port'],'backup_task','python',instance))
+            result.append(remote_cmd(instance['host_ip'],instance['port'],script,'python',instance))
     len_result=len(result)
     if result:
         log.debug(result)
@@ -151,9 +155,10 @@ def slowlog_routine(time=None):
     inst_len=len(instance_list) 
     result=[]
     if inst_len>0:
+        script=Task().get_task_by_name('backup')
         for instance in instance_list:
 #            log.debug(instance)
-            result.append(remote_cmd(instance['ip'],instance['port'],'slowlog_collect','python',instance))
+            result.append(remote_cmd(instance['ip'],instance['port'],script,'python',instance))
     if inst_len >0:
         log.debug(instance_list)
     if result:

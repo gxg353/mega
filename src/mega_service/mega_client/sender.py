@@ -8,6 +8,12 @@ Created on Jul 1, 2014
 
 import socket
 import types
+from logs import Logger
+
+
+MODEL='Sender'
+log = Logger(MODEL).log()
+
 
 TCP_HEADER={'HEAD':'MEGA'}
 END_SIGN='EOF'
@@ -63,7 +69,8 @@ class MegaClient():
             self.s=socket.socket(socket.AF_INET,socket.SOCK_STREAM)      
             self.s.connect((self.host,self.port))
             return True
-        except:
+        except Exception as ex:
+            log.error(ex)
             return False
     
     def cmd_run(self,cmd=None):
@@ -87,7 +94,8 @@ class MegaClient():
                         break
                     header=header-HEADER_LENGTH
             return self._data_unpack(data)
-        except:
+        except Exception as ex:
+            log.error(ex)
             return ''
     
     def _cmd_pack(self,data):

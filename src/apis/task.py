@@ -21,8 +21,9 @@ log=Logger(MODEL).log()
 def remote_cmd(ip,port,cmd,target,args=None):
     '''
         ip port:instance info
-        cmd :task name
+        cmd :task name or the script name
         target: python,shell,cmd
+        args: for script
     '''
     log.debug(args)
     c=MegaClient(host=ip,port=1105,cmd=cmd)

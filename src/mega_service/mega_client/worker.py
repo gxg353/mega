@@ -26,6 +26,10 @@ class Worker():
         self.data={}
         
     def _work_resolve(self):
+        '''
+            {'TARGET': 'python', 'ARGS': "{'ip': u'localhost', 'version': u'5.6', 'id': 12L, 'port': 3310L}", 
+            'VALUE': 'test.py', 'TIME': 0, 'TYPE': 0, 'CYCLE': 0}
+        '''
         _item=['TYPE','TIME','VALUE','CYCLE','TARGET','ARGS']
         _data={}
         self.cmd=eval(self.cmd)
@@ -42,11 +46,12 @@ class Worker():
     def run(self):
         if not self._work_resolve():
             return self.error_code,self.error
-        _type=self.data['TARGET'].upper()
+        _type=self.data['TARGET']
         if  _type== 'cmd':
             _type=''
         _cmd="%s %s%s \"%s\" " % (_type,SCRIPT_DIR,self.data['VALUE'],self.data['ARGS'])
         log.debug(_cmd)
         status,output=commands.getstatusoutput(_cmd)
-        log.debug(str(status)+output)
+        if status <>0:
+            log.error(str(status)+' : '+output)
         return status,output

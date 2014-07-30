@@ -16,3 +16,9 @@ Created on Jul 2, 2014
 
 #2014-07-03
 alter table instance add column version varchar(10) not null default '0';
+alter table task add column script varchar(50) not null default '';
+ CREATE TABLE `document` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `file` varchar(100) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB;

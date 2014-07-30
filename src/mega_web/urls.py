@@ -1,4 +1,5 @@
 from django.conf.urls import patterns, include, url
+from django.conf.urls.static import static
 from views import home,monitor,console,resource,portal,fun
 from views import instance,instance_add,instance_detail
 from views import server,server_add,server_detail
@@ -7,6 +8,7 @@ from views import database,database_add,database_detail
 from views import backup,backup_config,backup_config_list
 from views import user,user_add,user_detail
 from views import charts
+from views import document
 from views import my_404_view,my_500_view
 
 from django.conf import settings
@@ -57,6 +59,8 @@ urlpatterns = patterns('',
     url(r'^console/backup/backup_config/$',backup_config),
     url(r'^console/backup/backup_config_list/$',backup_config_list),
 
+    url(r'^portal/document/$',document),
+
 #for static like css ,js ,ima,music     
     url(r'^static/(?P<path>.*)$', 'django.views.static.serve',{'document_root': settings.STATIC_URLS },name="static"),
 
@@ -64,4 +68,4 @@ urlpatterns = patterns('',
     url(r'^fun/$',fun),
     
 
-)
+)+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

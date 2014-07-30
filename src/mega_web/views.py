@@ -6,6 +6,9 @@ from console.backup import Backup,Backup_Config
 from lib import paginator
 from lib.meta_data import MetaData as meta_data
 from charts.visit import Visit
+from mega_portal.file_manage import UploadFileForm
+from mega_web.entity.models import Document
+
 
 def home(request):
     if request.method=="GET":
@@ -73,14 +76,13 @@ def instance_add(request):
             msg='Sucess'  
     return render_to_response('instance_add.html',{"business_list":meta_data.business_list,"owner_list":meta_data.owner_list,
                                                         "db_type":meta_data.db_type,"level":meta_data.level,
-                                                       "ha_type":meta_data.ha_type,"msg":msg
+                                                       "ha_type":meta_data.ha_type,"msg":msg,"version_list":meta_data.version
                                                        },context_instance=RequestContext(request))
 
 def instance_detail(request):
     if request.method=="GET":
         instance=instance_manage.InstanceGet().get_instance(request.GET)
     else:
-        print request.POST
         if request.POST.get("type")=="mod":
             instance_manage.InstanceManage(request.POST).mod_instance()    
         else:
@@ -93,7 +95,7 @@ def instance_detail(request):
     return render_to_response('instance_detail.html',{"instance":instance,"readonly":"true","stat_action":stat_action,
                                                       "business_list":meta_data.business_list,"owner_list":meta_data.owner_list,
                                                        "db_type":meta_data.db_type,"level":meta_data.level,
-                                                       "ha_type":meta_data.ha_type
+                                                       "ha_type":meta_data.ha_type,"version_list":meta_data.version
                                                    },context_instance=RequestContext(request))
 
 ##server
@@ -322,7 +324,19 @@ def backup_config_list(request):
     backup_list=page_data.get('page_data')
     return render_to_response('backup_config_list.html',{"backup_list_all":backup_list,"page_range":page_range},context_instance=RequestContext(request))
 
+def document(request):
+    if request.method=="GET":
+        form=UploadFileForm()
+    else:
+        form=UploadFileForm(request.POST,request.FILES)
+        if form.is_valid():
+            _new_doc=Document(file=request.FILES['file'])
+            _new_doc.save()
+    documents=Document.objects.all()
+    
+    return render_to_response('document.html',{'form':form ,'documents':documents},context_instance=RequestContext(request))
 
+    
 def my_404_view(request):
         return render_to_response('404.html')
 def my_500_view(request):

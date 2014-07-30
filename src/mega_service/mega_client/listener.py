@@ -1,12 +1,9 @@
 # -*- coding: UTF-8 -*-
 import sys
-sys.path.append('..')
-import socket
-import multiprocessing   
 import SocketServer
 from SocketServer import StreamRequestHandler as SRH
-from conf.GlobalConf import DEFAULT_TCP_PORT,DEFAULT_TCP_HOST,DEBUG
-from lib.logs import Logger
+from setting import TCP_HOST,TCP_PORT
+from logs import Logger
 from worker import Worker
 
 END_SIGN='EOF'
@@ -38,7 +35,7 @@ class Servers(SRH):
         data=data.replace('EOF', '')
         log.debug(data)
         if self.data_check(data):
-            _w=Worker(None).work_deliver(data)
+            _w=Worker(data).run()
             result=str(_w)
         else:
             result=ERROR
@@ -61,9 +58,7 @@ class Servers(SRH):
             return False
         return True
         
-def tcp_server(queue,host=DEFAULT_TCP_HOST,port=DEFAULT_TCP_PORT):
-    global q
-    q=queue
+def tcp_server(host=TCP_HOST,port=TCP_PORT):
     addr = (host,port)
     log.info('TCP Server listen on %s ...' % str(addr))
     try:  

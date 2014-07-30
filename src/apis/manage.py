@@ -1,10 +1,9 @@
 import types
 from mega_service.backup import Backuper
+from mega_service.slow_log import SlowLog
 from lib.logs import Logger
 from lib.PyMysql import PyMySQL
-from conf.GlobalConf import DEV 
-if not DEV:
-    from scripts.mega_salt import backup_salt_client as mega_salt
+from task import remote_cmd
 
 MODEL='API-manage'
 log = Logger(MODEL).log()
@@ -34,10 +33,10 @@ def backup_routine(time=None,**args):
                   } 
         instance_list.append(instance)
     len_inst=len(instance_list)
-    if len_inst>0 and DEV==False:
-        result=mega_salt(instance_list)
-    else:
-        result=[]
+    result=[]
+    if len_inst>0:
+        for instance in instance_list:
+            result.append(remote_cmd(instance['host_ip'],instance['port'],'backup_task','python',instance))
     len_result=len(result)
     if result:
         log.debug(result)
@@ -138,4 +137,25 @@ def add_slow_log(log_info):
         task_id=0
         log.error(ex)
     return task_id
-    
+
+def slowlog_routine(time=None):
+    instance_list=[]    
+    config_list=SlowLog().get_instance_list()
+    for conf in config_list:
+        instance={"id":conf.get('id'),
+                  "ip":conf.get('ip'),
+                  "port":conf.get('port'),
+                  "version":conf.get('version')
+                  }
+        instance_list.append(instance)
+    inst_len=len(instance_list) 
+    result=[]
+    if inst_len>0:
+        for instance in instance_list:
+#            log.debug(instance)
+            result.append(remote_cmd(instance['ip'],instance['port'],'slowlog_collect','python',instance))
+    if inst_len >0:
+        log.debug(instance_list)
+    if result:
+        log.debug(result)
+    log.debug('%s instance slow log collect tasks are invoked.' % inst_len)

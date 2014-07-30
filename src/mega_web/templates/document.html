@@ -1,0 +1,23 @@
+{% extends "portal_base.html" %}
+{% block subcontent %}
+
+<form action='/portal/document/' method='post' enctype='multipart/form-data'>
+	{{ form }}
+	<br>
+	<button type='submit' value='upload' class="btn btn-default"><span class='glyphicon glyphicon-cloud-upload'></span></button>
+{% csrf_token %}
+</form>
+<hr>
+<div>
+{% if documents %}
+        <ul>
+        {% for document in documents %}
+            <li><a target="_blank" href="{{ document.file.url }}">{{ document.file.name }} </a></li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>No documents.</p>
+ {% endif %}
+</div>
+
+{% endblock %}

@@ -32,6 +32,8 @@ class Instance(models.Model):
     #1 master >1 slave
     role= models.IntegerField(default=1)
     
+    version = models.CharField(max_length=20)
+    
     stat= models.IntegerField(default=1)
     online_date = models.DateTimeField(default=0)
 
@@ -114,5 +116,9 @@ class Users(models.Model):
     stat=models.IntegerField()
     
     
-    
+class Document(models.Model):
+    class Meta(object):
+        db_table='document'
+    file = models.FileField(upload_to='documents/%Y/%m/%d')   
+
     

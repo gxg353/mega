@@ -6,17 +6,17 @@
 <input type="hidden" name="server_id" value='{{ server.id }}' >
 <input type="hidden" name="type" value='mod' >
 	<div class="input-group">
-  		<span class="input-group-addon">*</span>
+  		<span class="input-group-addon">Name</span>
   		<input type="text" class="form-control" name="server_name" placeholder='NAME' style="width:200px;" maxlength=20 value='{{ server.name }}' readonly= {{ readonly }}>
 	</div>
 	<br>
 	<div class="input-group">
-  		<span class="input-group-addon">*</span>
+  		<span class="input-group-addon">IP</span>
   		<input type="text" class="form-control"  name="server_ip" placeholder= "IP" style="width:200px;" maxlength=15 value='{{ server.ip }}' readonly= {{ readonly }} >
 	</div>
 	<br>
 	<div class="input-group">
-  		<span class="input-group-addon">*</span>
+  		<span class="input-group-addon">OS</span>
   		<select name="server_os" class="form-control" style="width:200px;" readonly= {{ readonly }}>
   		<option value={{ server.os }}>{{ server.os }}</option>
 		{% for os in os_list %}
@@ -27,7 +27,7 @@
 	</div>
 <br>
 <div class="input-group">
-  <span class="input-group-addon">*</span>
+  <span class="input-group-addon">OWNER</span>
     	<select name="server_owner" class="form-control" style="width:200px;"readonly= {{ readonly }}>
     	<option  value={{ server.owner }}>{{ server.owner_name }}</option>
 		{% for owner in owner_list %}
@@ -38,7 +38,7 @@
 </div>
 <br>
 <div class="input-group">
-  <span class="input-group-addon">*</span>
+  <span class="input-group-addon">ONLINE</span>
   <input type="text" class="form-control" name="server_online" placeholder='ONLINE_DATE' value='{{ server.online_date }}' style="width:200px;" maxlength=20  readonly= '{{ readonly }}' onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',isShowClear:false,readOnly:true})">
 </div>
 <br>

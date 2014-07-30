@@ -48,5 +48,5 @@ class Worker():
         _cmd="%s %s%s \"%s\" " % (_type,SCRIPT_DIR,self.data['VALUE'],self.data['ARGS'])
         log.debug(_cmd)
         status,output=commands.getstatusoutput(_cmd)
-        log.debug(status+output)
+        log.debug(str(status)+output)
         return status,output

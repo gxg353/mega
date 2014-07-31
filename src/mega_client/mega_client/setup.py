@@ -13,9 +13,9 @@ setup(name='mega',
       description='Mega client',
       author='XCHLIU',
       author_email='liu.xiaocheng0312@gmail.com',
-      py_modules=['sender']
+      #py_modules=['sender'],
       #url='',
-      #packages=['sender'],
+      packages=['mega_client'],
       #package_dir={'mypkg': 'src/mypkg'},
       # package_data={'mypkg': ['data/*.dat']},
 

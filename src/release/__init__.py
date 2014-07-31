@@ -6,3 +6,4 @@ Created on Jul 2, 2014
 
 @module:release.__init__
 '''
+version='1.0'

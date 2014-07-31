@@ -6,7 +6,7 @@ from setting import TCP_HOST,TCP_PORT
 from logs import Logger
 from worker import Worker
 
-END_SIGN='EOF'
+END_SIGN='eof'.upper()
 ERROR='-1'
 SUCCESS='0'
 TCP_HEADER=['HEAD','MEGA']
@@ -32,7 +32,7 @@ class Servers(SRH):
                 break
             header=header-BUFFER_SIZE
 #            print header,_d
-        data=data.replace('EOF', '')
+        data=data.replace(END_SIGN, '')
         log.debug(data)
         if self.data_check(data):
             _w=Worker(data).run()

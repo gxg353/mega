@@ -16,7 +16,7 @@ log = Logger(MODEL).log()
 
 
 TCP_HEADER={'HEAD':'MEGA'}
-END_SIGN='EOF'
+END_SIGN='eof'.upper()
 BUFFER_SIZE=10
 DEFAULT_NONE=0
 HEADER_LENGTH=10
@@ -37,7 +37,7 @@ class MegaClient():
                     return data
     '''
     HOST='localhost'
-    PORT=1105
+    PORT=1104
     def __init__(self,host=HOST,port=PORT,cmd=''):
         self._cmd={}
         self.host=host
@@ -70,6 +70,7 @@ class MegaClient():
             self.s.connect((self.host,self.port))
             return True
         except Exception as ex:
+            log.error("Connect to host : %s failed!" % self.host)
             log.error(ex)
             return False
     

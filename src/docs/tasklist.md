@@ -113,6 +113,7 @@
 * mega-client 
 	* sender 
 		* 增加监听功能
+		* client升级方案
 	
 
 * 传送门

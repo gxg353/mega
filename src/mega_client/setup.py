@@ -18,5 +18,5 @@ setup(name='mega',
       packages=['mega_client'],
       #package_dir={'mypkg': 'src/mypkg'},
       # package_data={'mypkg': ['data/*.dat']},
-
+      data_files=[('',['install.sh'])]
      )

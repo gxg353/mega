@@ -26,10 +26,10 @@ def client_upgrade(host_list=None):
     version=release.version
     pag_name=SERVICE_NAME+"-"+version
     _prefix=os.path.join(app_path,'mega_client/dist',pag_name)
-    pag_path=os.path.join(_prefix,'mega_client')
+    #pag_path=os.path.join(_prefix,'mega_client')
     try:
         _pag.append(pag_name)
-        _pag.extend(read_file(pag_path,_prefix))
+        _pag.extend(read_file(_prefix,_prefix))
         return _pag
 #        log.debug(f)
     except Exception as ex:
@@ -52,7 +52,7 @@ def read_file(path,prefix=''):
     return data
 
 def main():
-     client_upgrade()
+    print client_upgrade()
 
 
 if __name__ == "__main__":

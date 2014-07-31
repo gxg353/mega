@@ -11,7 +11,8 @@ Created on Jul 29, 2014
 TCP_HOST=''  # default 0.0.0.0
 TCP_PORT=1105
 
-SCRIPT_DIR='./script/'
+SCRIPT_DIR='/home/mysql/admin/mysql_client/script/'
+CLIENT_DIR='/home/xdba/'
 
 DEAFULT_LOG_DEBUG=True
 LOG_FILE_NAME='/var/log/mega/mega-client.log'

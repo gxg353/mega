@@ -5,7 +5,7 @@ mega_client/__init__.py
 mega_client/client_main.py
 mega_client/listener.py
 mega_client/logs.py
-mega_client/mega-client.py
+mega_client/mega_client.py
 mega_client/sender.py
 mega_client/setting.py
 mega_client/setup.py

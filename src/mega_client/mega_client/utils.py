@@ -9,8 +9,16 @@ Created on Jul 30, 2014
 import socket
  
 def get_ip_address():
-    myname = socket.getfqdn(socket.gethostname(  ))
-    myip = socket.gethostbyname(myname)
+    myname=''
+    myip=''
+    try:
+        myname = socket.getfqdn(socket.gethostname())
+        myip = socket.gethostbyname(myname)
+    except Exception as ex:
+        from socket import socket, SOCK_DGRAM, AF_INET
+        s = socket(AF_INET, SOCK_DGRAM)
+        s.connect(('google.com', 0))
+        myip=s.getsockname()[0] 
     return myname,myip
 
 #print get_ip_address() 

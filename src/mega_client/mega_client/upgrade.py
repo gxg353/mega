@@ -11,6 +11,7 @@ import commands
 from logs import Logger
 from sender import MegaClient
 from utils import get_ip_address
+from setting import CLIENT_DIR
 
 MODEL='Upgrade'
 log = Logger(MODEL).log()
@@ -19,7 +20,7 @@ class Upgrade():
     
     def __init__(self):
         self.cmd='client_upgrade'
-        self.c=MegaClient(cmd=self.cmd)
+        self.c=MegaClient(host='172.17.62.37',cmd=self.cmd)
         self.setup_path=''
         
     def _get_pag(self):
@@ -43,6 +44,7 @@ class Upgrade():
             f.write(file_content)
         f.close()
         return True
+    
     def run(self):
         if not self._get_pag():
             return False
@@ -50,7 +52,9 @@ class Upgrade():
         cmd='cd %s && python %s/setup.py install' % (self.setup_path,self.setup_path)
         self._do_command(cmd, 'Update package')
                 #restart the client server
-        cmd='/etc/init.d/mega_client restart'
+        cmd='\\cp -ar %s %s' % (self.setup_path,CLIENT_DIR)
+        self._do_command(cmd, 'replace client source')
+        cmd='python /etc/init.d/mega_client restart'
         self._do_command(cmd, 'Restart mega client')
         
     def _do_command(self,cmd,action):

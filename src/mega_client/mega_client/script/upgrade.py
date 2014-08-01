@@ -8,10 +8,10 @@ Created on Jul 30, 2014
 '''
 import os
 import commands
-from logs import Logger
-from sender import MegaClient
-from utils import get_ip_address
-from setting import CLIENT_DIR
+from mega_client.logs import Logger
+from mega_client.sender import MegaClient
+from mega_client.utils import get_ip_address
+from mega_client.setting import CLIENT_DIR
 
 MODEL='Upgrade'
 log = Logger(MODEL).log()

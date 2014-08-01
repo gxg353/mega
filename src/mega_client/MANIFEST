@@ -9,6 +9,5 @@ mega_client/mega_client.py
 mega_client/sender.py
 mega_client/setting.py
 mega_client/setup.py
-mega_client/upgrade.py
 mega_client/utils.py
 mega_client/worker.py

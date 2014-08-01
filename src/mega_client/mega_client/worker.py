@@ -7,6 +7,7 @@ Created on Jul 29, 2014
 @module:mega_service.mega_client.worker
 '''
 import commands
+import sys,os
 
 from setting import SCRIPT_DIR,DEFAULT_TARGET
 
@@ -29,6 +30,8 @@ class Worker():
         '''
             {'TARGET': 'python', 'ARGS': "{'ip': u'localhost', 'version': u'5.6', 'id': 12L, 'port': 3310L}", 
             'VALUE': 'test.py', 'TIME': 0, 'TYPE': 0, 'CYCLE': 0}
+            
+            
         '''
         _item=['TYPE','TIME','VALUE','CYCLE','TARGET','ARGS']
         _data={}
@@ -46,10 +49,15 @@ class Worker():
     def run(self):
         if not self._work_resolve():
             return self.error_code,self.error
-        _type=self.data['TARGET']
-        if  _type== 'cmd':
-            _type=''
-        _cmd="%s %s%s \"%s\" " % (_type,SCRIPT_DIR,self.data['VALUE'],self.data['ARGS'])
+        _cmd_type=self.data.get('TARGET')
+        _type=self.data.get('TYPE')
+        if _type == '0':
+            script_dir=SCRIPT_DIR
+        else:
+            script_dir=os.path.join(sys.path[0],'script/')
+        if  _cmd_type== 'cmd':
+            _cmd_type=''
+        _cmd="%s %s%s \"%s\" " % (_cmd_type,script_dir,self.data['VALUE'],self.data['ARGS'])
         log.debug(_cmd)
         status,output=commands.getstatusoutput(_cmd)
         if status <>0:

@@ -121,4 +121,17 @@ class Document(models.Model):
         db_table='document'
     file = models.FileField(upload_to='documents/%Y/%m/%d')   
 
-    
+class Task(models.Model):
+    class Meta(object):
+        db_table='task'
+    id=models.AutoField(primary_key=True)
+    name=models.CharField(max_length=20)
+    type=models.IntegerField(default=1)
+    value=models.CharField(max_length=100)
+    last_time=models.DateTimeField()
+    cycle=models.IntegerField(default=1)
+    target=models.CharField(max_length=200)
+    owner=models.IntegerField(default=1)
+    script=models.CharField(max_length=50)
+    stat=models.IntegerField(default=1)
+    create_time=models.DateTimeField(auto_now=True)

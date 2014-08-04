@@ -5,6 +5,7 @@ import multiprocessing
 from lib.logs import Logger
 from apis import api as apis
 
+
 MODEL='Worker'
 log = Logger(MODEL).log()
 
@@ -98,7 +99,7 @@ class Worker():
             if self.task.get('TYPE')==0:
                 result=Executor_Local(self.task.get('VALUE')).do_cmd(self.task.get('ARGS'))
             else:
-                result=Executor_remote().run()
+                result=Executor_remote(self.task).run()
         else:
         #save into db
             self.queue.put(work)
@@ -109,14 +110,40 @@ class Worker():
 
 class Executor_remote():
     '''
-     Run the task on the remote server in subprocess
+     Run the task on the remote server  using the mega client tcp service
+     {'NAME': u'test', 'TASK_ID': 9L, 'SCRIPT': u'test.sh', 'ARGS': "'17:24'", 'VALUE': u'',
+      'TIME': 0, 'CYCLE': 120L, 'TYPE': 1L, 'LAST_TIME': u'2014-08-04 17:22:19', 'TARGET': u''}
+     
     '''
-    def __init__(self):
-        pass
+    def __init__(self,task):
+        self.task=task
     def run(self):
-        pass
+        hosts=self.task.get('TARGET')
+        if not hosts:
+            hosts=['localhost']
+        cmd=self.task.get('SCRIPT')
+        _cmd=cmd.split('.')
+        if len(_cmd)>1:
+            if _cmd[1]=='py':
+                cmd_type='python'
+            elif _cmd[1] == 'sh' :
+                cmd_type='bash'
+            elif _cmd[1] == 'pl':
+                cmd_type='perl'
+            else:
+                cmd_type='cmd'
+        args=self.task.get('ARGS')
+        task_id=self.task.get('TASK_ID')
+        if not task_id:
+            task_id=None
+        for ip in hosts:
+            log.info('Call remote task @ %s : %s %s' % (ip,cmd,args))                
+            apis.remote_cmd(ip,1105, cmd, cmd_type, task_id,args)
+            
     def salt_loader(self):
         pass
+    
+    
 class Executor_Local():
     '''
     request of mega server ,invoke func inside mega server

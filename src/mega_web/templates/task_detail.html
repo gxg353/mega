@@ -1,0 +1,88 @@
+{% extends "console_base.html" %}
+{% block subcontent %}
+<div class="well well-lg">任务管理</div>
+<form action="/console/task/task_detail/" method="post">
+<input type="hidden" name="id" value='{{ task.id }}' >
+
+	<div class="input-group">
+  		<span class="input-group-addon">*</span>
+  		<input type="text" class="form-control" name="task_name" placeholder=''  style="width:200px;" maxlength=15 value ='{{ task.name }}' readonly= {{ readonly }}>  	
+  		<span class="input-group-addon">*</span>
+  		<select name="task_type" class="form-control" style="width:200px;" readonly= {{ readonly }}>
+  			{% ifequal task.type 1 %} 
+				<option value=1>远程任务</option>
+			{% else %}
+				<option value=0>本地任务</option>
+			{% endifequal %}	
+  			<option value=1>远程任务</option>
+	  		<option value=0>本地任务</option>
+		</select>
+	</div>
+<br>
+<div class="input-group">
+  <span class="input-group-addon">*</span>
+  <input type="text" class="form-control" name="task_value" placeholder="接口名称" style="width:200px;" maxlength=20 value='{{ task.value }}' readonly= {{ readonly }}>
+    <span class="input-group-addon">*</span>
+  <input type="text" class="form-control" name="task_script" placeholder="脚本名称|命令" style="width:200px;" maxlength=20 value='{{ task.script }}' readonly= {{ readonly }}>
+  
+</div>
+<br>
+<div class="input-group">
+  <span class="input-group-addon">*</span>
+  <input type="text" class="form-control" name="task_cycle" placeholder="周期（s）" style="width:200px;" maxlength=20 value='{{ task.cycle }}' readonly= {{ readonly }}>
+  <span class="input-group-addon">*</span>
+  <input type="text" class="form-control" name="task_target" placeholder="目标ip列表" style="width:200px;" maxlength=20 value='{{ task.target }}' readonly= {{ readonly }}>
+
+</div>
+<br>
+<div class="input-group">
+  <span class="input-group-addon">*</span>
+  <select name="task_owner" class="form-control" style="width:200px;" readonly= {{ readonly }}>
+  		<option values={{ task.owner }}>{{ task.owner_name }} </option>
+		{% for owner in owner_list %}
+		   <option value={{ owner.id }}>{{ owner.name }}</option>
+		{% endfor %}
+		</select>   		
+  
+  <span class="input-group-addon">*</span>
+    	<select name="task_stat" class="form-control" style="width:200px;" readonly= {{ readonly }}>
+    		{% ifequal task.stat 1 %} 
+				<option value=1>启用</option>
+			{% else %}
+				<option value=0>未启用</option>
+			{% endifequal %}	
+    		<option value=1>启用</option>
+	  		<option value=0>未启用</option>
+		</select>  
+</div>
+
+
+
+
+<br>
+<button type="button" class="btn btn-default btn" onclick="change_readonly('all')">
+
+<span class="glyphicon glyphicon-wrench"></span>编辑
+</button>
+<button type="submit" class="btn btn-default btn" id='commit' disabled="disabled">
+  		<span class="glyphicon glyphicon-ok"></span> 提交
+</button>
+
+{% csrf_token %}
+</form>
+<br>
+<div class="well well-sm" style="width:400px">提示信息：{{ msg }}</div>
+<script>
+function change_readonly(id){
+	if (id == 'all')
+	{
+	    var arrAll=document.all;  
+	    for (i=0;i <arrAll.length;i++)  
+	    	arrAll[i].readOnly= false		
+	}
+	var btn_submit=document.getElementById("commit");  
+    btn_submit.disabled='';
+}
+</script>
+
+{% endblock %}

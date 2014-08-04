@@ -17,3 +17,10 @@ class Task():
             return self.q.fetchOne(sql)
         else:
             return False
+        
+    def get_task_list(self,stat=1):
+        if stat == -1 :
+            sql="select * from task"
+        else:
+            sql="select * from task where stat=%s" % stat
+        return self.q.fetchAll(sql)

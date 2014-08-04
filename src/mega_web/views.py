@@ -8,7 +8,8 @@ from lib.meta_data import MetaData as meta_data
 from charts.visit import Visit
 from mega_portal.file_manage import UploadFileForm
 from mega_web.entity.models import Document
-
+from mega_service.task import Task
+from mega_web.console.task import TaskManage 
 
 def home(request):
     if request.method=="GET":
@@ -336,7 +337,33 @@ def document(request):
     
     return render_to_response('document.html',{'form':form ,'documents':documents},context_instance=RequestContext(request))
 
-    
+def task(request):
+    if request.method=="GET":
+        page=request.GET.get('page')
+        task_list=Task().get_task_list(-1)
+    if not page:
+        page=1
+    page_data=paginator.paginator(task_list, page)
+    page_range=page_data.get('page_range')
+    task_list=page_data.get('page_data')
+    return render_to_response('task.html',{"task_list":task_list,"page_range":page_range},context_instance=RequestContext(request))
+
+def task_add(request):
+    msg=''
+    if request.method == "POST" :
+        result,msg=TaskManage(request.POST).task_add()
+    return render_to_response('task_add.html',{'owner_list':meta_data.owner_list,'msg':msg},context_instance=RequestContext(request))
+
+def task_detail(request):
+    msg=''
+    if request.method=='GET':
+        task=TaskManage(request.GET).get_task_by_id()
+    else:
+        _task=TaskManage(request.POST)
+        result,msg=_task.task_mod()
+        task=_task.get_task_by_id()
+    return render_to_response('task_detail.html',{'task':task,'owner_list':meta_data.owner_list,'msg':msg},context_instance=RequestContext(request))
+
 def my_404_view(request):
         return render_to_response('404.html')
 def my_500_view(request):

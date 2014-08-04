@@ -6,6 +6,7 @@ from views import server,server_add,server_detail
 from views import business,business_add,business_detail
 from views import database,database_add,database_detail
 from views import backup,backup_config,backup_config_list
+from views import task,task_add,task_detail
 from views import user,user_add,user_detail
 from views import charts
 from views import document
@@ -58,6 +59,11 @@ urlpatterns = patterns('',
     url(r'^console/backup/$',backup),
     url(r'^console/backup/backup_config/$',backup_config),
     url(r'^console/backup/backup_config_list/$',backup_config_list),
+
+    url(r'^console/task/$',task),
+    url(r'^console/task/task_add/$',task_add),
+    url(r'^console/task/task_detail/$',task_detail),
+
 
     url(r'^portal/document/$',document),
 

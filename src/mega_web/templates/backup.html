@@ -25,9 +25,9 @@
         <th>LEVEL</th>
         <th>VALUE</th>
         <th>TYPE</th>
-        <th>BEGIN_TIME</th>
-        <th>END_TIME</th>
+        <th>BEGIN_END</th>
         <th>SIZE</th>
+        <th>STAGE</th>
         <th>STAT</th>
       </tr>
     </thead>
@@ -44,10 +44,10 @@
 			<td> {{ backup_list.backup_level }} </td>
 			<td> {{ backup_list.level_value }} </td>
 			<td> {{ backup_list.backup_type }} </td>
-			<td> {{ backup_list.backup_begin_time }} </td>
-			<td> {{ backup_list.backup_end_time }} </td>
-			<td> {{ backup_list.file_size }} </td>
+			<td> {{ backup_list.backup_begin_time }} - {{ backup_list.backup_end_time }}</td>
+			<td> {{ backup_list.file_size }} MB</td>
 			<td> {{ backup_list.backup_status }} </td>
+			<td> {{ backup_list.status }} </td>
 		</tr>
 	   {% endfor %}
      </tbody>

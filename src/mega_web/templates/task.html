@@ -1,0 +1,72 @@
+{% extends "console_base.html" %}
+{% block subcontent %}
+<div class="well">任务调度
+</div>
+
+<form action="/console/task/task_add/" method="get">
+	<button type="submit" class="btn btn-default btn">
+  		<span class="glyphicon glyphicon-plus"></span> 添加
+	</button>
+	{% csrf_token %}
+</form>
+<br>
+
+<div class="table-responsive">
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+      	<th></th>
+        <th>NAME</th>
+        <th>SCRIPT</th>
+        <th>VALUE</th>
+        <th>TARGET</th>
+        <th>TYPE</th>
+        <th>LAST_TIME</th>
+        <th>CYCLE</th>
+        <th>CREATE_TIME</th>
+        <th>OWNER</th>
+        <th>STAT</th>
+      </tr>
+    </thead>
+    <tbody>
+    {% for task in task_list %}
+	    <tr>
+	     	<td>
+				<a href="/console/task/task_detail/?id={{ task.0 }}"><span class="glyphicon glyphicon-cog"></span></a>
+			</td>
+			<td>{{ task.1 }}</td>	
+			<td>{{ task.9 }}</td>	
+			<td>{{ task.3 }}</td>	
+			<td>{{ task.6 }}</td>	
+			<td>{{ task.2 }}</td>	
+			<td>{{ task.4 }}</td>	
+			<td>{{ task.5 }}s</td>	
+			<td>{{ task.7 }}</td>	
+			<td>{{ task.8 }}</td>	
+			<td>
+			{% ifequal task.10 1 %} 
+				<span style="color:green">启用</span>
+			{% else %}
+				<span style="color:red">未启用</span>
+			{% endifequal %}
+			</td>
+
+		</tr>
+	   {% endfor %}
+     </tbody>
+  </table>
+</div>
+<ul class="pagination">
+  <ul class="pagination">
+  <li><a href="?page=1">&laquo;</a></li>
+  {% for page in page_range %}
+  	<li><a href="?page={{ page }}">{{ page }}</a></li>
+  {% endfor%}
+  <li><a href="?page=1">&raquo;</a></li>
+  </ul>
+  
+</ul>
+
+
+  {% endblock %}

@@ -1,17 +1,20 @@
+import time
 from mega_web.entity.models import Backup_History_Info,Backup_Policy
 from conf.GlobalConf import BACKUP_TOOL,BACKUP_TYPE,BACKUP_LEVEL,BACKUP_CYCLE,DEFAULT_DB_PORT
 from mega_web.resource.instance_manage import InstanceGet
+from lib.PyMysql import PyMySQL
 
 class Backup():
     def __init__(self):
         self.backup_info=Backup_History_Info
         self.backup_policy=Backup_Policy
-
+        self.q=PyMySQL()
+        
     def get_newest_backup_list(self,ip=None):
         if (not ip) or (ip == ''):
-            sql="select * from backup_history_info order by id desc;"
+            sql="select * from backup_history_info order by id desc limit 150;"
         else:
-            sql="select * from backup_history_info where host_ip='%s';" % ip 
+            sql="select * from backup_history_info where host_ip='%s' limit 150;" % ip 
         return self.backup_info.objects.raw(sql)
     def get_config_by_instance(self,ip='',port=3306):
         if not ip:
@@ -31,7 +34,29 @@ class Backup():
         else:
             sql="select * from backup_policy where host_ip='%s';" % ip
         return self.backup_policy.objects.raw(sql)
-    
+    def get_today_statics(self):
+        
+        #planed counts
+        _now={}
+        _now["week"]=time.strftime('%a',time.localtime(time.time()))
+        _now["month"]=time.strftime('%d',time.localtime(time.time()))
+        sql="select count(*) from backup_policy where cycle='day' and is_schedule=1"
+        count_day=self.q.fetchOne(sql)
+        sql="select count(*) from backup_policy where cycle='week' and find_in_set('%s',backup_time) and is_schedule=1" %(_now['week'])
+        count_week=self.q.fetchOne(sql)
+        sql="select count(*) from backup_policy where cycle='week' and find_in_set('%s',backup_time) and is_schedule=1" %(_now['month'])
+        count_month=self.q.fetchOne(sql)
+        total_today=count_day+count_week+count_month
+        
+        #ran backup
+        sql="select count(*) from backup_history_info where date(backup_begin_time)=date(now()) and backup_status='Y' "
+        success_count=self.q.fetchOne(sql)
+        sql="select count(*) from backup_history_info where date(backup_begin_time)=date(now()) and backup_status='N' "
+        failure_count=self.q.fetchOne(sql)
+        success_ratio=(success_count*100)/total_today
+        failure_ratio=(failure_count*100)/total_today
+        return {"total_today":total_today,"success_count":success_count,"success_ratio":success_ratio,"failure_count":failure_count,"failure_ratio":failure_ratio}
+        
 class Backup_Config():
     def __init__(self):
         self.backup_tool=BACKUP_TOOL

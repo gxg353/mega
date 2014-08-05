@@ -284,7 +284,9 @@ def backup(request):
     page_data=paginator.paginator(backup_list_all, page)
     page_range=page_data.get('page_range')
     backup_list=page_data.get('page_data')
-    return render_to_response('backup.html',{"backup_list_all":backup_list,"page_range":page_range},context_instance=RequestContext(request))
+    today_static=Backup().get_today_statics()
+    print today_static
+    return render_to_response('backup.html',{"backup_list_all":backup_list,"page_range":page_range,"today_static":today_static},context_instance=RequestContext(request))
 
 def backup_config(request):
     backup_type=Backup_Config().backup_type

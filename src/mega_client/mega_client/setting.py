@@ -10,6 +10,8 @@ Created on Jul 29, 2014
 
 TCP_HOST=''  # default 0.0.0.0
 TCP_PORT=1105
+MAIL_HOST='172.17.58.25'
+
 
 #all the script invoked by worker should be in the directory
 SCRIPT_DIR='/home/mysql/admin/mega_client/script/'

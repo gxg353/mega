@@ -41,3 +41,6 @@ def task_log(task_id,start_time,end_time,stat,redo=0,comment=''):
     result,ex=PyMySQL().execute(sql)
     if not result:
         log.error("Save task log failed as :%s" % ex)
+        return (0,ex)
+    return 1
+    

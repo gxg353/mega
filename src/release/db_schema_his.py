@@ -23,8 +23,11 @@ alter table task add column script varchar(50) not null default '';
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
 
-2014-08-04
+#2014-08-04
 alter table task add column stat int not null default 1;
 alter table task change target target varchar(200) not null default '';
 alter table task_log add column stat int not null default 0;
 alter table task_log change run_counts run_counts int not null default 0;
+
+#2014-08-06
+insert into task(name,type,value,last_time,cycle,script,stat) values('ping',1,'ping',now(),60,'ping.py',1);

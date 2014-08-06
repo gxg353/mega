@@ -30,8 +30,9 @@ class Worker():
         '''
             {'TARGET': 'python', 'ARGS': "{'ip': u'localhost', 'version': u'5.6', 'id': 12L, 'port': 3310L}", 
             'VALUE': 'test.py', 'TIME': 0, 'TYPE': 0, 'CYCLE': 0}
-            
-            
+            TYPE:
+                 0 call the script outside mega project:setting.SCRIPT_DIR
+                 1 call the script in diretory :mega_client/script/
         '''
         _item=['TYPE','TIME','VALUE','CYCLE','TARGET','ARGS']
         _data={}

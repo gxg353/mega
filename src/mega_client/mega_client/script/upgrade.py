@@ -60,7 +60,7 @@ class Upgrade():
     def _do_command(self,cmd,action):
         _status,_output=commands.getstatusoutput(cmd)
         if _status <> 0:
-            log.error('%s filed : %s' % (action,_output))
+            log.error('%s failed : %s' % (action,_output))
         else:
             log.info('%s success!' % action)
 

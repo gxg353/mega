@@ -155,7 +155,7 @@ def slowlog_routine(time=None):
     inst_len=len(instance_list) 
     result=[]
     if inst_len>0:
-        script=Task().get_task_by_name('backup')
+        script=Task().get_task_by_name('slowlog')
         for instance in instance_list:
 #            log.debug(instance)
             result.append(remote_cmd(instance['ip'],instance['port'],script,'python',instance))

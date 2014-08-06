@@ -63,7 +63,7 @@
 			</td>
 			<td> {{ backup_list.status }} </td>
 			
-			{% ifequal backup_list.backup_status  Y %} 
+			{% ifequal backup_list.backup_status  'Y' %} 
 			<td>	<span style="color:green">成功</span> </td>
 			{% else %}
 				<td calss="danger">	<span style="color:red">失败</span> </td>

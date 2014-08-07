@@ -107,9 +107,9 @@
 			[xchliu@xchliu dist]$ ls
 			mega-1.0        mega-1.0.tar.gz
 	* 调度升级 
-		* 服务器端配置调度任务，进行全部客户端升级
+		* 服务器端配置调度任务，进行客户端升级
 
-			<a href="http://172.17.61.63:8080/console/task/task_add/">mega任务调度</a>
+			<a href="http://172.17.61.63:8080/admin/client">mega任务调度</a>
 		* 客户端运行升级脚本，进行单点升级：
 
 				python upgrade.py

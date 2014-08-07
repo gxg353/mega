@@ -10,6 +10,7 @@ from mega_portal.file_manage import UploadFileForm
 from mega_web.entity.models import Document
 from mega_service.task import Task
 from mega_web.console.task import TaskManage 
+from mega_web.admin.views import * 
 
 def home(request):
     if request.method=="GET":

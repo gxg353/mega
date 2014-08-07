@@ -8,6 +8,10 @@ Created on Jul 1, 2014
 
 import socket
 import types
+import sys, os
+app_path=os.path.dirname(sys.path[0])
+sys.path.append(app_path)
+
 from logs import Logger
 
 

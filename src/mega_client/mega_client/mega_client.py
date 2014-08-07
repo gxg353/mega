@@ -8,7 +8,7 @@ import sys, os, time, atexit
 app_path=os.path.dirname(sys.path[0])
 sys.path.append(app_path)
 from signal import SIGTERM
-from client_main import main as client_main
+from mega_client.client_main import main as client_main
 from setting import DAEMON_PID,DAEMON_LOG
 
 

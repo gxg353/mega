@@ -135,3 +135,10 @@ class Task(models.Model):
     script=models.CharField(max_length=50)
     stat=models.IntegerField(default=1)
     create_time=models.DateTimeField(auto_now=True)
+
+class Client(models.Model):
+    class Meta(object):
+        db_table='client'
+    server_id=models.IntegerField(primary_key=True)
+    version=models.CharField(max_length=20)
+    heartbeat=models.DateTimeField(auto_now=True)

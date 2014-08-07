@@ -11,6 +11,7 @@ from views import user,user_add,user_detail
 from views import charts
 from views import document
 from views import my_404_view,my_500_view
+from views import admin,client
 
 from django.conf import settings
 # Uncomment the next two lines to enable the admin:
@@ -30,6 +31,8 @@ urlpatterns = patterns('',
 #    url(r'^manage/$',manage),
     url(r'console/$',console),
     url(r'charts/$',charts),
+    url(r'admin/$',admin),
+
     
 #django
 #    (r'^admin/', include(admin.site.urls)),
@@ -66,7 +69,9 @@ urlpatterns = patterns('',
 
 
     url(r'^portal/document/$',document),
-
+    
+    url(r'^admin/client/$',client),
+    
 #for static like css ,js ,ima,music     
     url(r'^static/(?P<path>.*)$', 'django.views.static.serve',{'document_root': settings.STATIC_URLS },name="static"),
 

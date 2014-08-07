@@ -13,7 +13,7 @@ from email.mime.text import MIMEText
 from email import Header
 import smtplib
 
-from setting import MAIL_HOST
+from mega_client.setting import MAIL_HOST
 from logs import Logger
 
 MODEL='Utils'
@@ -28,7 +28,7 @@ def get_ip_address():
         myip = S.gethostbyname(myname)
     except:
         s = socket(AF_INET, SOCK_DGRAM)
-        s.connect(('google.com', 0))
+        s.connect(('8.8.8.8', 0))
         myip=s.getsockname()[0] 
     return myname,myip
 

@@ -8,9 +8,10 @@ Created on Jul 29, 2014
 '''
 import commands
 import sys,os
+import time
 
 from setting import SCRIPT_DIR,DEFAULT_TARGET
-
+from script import ping
 from logs import Logger
 
 
@@ -64,3 +65,27 @@ class Worker():
         if status <>0:
             log.error(str(status)+' : '+output)
         return status,output
+class Monitor():
+    '''
+        client monitor
+    '''
+    
+    def __init__(self):
+        self.sleep=30
+    
+    def monitor(self):
+        log.info("Monitor is Starting...")
+        _count=0  
+        try:
+            while 1:
+                keepalive=ping.main()
+                if keepalive == 'failed':
+                    _count+=1
+                    log.error('keepalive check :%s'% keepalive)
+                if _count >100:
+                    break
+                    log.error('keepalive check  :%s for %s times ,abort!'% (keepalive,_count))
+                time.sleep(self.sleep)
+        except Exception as ex:
+            log.error(ex)
+        return

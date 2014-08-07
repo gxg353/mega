@@ -19,8 +19,11 @@ log = Logger(MODEL).log()
 class Upgrade():
     
     def __init__(self):
-        self.cmd='client_upgrade'
-        self.c=MegaClient(host='172.17.62.37',cmd=self.cmd)
+#        self.mega_server="172.17.62.37"
+        self.mega_server="localhost"
+        self.cmd='client_upgrade'        
+        self.c=MegaClient(host=self.mega_server,cmd=self.cmd)
+
         self.setup_path=''
         
     def _get_pag(self):
@@ -28,6 +31,9 @@ class Upgrade():
         domain,ip=get_ip_address()
         ip="['"+ip+"']"      
         pag=self.c.run(func_args=ip,TOOL=True)
+        if pag==0:
+            log.error('Failed to connect to mega server:%s' % self.mega_server)
+            return False
         pag=eval(pag)
         tmp_dir=os.path.join('/tmp',pag.pop(0))
         self.setup_path=tmp_dir

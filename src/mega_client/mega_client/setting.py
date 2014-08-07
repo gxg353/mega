@@ -26,3 +26,6 @@ DAEMON_PID='/var/run/mega_client.pid'
 DAEMON_LOG=LOG_FILE_NAME
 
 DEFAULT_TARGET='cmd'
+
+#
+version='mega-client 0.1'

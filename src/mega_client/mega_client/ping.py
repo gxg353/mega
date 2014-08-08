@@ -9,7 +9,7 @@ Created on Aug 6, 2014
 
 from sender import MegaClient
 from utils import get_ip_address
-from setting import version
+from setting import version,MEGA_HOST
 
 def main():
     '''
@@ -18,7 +18,7 @@ def main():
     myname,myip=get_ip_address()
     
     cmd='client_ping'
-    c=MegaClient(cmd=cmd)
+    c=MegaClient(host=MEGA_HOST,cmd=cmd)
     result=c.run(func_args="'%s',version='%s'" %(myip,version),TOOL=True)
     if result:
         return 'success'

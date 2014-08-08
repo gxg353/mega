@@ -11,7 +11,7 @@ import commands
 from mega_client.logs import Logger
 from mega_client.sender import MegaClient
 from mega_client.utils import get_ip_address
-from mega_client.setting import CLIENT_DIR
+from mega_client.setting import CLIENT_DIR,MEGA_HOST
 
 MODEL='Upgrade'
 log = Logger(MODEL).log()
@@ -19,8 +19,7 @@ log = Logger(MODEL).log()
 class Upgrade():
     
     def __init__(self):
-#        self.mega_server="172.17.62.37"
-        self.mega_server="localhost"
+        self.mega_server=MEGA_HOST
         self.cmd='client_upgrade'        
         self.c=MegaClient(host=self.mega_server,cmd=self.cmd)
 

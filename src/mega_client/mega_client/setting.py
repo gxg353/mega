@@ -17,7 +17,7 @@ MAIL_HOST='172.17.58.25'
 SCRIPT_DIR='/home/mysql/admin/mega_client/script/'
 
 #only used for client . 
-CLIENT_DIR='/home/xdba/'
+CLIENT_DIR='/home/mysql/'
 
 DEAFULT_LOG_DEBUG=True
 LOG_FILE_NAME='/var/log/mega/mega_client.log'

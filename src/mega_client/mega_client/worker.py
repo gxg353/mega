@@ -53,7 +53,7 @@ class Worker():
             return self.error_code,self.error
         _cmd_type=self.data.get('TARGET')
         _type=self.data.get('TYPE')
-        if _type == '0':
+        if int(_type) == 0 :
             script_dir=SCRIPT_DIR
         else:
             script_dir=os.path.join(sys.path[0],'script/')

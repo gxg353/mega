@@ -58,11 +58,12 @@ def client_ping(ip,version=None,**args):
     server_id=ServerGet().get_server_by_ip(ip)
     if not server_id:
         log.error("Get server id failed for %s" % ip)
+        return "unregistered server"
     server_id=server_id[0]['id']
     sql="select count(*) from client where server_id=%s" % server_id
     _counts=PyMySQL().fetchOne(sql)
     if _counts == 0:
-        sql="insert into client(server_id,version,heartbeat) values(%s,now())" % (server_id,version)
+        sql="insert into client(server_id,version,heartbeat) values(%s,'%s',now())" % (server_id,version)
     else:
         sql="update client set heartbeat=now(),version='%s' where server_id=%s " %(version,server_id)
     result,ex=PyMySQL().execute(sql)

@@ -11,8 +11,8 @@
 PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 NAME=mega
 DESC='Mega Service '
-#APP_DIR='/export/servers/script/mega-master/src/'
-APP_DIR='..'
+APP_DIR='/export/servers/app/mega/src/'
+#APP_DIR='..'
 
 MAIN_PWD=$APP_DIR/mega_service/daemon.py
 LOG_DIR=''

@@ -11,7 +11,7 @@ import sys,os
 import time
 
 from setting import SCRIPT_DIR,DEFAULT_TARGET
-from script import ping
+import ping
 from logs import Logger
 
 

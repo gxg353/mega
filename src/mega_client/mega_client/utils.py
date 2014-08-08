@@ -13,7 +13,7 @@ from email.mime.text import MIMEText
 from email import Header
 import smtplib
 
-from mega_client.setting import MAIL_HOST
+from setting import MAIL_HOST
 from logs import Logger
 
 MODEL='Utils'

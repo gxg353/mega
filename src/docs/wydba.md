@@ -17,6 +17,22 @@
 ##开发规范
 	* 统一开发规范
 	* 接口调用规范
+###模块调用：
+
+client 公用库：
+
+* sender
+* log
+* utils
+	* sendmail
+	* get_ip_address
+
+调用实例：
+	
+	>>> import mega_client.logs
+	>>> log=logs.Logger('test').log()
+	>>> log.info('test')
+
 
 ##流程说明
 ###客户端安装

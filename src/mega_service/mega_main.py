@@ -1,5 +1,3 @@
-import sys
-sys.path.append("..")
 import datetime
 import multiprocessing
 from listener import tcp_server
@@ -23,7 +21,7 @@ class SubProcess:
     #    2.listens        Accept task from mega sender 
     #    3.trackers       Track task from database
     #===========================================================================
-    def sub_process(self):
+    def sub_process(self,pidfile):
         global queue
         queue = multiprocessing.Queue()
         worker=Worker(queue).worker
@@ -48,11 +46,12 @@ class SubProcess:
                 t.start()
                 self.child_pids.append(t.pid)
                 log.info((t.pid,t.name))
-            log.debug(self.child_pids)
-            #for t in self.threads:
-            #    t.join()
+                if pidfile:
+                    file(pidfile,'a+').write("%s\n" % t.pid)
+            for t in self.threads:
+                t.join()
         except Exception as ex:
-            log.debug('Get interrupt from keyboard,quit now')
+            log.warning('Get interrupt signal,quit now!')
             log.error(ex)
         return self.child_pids
     
@@ -64,11 +63,10 @@ class SubProcess:
         log.info("%s is Starting..." % self._name)           
         log.debug(self.child_pids)
     
-def main():
+def main(pidfile):
     log.info("=============BEGIN===========")
     log.info('Mega server start at %s ' % datetime.datetime.now())
-    child_pid_list=SubProcess().sub_process()
-    return child_pid_list
+    SubProcess().sub_process(pidfile)
 
 if __name__ == "__main__":
         main()

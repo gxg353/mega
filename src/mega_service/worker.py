@@ -5,7 +5,6 @@ import multiprocessing
 from lib.logs import Logger
 from apis import api as apis
 
-
 MODEL='Worker'
 log = Logger(MODEL).log()
 

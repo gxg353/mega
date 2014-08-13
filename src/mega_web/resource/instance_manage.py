@@ -22,6 +22,7 @@ class InstanceManage():
         self.inst_dbtype=instance.get("instance_db_type")
         self.inst_hatype=instance.get("instance_ha_type")
         self.inst_version=instance.get("instance_version")
+        self.inst_role=instance.get('instance_role')
         if not self.inst_id:
             self.inst_id=InstanceGet().get_instance_by_ip_port(self.inst_ip, self.inst_port)
         self.msg=''
@@ -96,6 +97,8 @@ class InstanceManage():
             inst.owner=self.inst_owner
         if self.inst_version:
             inst.version=self.inst_version
+        if self.inst_role:
+            inst.role=self.inst_role
         inst.save()
         return True,self.msg
     def stat_instance(self,action=False):

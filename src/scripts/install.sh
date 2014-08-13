@@ -3,7 +3,5 @@
 #used to install application
 
 PROJECT=mega
-APP_DIR='/Users/xchliu/Documents/workspace/mega/src/'
-
-ln -sf $APP_DIR/scripts/$PROJECT_service.sh /etc/init.d/$PROJECT
-
+chmod a+x /export/servers/app/mega/src/mega_service/mega_main.py
+ls -sf /export/servers/app/mega/src/mega_service/mega_main.py /etc/init.d/$PROJECT

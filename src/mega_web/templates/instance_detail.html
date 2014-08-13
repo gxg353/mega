@@ -75,6 +75,19 @@
   
 </div>
 <br>
+<div class="input-group">
+  <span class="input-group-addon">ROLE	</span>
+  	<select name="instance_role" class="form-control" style="width:200px;"readonly= {{ readonly }}>
+		{% ifequal instance.role 1 %} 
+			<option value={{ instance.role }} selected="selected">Master</option>
+		{% else %}
+			<option value={{ instance.role }} selected="selected">Slave</option>
+		{% endifequal %}
+		<option value=1 >Master</option>
+		<option value=2 >Slave</option>
+		<option value=3 >Single</option>
+	</select> 
+</div>
 <button type="button" class="btn btn-default btn" onclick="change_readonly('all')">
   		<span class="glyphicon glyphicon-wrench"></span>编辑
 </button>

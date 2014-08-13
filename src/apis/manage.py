@@ -119,7 +119,7 @@ def add_slow_log(log_info):
     if type(task) != types.DictionaryType:
         log.error('Failed to revert slow log data to dict !')
         return False
-    columns="db_host,port,start_time,user,user_host,query_time,lock_time,rows_sent,rows_examined,sql_text,sql_explained"
+    columns="db_host,port,start_time,user,user_host,Query_time,lock_time,Rows_sent,Rows_examined,sql_text,sql_explained,dbname"
     values=[]
     for c in columns.split(','):
         _d=task.get(c)

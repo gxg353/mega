@@ -6,6 +6,10 @@ Created on Jul 29, 2014
 
 @module:mega_service.mega_client.client_main
 '''
+import os,sys
+app_path=os.path.dirname(sys.path[0])
+sys.path.append(app_path)
+
 import time
 import datetime
 import multiprocessing

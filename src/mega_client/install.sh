@@ -16,13 +16,15 @@ p_path=`dirname $0`
 l_path=`pwd`
 
 mkdir -p /var/log/mega/ 
+chmod -R 777 /var/log/mega/
 
 cd $p_path
 echo "install python package..."
 python  setup.py install
+chmod a+x $l_path/mega_client/mega_client.py
 ln -sf  $l_path/mega_client/mega_client.py /etc/init.d/$PROJECT
 echo "add to rc.local"
-echo "python /etc/init.d/$PROJECT start" >>/etc/rc.local
+echo "python /etc/init.d/$PROJECT restart" >>/etc/rc.local
 echo "start service..." 
-python /etc/init.d/$PROJECT start
+python /etc/init.d/$PROJECT restart
 echo "done"

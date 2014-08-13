@@ -10,7 +10,7 @@ import commands
 import sys,os
 import time
 
-from setting import SCRIPT_DIR,DEFAULT_TARGET
+from setting import SCRIPT_DIR,DEFAULT_TARGET,KEEPALIVE
 import ping
 from logs import Logger
 
@@ -71,7 +71,7 @@ class Monitor():
     '''
     
     def __init__(self):
-        self.sleep=30
+        self.sleep=KEEPALIVE
     
     def monitor(self):
         log.info("Monitor is Starting...")

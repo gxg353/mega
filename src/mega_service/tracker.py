@@ -37,6 +37,7 @@ class Tracker():
         now=time.strftime('%H:%M',time.localtime(time.time()))
         sql="select * from task where timestampdiff(second,last_time,now())>=cycle and stat=1;"
         for t in self.q.fetchAll(sql):
+            _t={}
             _t["ARGS"]="'"+str(now)+"'" 
             _t["NAME"]=t[1]
             _t["TYPE"]=t[2]

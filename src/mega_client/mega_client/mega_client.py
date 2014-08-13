@@ -9,8 +9,12 @@ import sys, os, time, atexit
 app_path=os.path.dirname(sys.path[0])
 sys.path.append(app_path)
 from signal import SIGTERM
-from client_main import main as client_main
-from setting import DAEMON_PID,DAEMON_LOG
+from setting import DAEMON_PID,DAEMON_LOG,SERVICE_PID
+from logs import Logger
+
+MODEL='Daemon'
+log = Logger(MODEL).log()
+
 
 
 class Daemon:
@@ -52,7 +56,6 @@ class Daemon:
         file(self.pidfile,'w+').write("%s\n" % pid)
         
     def delpid(self):
-        return
         os.remove(self.pidfile)
     #===========================================================================
     # start
@@ -79,9 +82,41 @@ class Daemon:
         self._run()
         
     def stop(self):
-        # Get the pid from the pidfile
+        self._kill_pid(self.pidfile)
+        self._kill_pid(SERVICE_PID)
+    
+    def restart(self):
+        self.stop()
+        time.sleep(5)
+        self.start()
+    
+    def upgrade(self):
+        self._kill_pid(SERVICE_PID)
+        
+    def _run(self):
+        '''
+        Call the main service ,put the child pid into pid file
+        loop : try to restart mega_client if the subprocesses exit
+        '''
+        
+        while 1:
+            process_count=os.popen("ps aux |grep python |grep mega_client |grep -v grep |wc -l").read().strip()
+            if int(process_count) < 3:
+                #try to kill the sub process 
+                self._kill_pid(SERVICE_PID)
+                #import the main module
+                client=__import__('client_main')
+                client_main=getattr(client,'main')
+                #wait for the subprocess exit
+                client_main(SERVICE_PID)
+                log.debug("daemon loop end!")
+            time.sleep(5)
+   
+    def _kill_pid(self,pidfile):
+        if not os.path.exists(pidfile):
+            return 
         try:
-            pf = file(self.pidfile,'r')
+            pf = file(pidfile,'r')
             pid = pf.readlines()
             pf.close()
         except IOError:
@@ -89,7 +124,7 @@ class Daemon:
 
         if not pid:
             message = "pidfile %s does not exist. Daemon not running?\n"
-            sys.stderr.write(message % self.pidfile)
+            sys.stderr.write(message % pidfile)
             return # not an error in a restart
         # Try killing the daemon process            
         try:
@@ -100,24 +135,11 @@ class Daemon:
         except OSError, err:    
             err = str(err)
             if err.find("No such process") > 0:
-                if os.path.exists(self.pidfile):
-                    os.remove(self.pidfile)
+                if os.path.exists(pidfile):
+                    os.remove(pidfile)
             else:
-                print str(err)
-                sys.exit(1)
-        
-    def restart(self):
-        self.stop()
-        self.start()
-        
-    def _run(self):
-        '''
-        Call the main service ,put the child pid into pid file
-        '''
-        child_pid=client_main()
-        
-        for pid in child_pid:
-            file(self.pidfile,'a+').write("%s\n" % pid)
+                log.error(err)
+        return 
         
 if __name__ == "__main__":
     daemon = Daemon(DAEMON_PID)
@@ -128,9 +150,11 @@ if __name__ == "__main__":
             daemon.stop()
         elif 'restart' == sys.argv[1]:
             daemon.restart()
+        elif 'upgrade' == sys.argv[1]:
+            daemon.upgrade()
         else:
             sys.exit(2)
         sys.exit(0)
     else:
-        print "usage: %s start|stop|restart" % sys.argv[0]
+        print "usage: %s start|stop|restart|upgrade" % sys.argv[0]
         sys.exit(2)

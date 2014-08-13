@@ -8,8 +8,11 @@ Created on Jul 21, 2014
 '''
 
 from distutils.core import setup
+
+VERSION='1.0'
+
 setup(name='mega',
-      version='1.0',
+      version=VERSION,
       description='Mega client',
       author='XCHLIU',
       author_email='liu.xiaocheng0312@gmail.com',

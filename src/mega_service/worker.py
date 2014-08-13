@@ -25,7 +25,8 @@ def _get_func_list(object):
 
 class Worker():
     def __init__(self,queue):
-        self.queue=queue    
+        self.queue=queue   
+         
     def worker(self):
         self._name=multiprocessing.current_process().name
         log.info("%s is Starting..." % self._name)           
@@ -154,7 +155,9 @@ class Executor_Local():
         func=getattr(apis,self.cmd,None)
         if func:
             log.debug("Call API: apis.%s(%s)" % (self.cmd,_args))
-            return eval("apis.%s(%s)" % (self.cmd,_args))
+            return func(_args)
+            #return eval("apis.%s(%s)" % (self.cmd,_args))
+            
         else:
             log.error("Function %s not found" % self.cmd)
             return False

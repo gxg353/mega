@@ -40,7 +40,7 @@ def backup_routine(time=None,**args):
     if len_inst>0:
         script=Task().get_task_by_name('backup')
         for instance in instance_list:
-            result.append(remote_cmd(instance['host_ip'],instance['port'],script,'python',instance))
+            result.append(remote_cmd(instance['host_ip'],instance['port'],script,'python',args=instance))
     len_result=len(result)
     if result:
         log.debug(result)
@@ -158,7 +158,7 @@ def slowlog_routine(time=None):
         script=Task().get_task_by_name('slowlog')
         for instance in instance_list:
 #            log.debug(instance)
-            result.append(remote_cmd(instance['ip'],instance['port'],script,'python',instance))
+            result.append(remote_cmd(instance['ip'],instance['port'],script,'python',args=instance))
     if inst_len >0:
         log.debug(instance_list)
     if result:

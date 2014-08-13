@@ -47,6 +47,7 @@ class SubProcess:
             for t in self.threads:
                 t.start()
                 self.child_pids.append(t.pid)
+                log.info((t.pid,t.name))
             log.debug(self.child_pids)
             #for t in self.threads:
             #    t.join()

@@ -6,8 +6,9 @@ Created on Jul 30, 2014
 
 @module:mega_service.mega_client.upgrade
 '''
-import os
+import os,sys,time
 import commands
+import threading
 from mega_client.logs import Logger
 from mega_client.sender import MegaClient
 from mega_client.utils import get_ip_address
@@ -54,14 +55,17 @@ class Upgrade():
         if not self._get_pag():
             return False
         #install package
-        cmd='cd %s && python %s/setup.py install' % (self.setup_path,self.setup_path)
-        self._do_command(cmd, 'Update package')
-                #restart the client server
-        cmd='\\cp -ar %s %s' % (self.setup_path,CLIENT_DIR)
-        self._do_command(cmd, 'replace client source')
-        cmd='python /etc/init.d/mega_client restart'
-        self._do_command(cmd, 'Restart mega client')
+        cmd={
+             'Update package':'cd %s && python %s/setup.py install' % (self.setup_path,self.setup_path),
+             'Replace client source':'cp -ar %s %s' % (self.setup_path,CLIENT_DIR),
+             'Stop mega client':'python /etc/init.d/mega_client upgrade'}
+        for _action in cmd:
+            sys.stdout.flush()             
+            self._do_command(cmd[_action], _action)
         
+        self._do_command('chmod a+x /etc/init.d/mega_client','Change file mod')
+
+    
     def _do_command(self,cmd,action):
         _status,_output=commands.getstatusoutput(cmd)
         if _status <> 0:
@@ -69,9 +73,12 @@ class Upgrade():
         else:
             log.info('%s success!' % action)
 
-def main():
-    Upgrade().run()
 
     
-if __name__ == "__main__":
+    
+    
+def main():
+    Upgrade().run()
+    
+if __name__ == "__main__":     
     main()

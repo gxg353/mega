@@ -17,7 +17,7 @@ class ClientGet():
         self.server=Server
         
     def get_client_list(self):
-        client_list=self.client.objects.all().values()
+        client_list=self.client.objects.all().values().order_by("-heartbeat")
         for client in client_list:
             client['ip']=self.server.objects.filter(id=client['server_id']).values('ip')[0]['ip']
             _heartbeat=(datetime.datetime.now()-client['heartbeat']).seconds

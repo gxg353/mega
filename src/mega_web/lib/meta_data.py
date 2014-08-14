@@ -20,6 +20,12 @@ class MetaData(object):
     version=GlobalConf.VERSION
     os=GlobalConf.OS
     
-    business_list=business_manage.BusinessGet().get_business_list(None).values("id","name")
-    owner_list=user_manage.UserGet().get_user_list(None,0)
-    instance_list=instance_manage.InstanceGet().get_instance_list(None) #.values("id","ip","port")
+
+    def business_list(self):
+        return business_manage.BusinessGet().get_business_list(None,count=1000).values()
+    
+    def owner_list(self):
+        return user_manage.UserGet().get_user_list(None,count=0)
+    
+    def instance_list(self):
+        return instance_manage.InstanceGet().get_instance_list(None,count=0) #.values("id","ip","port")

@@ -33,6 +33,7 @@ class Instance(models.Model):
     role= models.IntegerField(default=1)
     
     version = models.CharField(max_length=20)
+    master_id=models.IntegerField(default=0)
     
     stat= models.IntegerField(default=1)
     online_date = models.DateTimeField(default=0)

@@ -87,6 +87,14 @@
 		<option value=2 >Slave</option>
 		<option value=3 >Single</option>
 	</select> 
+	  <span class="input-group-addon">master</span>
+	 <select name="instance_master" class="form-control" style="width:200px;"readonly= {{ readonly }}>
+		<option value={{ instance.master_id }} selected="selected">{{ instance.master_ip }}:{{instance.master_port}}</option>
+	{% for instance in instance_list %}
+		<option value={{ instance.id }}>{{ instance.ip }}:{{instance.port}}</option>
+	{% endfor %}
+	</select>
+	
 </div>
 <button type="button" class="btn btn-default btn" onclick="change_readonly('all')">
   		<span class="glyphicon glyphicon-wrench"></span>编辑

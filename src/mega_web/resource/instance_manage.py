@@ -23,6 +23,7 @@ class InstanceManage():
         self.inst_hatype=instance.get("instance_ha_type")
         self.inst_version=instance.get("instance_version")
         self.inst_role=instance.get('instance_role')
+        self.inst_master=instance.get('instance_master')
         if not self.inst_id:
             self.inst_id=InstanceGet().get_instance_by_ip_port(self.inst_ip, self.inst_port)
         self.msg=''
@@ -73,6 +74,9 @@ class InstanceManage():
         #is_business_exist=   
         inst=Instance(server_id=server_id,ip=self.inst_ip,port=self.inst_port,level=self.inst_level,name=self.inst_name,business_id=self.inst_business,
                       online_date=self.inst_online_date,owner=self.inst_owner,db_type=self.inst_dbtype,ha_type=self.inst_hatype)
+
+        if self.inst_role==2 or self.inst_role == '2':
+            inst.master_id=self.inst_master
         inst.save()
         return True,self.msg
     def mod_instance(self):
@@ -99,8 +103,14 @@ class InstanceManage():
             inst.version=self.inst_version
         if self.inst_role:
             inst.role=self.inst_role
+        if self.inst_role==2 or self.inst_role == '2':
+            if self.inst_master:
+                inst.master_id=self.inst_master
+        else:
+            inst.master_id=0
         inst.save()
         return True,self.msg
+    
     def stat_instance(self,action=False):
         if not self.inst_id:
             return False,MSG_ERR_INSTANCE_NOT_EXITST
@@ -124,6 +134,11 @@ class InstanceGet():
         result=self.get_instance_by_id(inst_id)
         business=Business.objects.filter(id=result['business_id']).values('name')[0]
         owner=User.objects.filter(id=result['owner']).values('name')[0]
+        if result['master_id']:
+            master=self.get_instance_by_id(result['master_id'])
+            if master:
+                result['master_ip']=master['ip']
+                result['master_port']=master['port'] 
         result["business"]=business['name']
         result["owner_name"]=owner['name']
         return result

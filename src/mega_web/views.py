@@ -32,6 +32,12 @@ def console(request):
     else:
         return render_to_response('console.html')
 
+def tunning(request):
+    if request.method=="GET":
+        return render_to_response('tunning.html')
+    else:
+        return render_to_response('tunning.html')
+
 def portal(request):
     if request.method=="GET":
         return render_to_response('portal.html')

@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, include, url
 from django.conf.urls.static import static
-from views import home,monitor,console,resource,portal,fun
+from views import home,monitor,console,resource,portal,fun,tunning
 from views import instance,instance_add,instance_detail
 from views import server,server_add,server_detail
 from views import business,business_add,business_detail
@@ -28,7 +28,7 @@ urlpatterns = patterns('',
     url(r'^resource/$',resource),
     url(r'^portal/$',portal),
     url(r'^monitor/$',monitor),
-#    url(r'^manage/$',manage),
+    url(r'^tunning/$',tunning),
     url(r'console/$',console),
     url(r'charts/$',charts),
     url(r'admin/$',admin),

@@ -12,8 +12,9 @@ from email import Utils
 from email.mime.text import MIMEText
 from email import Header
 import smtplib
+import httplib
 
-from setting import MAIL_HOST
+from setting import MAIL_HOST,SMS_HOST
 from logs import Logger
 
 MODEL='Utils'
@@ -77,4 +78,21 @@ class SendMail():
         finally:
             if s:
                 s.close()
- 
+    
+def sms(to_mail,msg):
+    '''
+        to_mail: 1111,222,333
+        msg: 'test'
+    '''
+    if not to_mail or not msg:
+        return False
+    url="http://%s:%s/sms.php?phone=%s&sms=%s" % (SMS_HOST[0],SMS_HOST[1],to_mail,msg)
+    try:
+        conn=httplib.HTTPConnection(SMS_HOST[0],port=SMS_HOST[1])
+        conn.request('GET', url)
+        response=conn.getresponse()
+        if response.getheaders():
+            return True
+    except Exception as ex:
+        log.error(ex)
+        return False

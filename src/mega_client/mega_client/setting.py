@@ -12,7 +12,9 @@ version='mega-client 0.1'
 TCP_HOST=''  # default 0.0.0.0
 TCP_PORT=1105
 MAIL_HOST='172.17.58.25'
+SMS_HOST=('172.17.58.24',8000)
 MEGA_HOST='172.17.62.37'
+
 
 KEEPALIVE=300
 

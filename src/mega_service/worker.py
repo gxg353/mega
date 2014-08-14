@@ -154,8 +154,8 @@ class Executor_Local():
         func=getattr(apis,self.cmd,None)
         if func:
             log.debug("Call API: apis.%s(%s)" % (self.cmd,_args))
-            return func(_args)
-            #return eval("apis.%s(%s)" % (self.cmd,_args))
+#            return func(arg for arg in _args)
+            return eval("apis.%s(%s)" % (self.cmd,_args))
             
         else:
             log.error("Function %s not found" % self.cmd)

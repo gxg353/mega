@@ -168,7 +168,7 @@ class InstanceGet():
             for f in str_filter:
                 if len(str(str_filter[f])) <>0:
                     sql+=" and %s='%s'" % (f,str_filter[f])
-        sql+=" order by i.stat desc"
+        sql+=" order by i.stat desc,i.ip,ip,ip.port "
         if count==0:
             result=self.inst.objects.raw(sql)
         else:

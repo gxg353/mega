@@ -55,6 +55,7 @@ def _read_file(path,prefix=''):
     return data
 
 def client_ping(ip,version=None,**args):
+    log.info('Client ping from %s' % ip)
     server_id=ServerGet().get_server_by_ip(ip)
     if not server_id:
         log.error("Get server id failed for %s" % ip)

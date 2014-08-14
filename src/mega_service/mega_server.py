@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 '''
 Created on Jun 20, 2014
 
@@ -120,6 +122,7 @@ class Daemon:
             while 1:
                 for p in pid:
                     os.kill(int(p.strip()), SIGTERM)
+                    log.info('Thread %s killed' % p)
                     time.sleep(0.1)
         except OSError, err:    
             err = str(err)

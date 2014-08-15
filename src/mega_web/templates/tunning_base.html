@@ -1,4 +1,8 @@
 {% extends "base.html" %}
+{% block title %}
+Tunning-Mega
+{% endblock %}
+
 {% block content %}
 
     <div class="container-fluid">
@@ -11,8 +15,8 @@
   
   		<a href="#" class="dropdown-toggle" data-toggle="dropdown"><font color="#000000">慢查询</font><span class="caret"></span></a>        		
   		<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
-    		<li role="presentation"><a role="menuitem" tabindex="-1" href="slowlog/report/">统计报表</a></li>
-    		<li role="presentation"><a role="menuitem" tabindex="-1" href="slowlog/config/">配置管理</a></li>
+    		<li role="presentation"><a role="menuitem" tabindex="-1" href="/tunning/slowlog/report/">统计报表</a></li>
+    		<li role="presentation"><a role="menuitem" tabindex="-1" href="/tunning/slowlog/config/">配置管理</a></li>
     		<li role="presentation"><a role="menuitem" tabindex="-1" href="#"></a></li>
     		<li role="presentation" class="divider"></li>
     		<li role="presentation"><a role="menuitem" tabindex="-1" href="#">slow_log</a></li>		

@@ -61,6 +61,7 @@ def charts(request):
     cht=Visit(request)
     return render_to_response('visit.html',{'visit': cht})
 
+
 #Sub sites
 ##resource
 def instance(request):
@@ -376,6 +377,13 @@ def task_detail(request):
         result,msg=_task.task_mod()
         task=_task.get_task_by_id()
     return render_to_response('task_detail.html',{'task':task,'owner_list':meta_data.owner_list(),'msg':msg},context_instance=RequestContext(request))
+
+def slowlog_config(request):
+
+    return render_to_response('slowlog_config.html',{'instance_list':meta_data.instance_list()},context_instance=RequestContext(request))
+
+def slowlog_report(request):
+    pass
 
 def my_404_view(request):
         return render_to_response('404.html')

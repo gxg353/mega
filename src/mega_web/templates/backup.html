@@ -48,7 +48,7 @@
 	     	<td>
 				<a href="/console/backup/backup_config/?ip={{ backup_list.host_ip}}&port={{backup_list.port}}"><span class="glyphicon glyphicon-cog"></span></a>
 			</td>
-			<td><a href="/resource/server_detail/?server_ip={{ backup_list.host_ip }}">{{ backup_list.host_ip }}:{{ backup_list.port }}</a></td>
+			<td><a href="/resource/instance_detail/?instance_id={{ backup_list.instance_id }}" onMouseOver="$(this).tooltip('show')" data-toggle="tooltip" title="Domain:{{ backup_list.server_name }} &#10; Business:{{ backup_list.business_name }} &#10;  Instance:{{ backup_list.instance_name }}">{{ backup_list.host_ip }}:{{ backup_list.port }}</a></td>
 			<td> {{ backup_list.backup_tool }} </td>
 			<td> {{ backup_list.backup_level }} </td>
 			<td> {{ backup_list.level_value }} </td>
@@ -68,13 +68,14 @@
 			{% else %}
 				<td calss="danger">	<span style="color:red">失败</span> </td>
 			{% endifequal %}
-			
-			<td> {{ backup_list.message }} </td>
+			<td>
+			<a onMouseOver="$(this).tooltip('show')" data-toggle="tooltip" title="{{ backup_list.message }}" >{{ backup_list.message|slice:":10"}}</a> </td>
 		</tr>
 	   {% endfor %}
      </tbody>
-  </table>
+  </table>  
 </div>
+
 <ul class="pagination">
   <ul class="pagination">
   <li><a href="?page=1">&laquo;</a></li>

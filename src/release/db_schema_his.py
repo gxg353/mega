@@ -29,3 +29,5 @@ alter table task change target target varchar(200) not null default '';
 alter table task_log add column stat int not null default 0;
 alter table task_log change run_counts run_counts int not null default 0;
 
+#2014-0-15
+alter table  instance add column slowlog int not null default 1;

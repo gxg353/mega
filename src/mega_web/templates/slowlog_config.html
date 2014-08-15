@@ -1,24 +1,39 @@
 {% extends "tunning_base.html" %}
 
 {% block subcontent %}
+<hr>
+<div class="row">
+<div class="col-xs-12 col-sm-12 col-md-3 col-lg-3">
+<div class="panel panel-default">
+<div class="panel-heading">慢查询配置</div>
 <div class="table-responsive">
   <table class="table table-hover">
-    <thead>
-      <tr>
-        <th>INSTANCE</th>
-        <th>STAT</th>
-	   </tr>
-	 </thead>
 	 <tbody>       
 	 {% for instance in instance_list %}
 	 	<tr>
 	 		<td>{{instance.ip}}:{{instance.port}}</td>
-	 		<td>{{instance.stat}}</td>
+	 		<td>
+	 		{% ifequal instance.slowlog 0 %}
+				<a class="btn btn-success" href="?instance_id={{ instance.id }}" role="button">启用</a>
+			{% else %}
+				<a class="btn btn-danger" href="?instance_id={{ instance.id }}" role="button">关闭</a>
+			{% endifequal %}
+	 		</td>
 	 	</tr>
 	 {% endfor %}
 	 
 	 </tbody>
 </table>
+</div>
+
+</div>
+</div>
+<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+
+<div class="panel panel-default">
+    <div class="panel-heading">慢查询配置</div>
+</div>
+</div>
 </div>
 
 {% endblock %}

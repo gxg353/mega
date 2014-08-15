@@ -2,6 +2,9 @@ import time
 from mega_web.entity.models import Backup_History_Info,Backup_Policy
 from conf.GlobalConf import BACKUP_TOOL,BACKUP_TYPE,BACKUP_LEVEL,BACKUP_CYCLE,DEFAULT_DB_PORT
 from mega_web.resource.instance_manage import InstanceGet
+from mega_web.resource.business_manage import BusinessGet
+from mega_web.resource.server_manage import ServerGet
+
 from lib.PyMysql import PyMySQL
 
 class Backup():
@@ -15,7 +18,21 @@ class Backup():
             sql="select * from backup_history_info order by id desc limit 150;"
         else:
             sql="select * from backup_history_info where host_ip='%s' limit 150;" % ip 
-        return self.backup_info.objects.raw(sql)
+        _data=[dict(d.__dict__) for d in self.backup_info.objects.raw(sql)]
+        for _d in _data:
+            ip=_d['host_ip']
+            port=_d['port']
+            instance_id=InstanceGet().get_instance_by_ip_port(ip, port)
+            if not instance_id:
+                continue
+            instance_id=instance_id[0]['id']
+            _d['instance_id']=instance_id
+            inst=InstanceGet().get_instance_by_id(instance_id)
+            _d['instance_name']=inst['name']
+            _d['business_name']=BusinessGet().get_business_by_id(inst['business_id'])['name']
+            _d['server_name']=ServerGet().get_server_by_id(inst['server_id'])['name']
+        return _data
+            
     def get_config_by_instance(self,ip='',port=3306):
         if not ip:
             return None,''

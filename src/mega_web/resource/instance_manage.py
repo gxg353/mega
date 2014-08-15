@@ -124,7 +124,16 @@ class InstanceManage():
                 inst.stat=STAT_ONLINE
         inst.save()
         return True,self.msg
-        
+    def stat_instance_slowlog(self):
+        if not self.inst_id:
+            return False,MSG_ERR_INSTANCE_NOT_EXITST
+        inst=Instance.objects.get(id=self.inst_id)
+        if inst.slowlog == 1:
+            inst.slowlog =0
+        else:
+            inst.slowlog=1
+        inst.save()
+        return True,self.msg
     
 class InstanceGet():
     def __init__(self):

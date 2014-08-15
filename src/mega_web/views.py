@@ -297,7 +297,6 @@ def backup(request):
     page_range=page_data.get('page_range')
     backup_list=page_data.get('page_data')
     today_static=Backup().get_today_statics()
-    print today_static
     return render_to_response('backup.html',{"backup_list_all":backup_list,"page_range":page_range,"today_static":today_static},context_instance=RequestContext(request))
 
 def backup_config(request):
@@ -379,11 +378,12 @@ def task_detail(request):
     return render_to_response('task_detail.html',{'task':task,'owner_list':meta_data.owner_list(),'msg':msg},context_instance=RequestContext(request))
 
 def slowlog_config(request):
-
+    if request.method=='GET':
+        result=instance_manage.InstanceManage(request.GET).stat_instance_slowlog()
     return render_to_response('slowlog_config.html',{'instance_list':meta_data.instance_list()},context_instance=RequestContext(request))
 
 def slowlog_report(request):
-    pass
+    return render_to_response('slowlog_report.html',{'instance_list':meta_data.instance_list()},context_instance=RequestContext(request))
 
 def my_404_view(request):
         return render_to_response('404.html')

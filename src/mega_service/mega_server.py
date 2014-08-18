@@ -94,7 +94,7 @@ class Daemon:
         '''
         while 1:
             process_count=os.popen("ps aux |grep python |grep mega_service |grep -v grep |wc -l").read().strip()
-            log.info(process_count)
+#            log.info(process_count)
             if int(process_count) < 4:
                 #self._kill_pid(self.pidfile)
                 server=__import__('mega_main')
@@ -122,7 +122,7 @@ class Daemon:
             while 1:
                 for p in pid:
                     os.kill(int(p.strip()), SIGTERM)
-                    log.info('Thread %s killed' % p)
+                    log.info('Thread %s killed' % p.strip())
                     time.sleep(0.1)
         except OSError, err:    
             err = str(err)

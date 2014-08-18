@@ -9,11 +9,12 @@ MODEL='MAIN'
 log=Logger(MODEL).log()
 
 
+
 class SubProcess:
     def __init__(self):
         self.threads=[]
         self.child_pids=[]
-        
+
     #===========================================================================
     # sub_process
     # Start the child processes:
@@ -24,7 +25,7 @@ class SubProcess:
     def sub_process(self,pidfile):
         global queue
         queue = multiprocessing.Queue()
-        worker=Worker(queue).worker
+        worker=Worker(queue,).worker
         tracker=Tracker(queue).tracker
         try:
             log.info('Start Subprocess: ')
@@ -53,15 +54,16 @@ class SubProcess:
         except Exception as ex:
             log.warning('Get interrupt signal,quit now!')
             log.error(ex)
+        self.pool_close()
         return self.child_pids
     
     #===========================================================================
     # monitor
     #===========================================================================
     def monitor(self):
-        self._name=multiprocessing.current_process().name
-        log.info("%s is Starting..." % self._name)           
         log.debug(self.child_pids)
+    
+
     
 def main(pidfile):
     log.info("=============BEGIN===========")

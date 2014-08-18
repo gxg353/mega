@@ -46,7 +46,7 @@ class MegaClient():
         self._cmd={}
         self.host=host
         self.port=port
-        
+        socket.setdefaulttimeout(10)
         if cmd:
             self._cmd['VALUE']=str(cmd)
     
@@ -69,13 +69,12 @@ class MegaClient():
             return _d[0]
     
     def conn(self):
-        try:
+        try:       
             self.s=socket.socket(socket.AF_INET,socket.SOCK_STREAM)      
             self.s.connect((self.host,self.port))
             return True
         except Exception as ex:
-            log.error("Connect to host : %s failed!" % self.host)
-            log.error(ex)
+            log.error("Connect to host : %s failed! %s" % (self.host,ex))
             return False
     
     def cmd_run(self,cmd=None):

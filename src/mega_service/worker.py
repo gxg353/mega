@@ -7,6 +7,7 @@ from apis import api as apis
 
 MODEL='Worker'
 log = Logger(MODEL).log()
+POOL_SIZE=5
 
 
 #===============================================================================
@@ -23,36 +24,45 @@ def _get_func_list(object):
         return _funcs    
 
 class Worker():
+    '''
+        1.Try to get the taks in the quene 
+        2.create a sub process to do the work if any task been found 
+    '''
     def __init__(self,queue):
         self.queue=queue   
-         
+    
     def worker(self):
-        self._name=multiprocessing.current_process().name
-        log.info("%s is Starting..." % self._name)           
-        data=None
+        pool= multiprocessing.Pool(POOL_SIZE)
         while 1:
+            data=None        
             try:
+            #    log.debug('loop')
                 if not self.queue.empty():
                     data=self.queue.get()
                     if data:
                         log.debug(data)
-                        self.work_deliver(data)
+                        pool.apply_async(work_deliver,args=(data,))
                 time.sleep(1)
             except Exception as ex:
                 log.error(ex)
+            
 
+class SubWorker():            
+    def __init__(self):
+        pass
+        
     def work_resolve(self,data):
         '''
-        work instance:{'HEAD':'MEGA','TYPE':'CMD','VALUE':'ls'}
-        keys:
-        *   HEAD:    for safe interactive,should be MEGA
-        *   TYPE:    0 internal server task,1 remote task
-        *   VALUE:   what to do : ls
-        *   TIME:    when to do : 0 once  , relay to the CYCLE
-            CYCLE:  lifecycle of job   day,week,month
-            TARGET:    unique identify for server or instance or database.
-            TOOL:    Internal func calls
-            _item=['TYPE','TIME','VALUE','CYCLE','TARGET','ARGS']
+            work instance:{'HEAD':'MEGA','TYPE':'CMD','VALUE':'ls'}
+            keys:
+            *   HEAD:    for safe interactive,should be MEGA
+            *   TYPE:    0 internal server task,1 remote task
+            *   VALUE:   what to do : ls
+            *   TIME:    when to do : 0 once  , relay to the CYCLE
+                CYCLE:  lifecycle of job   day,week,month
+                TARGET:    unique identify for server or instance or database.
+                TOOL:    Internal func calls
+                _item=['TYPE','TIME','VALUE','CYCLE','TARGET','ARGS']
         
         '''
         if len(data)==0:
@@ -77,37 +87,36 @@ class Worker():
             log.error("Resolve the data failed as : %s" % ex)
             log.error(data)
             return False
-        self.task=d
-        return True
         
-    def work_deliver(self,work):
-        '''
-            1.run the command
-            2.save task into db
-        '''
-        if not self.work_resolve(work):
-            log.error("Task resovle failed!")
-            return False
-        #internal funcs invoke,the task should include key : TOOL True
-        if self.task.has_key('TOOL'):
-            if self.task.get('VALUE')=='get_all_funcs':
-                return _get_func_list(apis)
+        return data
+        
+def work_deliver(data):
+    '''
+                1.run the command
+                2.save task into db
+    '''
+    task=SubWorker().work_resolve(data)
+    if not task:
+        log.error("Task resovle failed!")
+        return False
+    #internal funcs invoke,the task should include key : TOOL True
+    if task.has_key('TOOL'):
+        if task.get('VALUE')=='get_all_funcs':
+            return _get_func_list(apis)
 
-        #real time job    
-        if self.task.get('TIME') == 0 :
+            #real time job    
+    if task.get('TIME') == 0 :
             #execute on mega server or the remote instance
-            if self.task.get('TYPE')==0:
-                result=Executor_Local(self.task.get('VALUE')).do_cmd(self.task.get('ARGS'))
-            else:
-                result=Executor_remote(self.task).run()
+        if task.get('TYPE')==0:
+            result=Executor_Local(task.get('VALUE')).do_cmd(task.get('ARGS'))
         else:
-        #save into db
-            self.queue.put(work)
+            result=Executor_remote(task).run()
+    else:
+            #save into db
             result=1
-        return result
-    def close(self):
-        self.close()
-
+    return result
+    
+        
 class Executor_remote():
     '''
      Run the task on the remote server  using the mega client tcp service
@@ -140,9 +149,7 @@ class Executor_remote():
             log.info('Call remote task @ %s : %s %s' % (ip,cmd,args))                
             apis.remote_cmd(ip,1105, cmd, cmd_type, task_id,args)
             
-    def salt_loader(self):
-        pass
-    
+
     
 class Executor_Local():
     '''
@@ -169,4 +176,6 @@ class Saver():
     def __init__(self):
         pass
     def run(self):
+        log.debug('saver')
         pass
+    

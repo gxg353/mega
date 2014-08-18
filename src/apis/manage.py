@@ -144,7 +144,8 @@ def add_slow_log(log_info):
 
 def slowlog_routine(time=None):
     instance_list=[]    
-    config_list=SlowLog().get_instance_list()
+    config_list=SlowLog().get_slowlog_instance_list()
+    log.debug(config_list)
     for conf in config_list:
         instance={"id":conf.get('id'),
                   "ip":conf.get('ip'),
@@ -163,4 +164,4 @@ def slowlog_routine(time=None):
         log.debug(instance_list)
     if result:
         log.debug(result)
-    log.debug('%s instance slow log collect tasks are invoked.' % inst_len)
+    log.info('%s instance slow log collect tasks are invoked.' % inst_len)

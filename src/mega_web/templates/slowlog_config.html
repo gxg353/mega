@@ -14,9 +14,9 @@
 	 		<td>{{instance.ip}}:{{instance.port}}</td>
 	 		<td>
 	 		{% ifequal instance.slowlog 0 %}
-				<a class="btn btn-success" href="?instance_id={{ instance.id }}" role="button">启用</a>
+				<a class="btn btn-danger" href="?instance_id={{ instance.id }}" role="button">已关闭</a>
 			{% else %}
-				<a class="btn btn-danger" href="?instance_id={{ instance.id }}" role="button">关闭</a>
+				<a class="btn btn-success" href="?instance_id={{ instance.id }}" role="button">运行中</a>
 			{% endifequal %}
 	 		</td>
 	 	</tr>

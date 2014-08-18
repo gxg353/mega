@@ -19,8 +19,6 @@ class Tracker():
         self.q=PyMySQL()
   
     def tracker(self):
-        self._name=multiprocessing.current_process().name
-        log.info("%s is Starting..." % self._name)           
         data=None
         while 1:
             try:

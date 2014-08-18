@@ -37,9 +37,12 @@ class PyMySQL(object):
             return False
     #def quote(self,queryString):
         #return MySQLdb.escape_string(queryString);
-    def query(self,sql):
+    def query(self,sql,type=None):
         try:
-            cursor = self.conn.cursor()
+            if type=='dict':
+                cursor=self.conn.cursor(cursorclass=MySQLdb.cursors.DictCursor)
+            else:
+                cursor = self.conn.cursor()
             cursor.execute(sql)
             return cursor
         except Exception, ex:
@@ -86,6 +89,7 @@ class PyMySQL(object):
             sqlArr.append("%s='%s'"%(key,row[key],))
         sql = "update "+table +" set "+str.join(",",sqlArr)+" where "+where
         return self.execute(sql)
+
 
     def close(self):
         if self.conn:

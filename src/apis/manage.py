@@ -1,11 +1,11 @@
 import types
 from mega_service.backup import Backuper
-from mega_service.slow_log import SlowLog
+from mega_service.slowlog.slow_log import SlowLog
 from mega_service.task import Task
 from lib.logs import Logger
 from lib.PyMysql import PyMySQL
 from task import remote_cmd
-
+from lib.utils import today
 
 MODEL='API-manage'
 log = Logger(MODEL).log()
@@ -131,7 +131,7 @@ def add_slow_log(log_info):
     #todo 
     #add proxy func    
     table_name='slowlog_info'
-    sql="insert into %s(%s) values(%s)" %(table_name,columns,','.join(values))
+    sql="insert into %s(%s,log_time) values(%s,now())" %(table_name,columns,','.join(values))
     log.debug(sql)
     result,ex=db_conn.execute(sql)
     if result:
@@ -165,3 +165,13 @@ def slowlog_routine(time=None):
     if result:
         log.debug(result)
     log.info('%s instance slow log collect tasks are invoked.' % inst_len)
+
+def slowlog_statics(time=None):
+    #get the slow log in the prior hour
+    hour=time.split(':')[0]
+    pre_hour=int(hour)-1
+    now_date=today()
+    sql="select * from slowlog_info where log_time between '%s %s:00:00' and '%s %s:00:00'" %(now_date,pre_hour,now_date,hour)
+    data_list=PyMySQL().query(sql, type='dict')
+    #for data in data_list:
+        

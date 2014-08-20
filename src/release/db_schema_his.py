@@ -31,3 +31,7 @@ alter table task_log change run_counts run_counts int not null default 0;
 
 #2014-0-15
 alter table  instance add column slowlog int not null default 1;
+
+2014-08-20
+alter table slowlog_info add hash_code varchar(50) not null after id;
+alter table slowlog_info add log_time varchar(20) not null default 0;

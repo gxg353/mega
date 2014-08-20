@@ -11,6 +11,7 @@ from mega_web.entity.models import Document
 from mega_service.task import Task
 from mega_web.console.task import TaskManage 
 from mega_web.admin.views import * 
+from mega_web.tunning import slowlog
 
 meta_data=MetaData()
 
@@ -384,8 +385,12 @@ def slowlog_config(request):
     return render_to_response('slowlog_config.html',{'instance_list':meta_data.instance_list()},context_instance=RequestContext(request))
 
 def slowlog_report(request):
-    groupbyinstance=''
-    return render_to_response('slowlog_report.html',{'groupbyinstance':groupbyinstance},context_instance=RequestContext(request))
+    groupbyinstance=slowlog.get_chart_groupbyinstance()
+    groupbyhour=slowlog.get_chart_groupbyhour()
+    groupbytime=slowlog.get_chart_groupbytime()
+    topsql=slowlog.get_chart_topsql()
+    return render_to_response('slowlog_report.html',{'groupbyinstance':groupbyinstance,'groupbyhour':groupbyhour,'topsql':topsql,'groupbytime':groupbytime},\
+                              context_instance=RequestContext(request))
 
 def my_404_view(request):
         return render_to_response('404.html')

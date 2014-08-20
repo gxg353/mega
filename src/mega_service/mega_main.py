@@ -21,6 +21,7 @@ class SubProcess:
     #    1.worker         Resolve and do the jobs 
     #    2.listens        Accept task from mega sender 
     #    3.trackers       Track task from database
+    #    4.monitor        Internal monitor 
     #===========================================================================
     def sub_process(self,pidfile):
         global queue

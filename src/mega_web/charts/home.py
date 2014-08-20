@@ -18,7 +18,7 @@ def get_slowlog_report(request):
     c=Chart()
     c.yaxis_name='counts'
     c.data_list=["counts",]
-    return c.generate(data, 'slow log')
+    return c.generate(data, '')
     
 def main():
     return

@@ -3,18 +3,19 @@
 <div class="row">
 <div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 		<div class="panel panel-default">
+			<div class="panel-heading">总体</div>
+       <div id='total' style='min-width: 400px; height: 300px; margin: 0 auto'></div>
+</div>
+</div>
+
+<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+		<div class="panel panel-default">
 			<div class="panel-heading">时间分布</div>
        <div id='groupbytime' style='min-width: 400px; height: 300px; margin: 0 auto'></div>
 </div>
 </div>
 
 
-<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
-		<div class="panel panel-default">
-			<div class="panel-heading">时间分布(小时)</div>
-       <div id='groupbyhour' style='min-width: 400px; height: 300px; margin: 0 auto'></div>
-</div>
-</div>
 
 </div>
 <div class="row">
@@ -105,27 +106,27 @@
    </script>
 <script>
 	 $(function () { 
-	    $('#groupbyhour').highcharts({
+	    $('#total').highcharts({
 	    		chart: {
-	 	            type: '{{ groupbyhour.type }}'
+	 	            type: '{{ total.type }}'
 	 	        },
 	 	        title: {
-	 	            text: '{{ groupbyhour.title }}'
+	 	            text: '{{ total.title }}'
 	 	        },
 	 	        xAxis: {
 	 	            categories: [ 
-	 	                          {% for x in  groupbyhour.xaxis %}
+	 	                          {% for x in  total.xaxis %}
 	 	                           		'{{ x }}',
 	 	                           {% endfor %}
 	 	                        ]
 	 	        },
 	 	        yAxis: {
 	 	            title: {
-	 	                text: '{{ groupbyhour.yaxis_name }}'
+	 	                text: '{{ total.yaxis_name }}'
 	 	            }
 	 	        },
 	 	        series: [
-	 	            {% for data in groupbyhour.data %}  
+	 	            {% for data in total.data %}  
 	 	   				{% for key,value in data.items %}	                 
 	 	        			{
 	 	            		name: '{{ key }}',

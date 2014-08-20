@@ -88,7 +88,7 @@ class SubWorker():
             log.error(data)
             return False
         
-        return data
+        return d
         
 def work_deliver(data):
     '''

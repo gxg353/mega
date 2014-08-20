@@ -1,11 +1,9 @@
 #-*- coding: utf-8 -*-
 from django.shortcuts import render_to_response,RequestContext
-
 from resource import instance_manage,server_manage,business_manage,database_manage,resource_manage,user_manage
 from console.backup import Backup,Backup_Config
 from lib import paginator
 from lib.meta_data import MetaData 
-from mega_web.charts.home import   get_slowlog_report
 from mega_portal.file_manage import UploadFileForm
 from mega_web.entity.models import Document
 from mega_service.task import Task
@@ -16,8 +14,8 @@ from mega_web.tunning import slowlog
 meta_data=MetaData()
 
 def home(request):
-    slowlog=get_slowlog_report(request)
-    return render_to_response('home.html',{'slowlog':slowlog},context_instance=RequestContext(request))
+    slow_log=slowlog.get_chart_total()
+    return render_to_response('home.html',{'slowlog':slow_log},context_instance=RequestContext(request))
    
 
 def monitor(request):
@@ -386,10 +384,10 @@ def slowlog_config(request):
 
 def slowlog_report(request):
     groupbyinstance=slowlog.get_chart_groupbyinstance()
-    groupbyhour=slowlog.get_chart_groupbyhour()
+    total=slowlog.get_chart_total()
     groupbytime=slowlog.get_chart_groupbytime()
     topsql=slowlog.get_chart_topsql()
-    return render_to_response('slowlog_report.html',{'groupbyinstance':groupbyinstance,'groupbyhour':groupbyhour,'topsql':topsql,'groupbytime':groupbytime},\
+    return render_to_response('slowlog_report.html',{'groupbyinstance':groupbyinstance,'total':total,'topsql':topsql,'groupbytime':groupbytime},\
                               context_instance=RequestContext(request))
 
 def my_404_view(request):

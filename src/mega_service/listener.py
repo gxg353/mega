@@ -7,7 +7,7 @@ import SocketServer
 from SocketServer import StreamRequestHandler as SRH
 from conf.GlobalConf import DEFAULT_TCP_PORT,DEFAULT_TCP_HOST,DEBUG
 from lib.logs import Logger
-from worker import Worker
+from worker import work_deliver
 
 END_SIGN='EOF'
 ERROR='-1'
@@ -38,7 +38,7 @@ class Servers(SRH):
         data=data.replace('EOF', '')
         log.debug(data)
         if self.data_check(data):
-            _w=Worker(None).work_deliver(data)
+            _w=work_deliver(data)
             result=str(_w)
         else:
             result=ERROR

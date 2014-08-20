@@ -7,7 +7,7 @@ Created on Aug 20, 2014
 @module:mega_service.slowlog.slowlog_archive
 '''
 from lib.sql_parse import SQLParse
-from mega_web.resource.instance_manage import InstanceGet
+#from mega_web.resource.instance_manage import InstanceGet
 
 def slowlog_statics_per_log(data):
     '''
@@ -22,7 +22,7 @@ def slowlog_statics_per_log(data):
     sql=data.get('sql_text')
     sql_parsed=SQLParse(sql).var_replace()
     sql_hash=hash(sql_parsed)
-    instance_id=InstanceGet().get_instance_by_ip_port(data.get('db_host'), data.get('port'))
+#    instance_id=InstanceGet().get_instance_by_ip_port(data.get('db_host'), data.get('port'))
     #todo
 def main():
     return

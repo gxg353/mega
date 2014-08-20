@@ -5,7 +5,7 @@ from resource import instance_manage,server_manage,business_manage,database_mana
 from console.backup import Backup,Backup_Config
 from lib import paginator
 from lib.meta_data import MetaData 
-from charts.visit import Visit
+from mega_web.charts.home import   get_slowlog_report
 from mega_portal.file_manage import UploadFileForm
 from mega_web.entity.models import Document
 from mega_service.task import Task
@@ -15,10 +15,9 @@ from mega_web.admin.views import *
 meta_data=MetaData()
 
 def home(request):
-    if request.method=="GET":
-        return render_to_response('home.html')
-    else:
-        return render_to_response('home.html')
+    slowlog=get_slowlog_report(request)
+    return render_to_response('home.html',{'slowlog':slowlog},context_instance=RequestContext(request))
+   
 
 def monitor(request):
     if request.method=="GET":
@@ -57,9 +56,10 @@ def resource(request):
     else:
         return render_to_response('resource.html')
 
-def charts(request):
-    cht=Visit(request)
-    return render_to_response('visit.html',{'visit': cht})
+def chart(request):
+    return
+    #cht=visit.Visit(request)
+    #return render_to_response('visit.html',{'visit': cht})
 
 
 #Sub sites
@@ -377,13 +377,15 @@ def task_detail(request):
         task=_task.get_task_by_id()
     return render_to_response('task_detail.html',{'task':task,'owner_list':meta_data.owner_list(),'msg':msg},context_instance=RequestContext(request))
 
+#slow log
 def slowlog_config(request):
     if request.method=='GET':
         result=instance_manage.InstanceManage(request.GET).stat_instance_slowlog()
     return render_to_response('slowlog_config.html',{'instance_list':meta_data.instance_list()},context_instance=RequestContext(request))
 
 def slowlog_report(request):
-    return render_to_response('slowlog_report.html',{'instance_list':meta_data.instance_list()},context_instance=RequestContext(request))
+    groupbyinstance=''
+    return render_to_response('slowlog_report.html',{'groupbyinstance':groupbyinstance},context_instance=RequestContext(request))
 
 def my_404_view(request):
         return render_to_response('404.html')

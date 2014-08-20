@@ -9,7 +9,7 @@ from views import backup,backup_config,backup_config_list
 from views import task,task_add,task_detail
 from views import user,user_add,user_detail
 from views import slowlog_config,slowlog_report
-from views import charts
+from views import chart
 from views import document
 from views import my_404_view,my_500_view
 from views import admin,client
@@ -31,7 +31,7 @@ urlpatterns = patterns('',
     url(r'^monitor/$',monitor),
     url(r'^tunning/$',tunning),
     url(r'console/$',console),
-    url(r'charts/$',charts),
+    url(r'charts/$',chart),
     url(r'admin/$',admin),
 
     

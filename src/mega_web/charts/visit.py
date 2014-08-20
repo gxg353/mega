@@ -6,7 +6,6 @@ Created on Jul 4, 2014
 
 @module:mega_web.charts.visit
 '''
-from django.utils import simplejson
 from mega_web.entity.models import  Server
 from chartit import DataPool, Chart
 

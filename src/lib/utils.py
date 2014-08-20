@@ -1,4 +1,5 @@
 import re
+import datetime
 
 def check_ip(ip):
     '''
@@ -16,3 +17,10 @@ def is_int(value):
             return False
     except:
         return False
+def today(day=None,format=None):
+    if not format:
+        format='%Y-%m-%d'
+    if day:
+        return (datetime.datetime.now()-datetime.timedelta(days=day)).strftime(format)
+    else:
+        return datetime.datetime.today().strftime(format)

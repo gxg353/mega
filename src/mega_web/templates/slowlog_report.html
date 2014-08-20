@@ -1,6 +1,44 @@
 {% extends "tunning_base.html" %}
-
 {% block subcontent %}
-<hr>
+<div class="row">
+<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+		<div class="panel panel-default">
+			<div class="panel-heading">实例分布</div>
+    		<div class="panel-body">    		
+    		</div>
+       <div id='groupbyinstance' style='min-width: 400px; height: 300px; margin: 0 auto'></div>
+    
+</div>
+</div>
+<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+		<div class="panel panel-default">
+			<div class="panel-heading">时间分布</div>
+    		<div class="panel-body">    		
+    		</div>
+       <div id='groupbytime' style='min-width: 400px; height: 300px; margin: 0 auto'></div>
+</div>
+</div>
+</div>
+<div class="row">
+<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+		<div class="panel panel-default">
+			<div class="panel-heading">top sql</div>
+    		<div class="panel-body">    		
+    		</div>
+       <div id='topsql' style='min-width: 400px; height: 300px; margin: 0 auto'></div>
+    
+</div>
+</div>
+<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+		<div class="panel panel-default">
+			<div class="panel-heading">时间分布</div>
+    		<div class="panel-body">    		
+    		</div>
+       <div id='none' style='min-width: 400px; height: 300px; margin: 0 auto'></div>
+    
+</div>
+</div>
+</div>
+
 {% endblock %}
 

@@ -67,7 +67,7 @@ def tcp_server(queue,host=DEFAULT_TCP_HOST,port=DEFAULT_TCP_PORT):
     global q
     q=queue
     addr = (host,port)
-    log.info('TCP Server listen on %s ...' % str(addr))
+    log.info('TCP Server listen on %s' % str(addr))
     try:  
         server = SocketServer.ThreadingTCPServer(addr,Servers)
         server.serve_forever()

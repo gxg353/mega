@@ -65,14 +65,9 @@ class SQLParse():
             return item
         self._standard_format()
         self.sql=' '.join(map(_replace,self.sql.split()))
-        return self._get_hash(self.sql),self.sql
+        return self.sql
     
 
-    def _get_hash(self,str=''):
-        if str:
-            return hash(str)
-        else:
-            return hash(time.time())
         
     def _single_query(self):
         pass

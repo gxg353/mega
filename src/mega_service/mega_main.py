@@ -47,7 +47,7 @@ class SubProcess:
             for t in self.threads:
                 t.start()
                 self.child_pids.append(t.pid)
-                log.info((t.pid,t.name))
+                log.info([t.name,t.pid])
                 if pidfile:
                     file(pidfile,'a+').write("%s\n" % t.pid)
             for t in self.threads:

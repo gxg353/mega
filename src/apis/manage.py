@@ -1,11 +1,12 @@
 import types
 from mega_service.backup import Backuper
 from mega_service.slowlog.slow_log import SlowLog
+from mega_service.slowlog.slowlog_archive import slowlog_pack,slowlog_statics_per_hour
 from mega_service.task import Task
+from mega_web.resource.instance_manage import InstanceGet
 from lib.logs import Logger
 from lib.PyMysql import PyMySQL
 from task import remote_cmd
-from lib.utils import today
 
 MODEL='API-manage'
 log = Logger(MODEL).log()
@@ -167,11 +168,42 @@ def slowlog_routine(time=None):
     log.info('%s instance slow log collect tasks are invoked.' % inst_len)
 
 def slowlog_statics(time=None):
-    #get the slow log in the prior hour
-    hour=time.split(':')[0]
-    pre_hour=int(hour)-1
-    now_date=today()
-    sql="select * from slowlog_info where log_time between '%s %s:00:00' and '%s %s:00:00'" %(now_date,pre_hour,now_date,hour)
-    data_list=PyMySQL().query(sql, type='dict')
-    #for data in data_list:
+    #get the slow log in the prior hour 
+    #undo slow log
+    sql="select * from slowlog_info where stat=0 limit 100" 
+    try:
+        while 1:
+            cursor=PyMySQL().query(sql, type='dict')
+            if not cursor:
+                break
+            data_list=cursor.fetchall()
+            if not data_list or len(data_list)==0:
+                log.warn('None slow log found!')
+                break
+            log.info('%s slow log will be computed.' % len(data_list))
+            #add hash_code and instance to each log
+            for data in data_list: 
+                sql_hash=slowlog_pack(data.get('sql_text'))
+                instance_id=InstanceGet().get_instance_by_ip_port(data.get('db_host'), data.get('port'))
+                if not instance_id:
+                    log.warn('Unknown Instance: %s' %([data.get('db_host'), data.get('port')]))
+                    instance_id=0
+                else:
+                    instance_id=instance_id[0]['id']
+                sql="update slowlog_info set hash_code='%s',instance_id=%s,stat=1 where id = %s" %(sql_hash,instance_id,data.get('id'))
+                result,ex=PyMySQL().execute(sql)
+                if not result:
+                    log.error(ex)
+    except Exception as ex:
+                log.debug(data)
+                log.error('Pack slow log failed:%s' % ex) 
         
+    # do the hourly statics 
+    slowlog_statics_per_hour(time)
+    
+    
+def main():
+    return
+
+if __name__ == "__main__":
+    main()       

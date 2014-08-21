@@ -34,4 +34,5 @@ alter table  instance add column slowlog int not null default 1;
 
 2014-08-20
 alter table slowlog_info add hash_code varchar(50) not null after id;
-alter table slowlog_info add log_time varchar(20) not null default 0;
+alter table slowlog_info add instance_id int not null after hash_code;
+alter table slowlog_info add stat int not null default 0;

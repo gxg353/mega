@@ -132,7 +132,7 @@ def add_slow_log(log_info):
     #todo 
     #add proxy func    
     table_name='slowlog_info'
-    sql="insert into %s(%s,log_time) values(%s,now())" %(table_name,columns,','.join(values))
+    sql="insert into %s(%s) values(%s)" %(table_name,columns,','.join(values))
     log.debug(sql)
     result,ex=db_conn.execute(sql)
     if result:
@@ -199,7 +199,10 @@ def slowlog_statics(time=None):
                 log.error('Pack slow log failed:%s' % ex) 
         
     # do the hourly statics 
-    slowlog_statics_per_hour(time)
+    try:
+        slowlog_statics_per_hour(time)
+    except Exception as ex:
+        log.error('Statics slow log hourly failed:%s' % ex) 
     
     
 def main():

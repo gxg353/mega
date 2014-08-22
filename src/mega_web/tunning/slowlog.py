@@ -45,7 +45,7 @@ def get_chart_groupbytime():
     return c.generate(data, 'slow log by time') 
 
 def get_chart_topsql():
-    sql="select b.hash_code,b.sql_parsed,counts,max_time,min_time,avg_time,max_row,min_row,avg_row from slowlog_sql_day a ,sql_format b \
+    sql="select b.hash_code,b.sql_parsed,counts,max_time,min_time,avg_time,max_row,min_row,avg_row from slowlog_sql_hour a ,sql_format b \
         where a.hash_code=b.hash_code and date(log_time) between '%s' and '%s' order by counts desc limit 100 ;" % (today(7),today())
     data=cursor.query(sql,type='dict').fetchall()
     return data

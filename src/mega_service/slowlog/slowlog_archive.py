@@ -30,7 +30,6 @@ def slowlog_statics_per_hour(v_time):
     _pre_time="%s %s:00:00" % (today(),_pre_hour)
     _pre_time=int(time.mktime(time.strptime(_pre_time,'%Y-%m-%d %H:%M:%S')))
     _time=int(time.mktime(time.strptime(_time,'%Y-%m-%d %H:%M:%S')))
-    log.debug(_pre_time,_time)
     sql_1='''insert into slowlog_sql_hour(hash_code,log_time,counts,max_time,avg_time,min_time,max_row,avg_row,min_row)
          select hash_code,from_unixtime(start_time),count(*),max(query_time),avg(query_time),min(query_time),max(rows_examined),avg(rows_examined),min(rows_examined) 
          from slowlog_info where start_time between '%s' and '%s' group by hash_code;''' %(_pre_time,_time)
@@ -47,8 +46,8 @@ def slowlog_statics_per_hour(v_time):
     data_list=cursor.fetchall()
     if data_list and len(data_list) >0 :
         _list=(1,5,10,100)
-        _counts=[]
         for data in data_list:
+            _counts=[]
             for l in _list:
                 _sql="select count(*) from slowlog_info where instance_id=%s and dbname='%s' and start_time between '%s' and '%s' and query_time<%s;" \
                         %(data.get('instance_id'),data.get('dbname'),_pre_time,_time,l)

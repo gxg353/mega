@@ -125,7 +125,7 @@ def add_slow_log(log_info):
     for c in columns.split(','):
         _d=task.get(c)
         if _d:
-            _d="'"+str(_d)+"'"
+            _d='"'+str(_d)+'"'
             values.append(_d)
         else:
             values.append("''")
@@ -190,8 +190,8 @@ def slowlog_statics(time=None):
                     instance_id=0
                 else:
                     instance_id=instance_id[0]['id']
-                sql="update slowlog_info set hash_code='%s',instance_id=%s,stat=1 where id = %s" %(sql_hash,instance_id,data.get('id'))
-                result,ex=PyMySQL().execute(sql)
+                _sql="update slowlog_info set hash_code='%s',instance_id=%s,stat=1 where id = %s" %(sql_hash,instance_id,data.get('id'))
+                result,ex=PyMySQL().execute(_sql)
                 if not result:
                     log.error(ex)
     except Exception as ex:

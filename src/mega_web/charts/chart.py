@@ -48,6 +48,5 @@ class Chart(object):
             series: %s
         }
         ''' %(self.type,self.title,[x for x in self.slowlog['xaxis']],self.slowlog['yaxis_name'],[ x for x in self.slowlog['data']])
-        print data
         return data
         

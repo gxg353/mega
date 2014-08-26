@@ -118,19 +118,16 @@ class Daemon:
             sys.stderr.write(message % pidfile)
             return # not an error in a restart
         # Try killing the daemon process            
-        try:
-            while 1:
-                for p in pid:
-                    os.kill(int(p.strip()), SIGTERM)
-                    log.info('Thread %s killed' % p.strip())
-                    time.sleep(0.1)
-        except OSError, err:    
-            err = str(err)
-            if err.find("No such process") > 0:
-                if os.path.exists(pidfile):
-                    os.remove(pidfile)
-            else:
-                print err
+        for p in pid:
+            try:
+                os.kill(int(p.strip()), SIGTERM)
+                log.info('Thread %s killed' % p.strip())
+                time.sleep(0.1)
+            except OSError, err:    
+                log.error(err)
+        if os.path.exists(pidfile):
+            os.remove(pidfile)
+
         return 
         
 if __name__ == "__main__":

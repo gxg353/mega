@@ -45,6 +45,7 @@ class SubProcess:
             #backuper=multiprocessing.Process(target=backuper,args=(),name="Backup worker")
             #threads.append(backuper)        
             for t in self.threads:
+                t.daemon=True
                 t.start()
                 self.child_pids.append(t.pid)
                 log.info([t.name,t.pid])

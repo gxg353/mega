@@ -8,11 +8,12 @@ from views import database,database_add,database_detail
 from views import backup,backup_config,backup_config_list
 from views import task,task_add,task_detail
 from views import user,user_add,user_detail
-from views import slowlog_config,slowlog_report
+from views import slowlog_config,slowlog_report,slowlog_sql
 from views import chart
 from views import document
 from views import my_404_view,my_500_view
 from views import admin,client
+
 
 from django.conf import settings
 # Uncomment the next two lines to enable the admin:
@@ -71,6 +72,7 @@ urlpatterns = patterns('',
 
     url(r'^tunning/slowlog/config/$',slowlog_config),
     url(r'^tunning/slowlog/report/$',slowlog_report),
+    url(r'^tunning/slowlog/report/sql/$',slowlog_sql),
 
     url(r'^portal/document/$',document),
     

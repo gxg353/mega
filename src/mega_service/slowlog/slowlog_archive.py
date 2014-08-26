@@ -48,7 +48,9 @@ def slowlog_statics_per_hour(v_time):
         _list=(1,5,10,100)
         for data in data_list:
             _counts=[]
+            c=''
             for l in _list:
+                _c=0
                 _sql="select count(*) from slowlog_info where instance_id=%s and dbname='%s' and start_time between '%s' and '%s' and query_time<%s;" \
                         %(data.get('instance_id'),data.get('dbname'),_pre_time,_time,l)
                 _c=PyMySQL().fetchOne(_sql)

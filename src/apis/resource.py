@@ -38,7 +38,10 @@ def get_all_instance(model=None,stat=0,count=0,role=None):
         data=instance_manage.InstanceGet().get_instance_list(filter,count)
         if data:
             for d in data:
-                result.append(dict(d.__dict__))
+                _d=dict(d.__dict__)
+                for k in _d:
+                    _d[k]=str(_d.get(k,None))
+                result.append(_d)
         err_code=ERR_CODE_SUCCESS
         log.info('Get instance list success for %s',model)
     except Exception as ex:

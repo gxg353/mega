@@ -387,9 +387,17 @@ def slowlog_report(request):
     total=slowlog.get_chart_total()
     groupbytime=slowlog.get_chart_groupbytime()
     topsql=slowlog.get_chart_topsql()
-    return render_to_response('slowlog_report.html',{'groupbyinstance':groupbyinstance,'total':total,'topsql':topsql,'groupbytime':groupbytime},\
+    return render_to_response('slowlog_report.html',{'groupbyinstance':groupbyinstance,'total':total,'topsql':topsql,'groupbytime':groupbytime},
                               context_instance=RequestContext(request))
 
+def slowlog_sql(request):
+    if request.method=='GET':
+        hash_code=request.GET.get('hash_code')
+        groupbyinstance=slowlog.get_sql_hosts(hash_code)
+        total=slowlog.get_sql_time(hash_code)
+        sql_info=slowlog.get_sql_info(hash_code)
+    return render_to_response('slowlog_report_sql.html',{'groupbyinstance':groupbyinstance,'total':total,'sql_info':sql_info},context_instance=RequestContext(request))
+        
 def my_404_view(request):
         return render_to_response('404.html')
 def my_500_view(request):

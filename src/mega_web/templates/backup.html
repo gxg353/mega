@@ -2,6 +2,17 @@
 {% block subcontent %}
 <div class="well">备份状态:已配置备份实例最近一次备份信息
 </div>
+<div> 今日进度：（共： {{ today_static.total_today }}个）
+<div class="progress">
+  <div class="progress-bar progress-bar-success" style="width: {{today_static.success_ratio}}%">
+    <span class="sr-only"></span>成功 {{today_static.success_count}}个
+  </div>
+  <div class="progress-bar progress-bar-warning progress-bar-striped" style="width: {{today_static.failure_ratio}}%">
+    <span class="sr-only"></span>失败{{today_static.failure_count}}个
+  </div>
+</div>
+</div>
+<div>
 <button type="button" class="btn btn-default navbar-btn" onclick="window.location.href='backup_config_list/'">配置管理</button>
 
 <form class="navbar-form navbar-left" role="search" action="/console/backup/" method='post' >
@@ -12,47 +23,59 @@
       		{% csrf_token %}
       	
 </form>
+</div>
 <div class="table-responsive">
 
-  <table class="table table-striped">
+  <table class="table table-hover">
     <thead>
       <tr>
       	<th></th>
-        <th>IP</th>
-        <th>PORT</th>
-        <th>DB_TYPE</th>
+        <th>INSTANCE</th>
         <th>METHOD</th>
         <th>LEVEL</th>
         <th>VALUE</th>
         <th>TYPE</th>
-        <th>BEGIN_TIME</th>
-        <th>END_TIME</th>
+        <th>BEGIN_END</th>
         <th>SIZE</th>
+        <th>STAGE</th>
         <th>STAT</th>
+        <th>MESSAGE</th>
       </tr>
     </thead>
     <tbody>
-    	{% for backup_list in backup_list_all %}
+    {% for backup_list in backup_list_all %}
 	     <tr>
 	     	<td>
-					<a href="/console/backup/backup_config/?ip={{ backup_list.host_ip}}&port={{backup_list.port}}"><span class="glyphicon glyphicon-cog"></span></a>
+				<a href="/console/backup/backup_config/?ip={{ backup_list.host_ip}}&port={{backup_list.port}}"><span class="glyphicon glyphicon-cog"></span></a>
 			</td>
-			<td><a href="/resource/server_detail/?server_ip={{ backup_list.host_ip }}">{{ backup_list.host_ip }}</a></td>
-			<td>{{ backup_list.port }}</td>	
-			<td> {{ backup_list.db_type }} </td>
+			<td><a href="/resource/instance_detail/?instance_id={{ backup_list.instance_id }}" onMouseOver="$(this).tooltip('show')" data-toggle="tooltip" title="Domain:{{ backup_list.server_name }} &#10; Business:{{ backup_list.business_name }} &#10;  Instance:{{ backup_list.instance_name }}">{{ backup_list.host_ip }}:{{ backup_list.port }}</a></td>
 			<td> {{ backup_list.backup_tool }} </td>
 			<td> {{ backup_list.backup_level }} </td>
 			<td> {{ backup_list.level_value }} </td>
 			<td> {{ backup_list.backup_type }} </td>
-			<td> {{ backup_list.backup_begin_time }} </td>
-			<td> {{ backup_list.backup_end_time }} </td>
-			<td> {{ backup_list.file_size }} </td>
-			<td> {{ backup_list.backup_status }} </td>
+			<td> {{ backup_list.backup_begin_time|date:"Y-m-d H:i:s" }} ~ {{ backup_list.backup_end_time|date:"Y-m-d H:i:s" }}</td>
+			<td>
+			{% ifequal backup_list.file_size  None %} 
+				<span>0 MB</span>
+			{% else %}
+				<span>{{ backup_list.file_size }} MB</span>
+			{% endifequal %}
+			</td>
+			<td> {{ backup_list.status }} </td>
+			
+			{% ifequal backup_list.backup_status  'Y' %} 
+			<td>	<span style="color:green">成功</span> </td>
+			{% else %}
+				<td calss="danger">	<span style="color:red">失败</span> </td>
+			{% endifequal %}
+			<td>
+			<a onMouseOver="$(this).tooltip('show')" data-toggle="tooltip" title="{{ backup_list.message }}" >{{ backup_list.message|slice:":10"}}</a> </td>
 		</tr>
 	   {% endfor %}
      </tbody>
-  </table>
+  </table>  
 </div>
+
 <ul class="pagination">
   <ul class="pagination">
   <li><a href="?page=1">&laquo;</a></li>

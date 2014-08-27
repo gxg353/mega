@@ -6,11 +6,13 @@ Created on Jul 30, 2014
 
 @module:mega_service.mega_client.upgrade
 '''
-import os
+import os,sys,time
 import commands
-from logs import Logger
-from sender import MegaClient
-from utils import get_ip_address
+import threading
+from mega_client.logs import Logger
+from mega_client.sender import MegaClient
+from mega_client.utils import get_ip_address
+from mega_client.setting import CLIENT_DIR,MEGA_HOST
 
 MODEL='Upgrade'
 log = Logger(MODEL).log()
@@ -18,8 +20,10 @@ log = Logger(MODEL).log()
 class Upgrade():
     
     def __init__(self):
-        self.cmd='client_upgrade'
-        self.c=MegaClient(cmd=self.cmd)
+        self.mega_server=MEGA_HOST
+        self.cmd='client_upgrade'        
+        self.c=MegaClient(host=self.mega_server,cmd=self.cmd)
+
         self.setup_path=''
         
     def _get_pag(self):
@@ -27,6 +31,9 @@ class Upgrade():
         domain,ip=get_ip_address()
         ip="['"+ip+"']"      
         pag=self.c.run(func_args=ip,TOOL=True)
+        if pag==0:
+            log.error('Failed to connect to mega server:%s' % self.mega_server)
+            return False
         pag=eval(pag)
         tmp_dir=os.path.join('/tmp',pag.pop(0))
         self.setup_path=tmp_dir
@@ -43,26 +50,35 @@ class Upgrade():
             f.write(file_content)
         f.close()
         return True
+    
     def run(self):
         if not self._get_pag():
             return False
         #install package
-        cmd='cd %s && python %s/setup.py install' % (self.setup_path,self.setup_path)
-        self._do_command(cmd, 'Update package')
-                #restart the client server
-        cmd='/etc/init.d/mega_client restart'
-        self._do_command(cmd, 'Restart mega client')
+        cmd={
+             'Update package':'cd %s && python %s/setup.py install' % (self.setup_path,self.setup_path),
+             'Replace client source':'cp -ar %s %s' % (self.setup_path,CLIENT_DIR),
+             'Stop mega client':'python /etc/init.d/mega_client upgrade'}
+        for _action in cmd:
+            sys.stdout.flush()             
+            self._do_command(cmd[_action], _action)
         
+        self._do_command('chmod a+x /etc/init.d/mega_client','Change file mod')
+
+    
     def _do_command(self,cmd,action):
         _status,_output=commands.getstatusoutput(cmd)
         if _status <> 0:
-            log.error('%s filed : %s' % (action,_output))
+            log.error('%s failed : %s' % (action,_output))
         else:
             log.info('%s success!' % action)
 
-def main():
-    Upgrade().run()
 
     
-if __name__ == "__main__":
+    
+    
+def main():
+    Upgrade().run()
+    
+if __name__ == "__main__":     
     main()

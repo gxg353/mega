@@ -1,15 +1,19 @@
 from django.conf.urls import patterns, include, url
 from django.conf.urls.static import static
-from views import home,monitor,console,resource,portal,fun
+from views import home,monitor,console,resource,portal,fun,tunning
 from views import instance,instance_add,instance_detail
 from views import server,server_add,server_detail
 from views import business,business_add,business_detail
 from views import database,database_add,database_detail
 from views import backup,backup_config,backup_config_list
+from views import task,task_add,task_detail
 from views import user,user_add,user_detail
-from views import charts
+from views import slowlog_config,slowlog_report,slowlog_sql
+from views import chart
 from views import document
 from views import my_404_view,my_500_view
+from views import admin,client
+
 
 from django.conf import settings
 # Uncomment the next two lines to enable the admin:
@@ -26,9 +30,11 @@ urlpatterns = patterns('',
     url(r'^resource/$',resource),
     url(r'^portal/$',portal),
     url(r'^monitor/$',monitor),
-#    url(r'^manage/$',manage),
+    url(r'^tunning/$',tunning),
     url(r'console/$',console),
-    url(r'charts/$',charts),
+    url(r'charts/$',chart),
+    url(r'admin/$',admin),
+
     
 #django
 #    (r'^admin/', include(admin.site.urls)),
@@ -59,8 +65,19 @@ urlpatterns = patterns('',
     url(r'^console/backup/backup_config/$',backup_config),
     url(r'^console/backup/backup_config_list/$',backup_config_list),
 
-    url(r'^portal/document/$',document),
+    url(r'^console/task/$',task),
+    url(r'^console/task/task_add/$',task_add),
+    url(r'^console/task/task_detail/$',task_detail),
 
+
+    url(r'^tunning/slowlog/config/$',slowlog_config),
+    url(r'^tunning/slowlog/report/$',slowlog_report),
+    url(r'^tunning/slowlog/report/sql/$',slowlog_sql),
+
+    url(r'^portal/document/$',document),
+    
+    url(r'^admin/client/$',client),
+    
 #for static like css ,js ,ima,music     
     url(r'^static/(?P<path>.*)$', 'django.views.static.serve',{'document_root': settings.STATIC_URLS },name="static"),
 

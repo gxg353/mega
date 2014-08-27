@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}
+Tunning-Mega
+{% endblock %}
+
+{% block content %}
+
+    <div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-1 sidebar">
+          <ul class="nav nav-sidebar">
+            <li><a href="/tunning/">Overview</a></li>
+
+			<li class="dropdown">
+  
+  		<a href="#" class="dropdown-toggle" data-toggle="dropdown"><font color="#000000">慢查询</font><span class="caret"></span></a>        		
+  		<ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+    		<li role="presentation"><a role="menuitem" tabindex="-1" href="/tunning/slowlog/report/">统计报表</a></li>
+    		<li role="presentation"><a role="menuitem" tabindex="-1" href="/tunning/slowlog/config/">配置管理</a></li>
+    		<li role="presentation"><a role="menuitem" tabindex="-1" href="#"></a></li>
+    		<li role="presentation" class="divider"></li>
+    		<li role="presentation"><a role="menuitem" tabindex="-1" href="#">slow_log</a></li>		
+  		</ul>
+			</li>
+        </ul>
+        </div>
+       </div>
+    </div>
+  <div class="col-sm-9 col-sm-offset-3 col-md-10 col-md-offset-1 main">
+    {% block subcontent %}
+    {% endblock %}
+  </div>
+{% endblock %}

@@ -8,6 +8,10 @@ Created on Jul 1, 2014
 
 import socket
 import types
+import sys, os
+app_path=os.path.dirname(sys.path[0])
+sys.path.append(app_path)
+
 from logs import Logger
 
 
@@ -42,7 +46,7 @@ class MegaClient():
         self._cmd={}
         self.host=host
         self.port=port
-        
+        socket.setdefaulttimeout(10)
         if cmd:
             self._cmd['VALUE']=str(cmd)
     
@@ -65,13 +69,12 @@ class MegaClient():
             return _d[0]
     
     def conn(self):
-        try:
+        try:       
             self.s=socket.socket(socket.AF_INET,socket.SOCK_STREAM)      
             self.s.connect((self.host,self.port))
             return True
         except Exception as ex:
-            log.error("Connect to host : %s failed!" % self.host)
-            log.error(ex)
+            log.error("Connect to host : %s failed! %s" % (self.host,ex))
             return False
     
     def cmd_run(self,cmd=None):
@@ -106,7 +109,11 @@ class MegaClient():
         *   VALUE:    func name which be called
         *   TIME:    when to do : 0 once  , relay to the CYCLE
             CYCLE:  lifecycle of job   day,week,month
-            TARGET:    unique identify for server or instance or database.
+            TARGET:    unique identify for server or instance or database.  
+                       unique command type when in the case used for remote command etc.
+                           *cmd
+                           *python
+                           *bash
             ARGS:    args for the api func
             TOOL:    Internal func calls
         '''

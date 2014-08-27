@@ -26,6 +26,7 @@ class Logger:
                             format='%(asctime)s %(name)-12s %(levelname)-5s %(message)s')
         logger=logging.getLogger(self.model)
         return logger
+
 if __name__=="__main__":
     log=Logger('test').log()
     log.error("error")

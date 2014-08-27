@@ -1,0 +1,132 @@
+{% extends "tunning_base.html" %}
+{% block subcontent %}
+<div class="well well-sm col-xs-3 col-sm-3 col-md-3 col-lg-3">{{ sql_info.db_host}}: {{sql_info.port}} < {{sql_info.dbname }}</div>
+
+<div>
+<button type="button" class="btn btn-right btn-primary" >优化</button>
+</div>
+
+
+<div class="row">
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">总体</div>
+       <div id='total' style='min-width: 400px; height: 300px; margin: 0 auto'></div>
+</div>
+</div>
+
+
+
+
+</div>
+<div class="row">
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">实例分布</div>
+       <div id='groupbyinstance' style='min-width: 400px; height: 300px; margin: 0 auto'></div>
+    
+</div>
+</div>
+
+</div>
+<div class="row">
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+		<div class="panel panel-default" >
+			<div class="panel-heading">优化历史</div>
+    </div>
+		
+</div>
+</div>
+
+<div class="row">
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+		<div class="panel panel-default" >
+			<div class="panel-heading">sql样例</div>
+			<div>{{ sql_info.sql_text }} </div>
+    </div>
+		
+</div>
+</div>
+<div class="row">
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+		<div class="panel panel-default" >
+			<div class="panel-heading">执行计划</div>
+		<div>	{{ sql_info.sql_explained }}</div>
+    </div>
+		
+</div>
+</div>
+
+  <script>
+	 $(function () { 
+	    $('#groupbyinstance').highcharts({
+	    		chart: {
+	 	            type: '{{ groupbyinstance.type }}'
+	 	        },
+	 	        title: {
+	 	            text: '{{ groupbyinstance.title }}'
+	 	        },
+	 	        xAxis: {
+	 	            categories: [ 
+	 	                          {% for x in  groupbyinstance.xaxis %}
+	 	                           		'{{ x }}',
+	 	                           {% endfor %}
+	 	                        ]
+	 	        },
+	 	        yAxis: {
+	 	            title: {
+	 	                text: '{{ groupbyinstance.yaxis_name }}'
+	 	            }
+	 	        },
+	 	        series: [
+	 	            {% for data in groupbyinstance.data %}  
+	 	   				{% for key,value in data.items %}	                 
+	 	        			{
+	 	            		name: '{{ key }}',
+	 	            		data: {{ value }} 
+	 	        			},
+	 	            	{% endfor %}     
+	 	        	{% endfor %}     
+	 	    	]
+	 	    }
+	    );
+	});
+   </script>
+<script>
+	 $(function () { 
+	    $('#total').highcharts({
+	    		chart: {
+	 	            type: '{{ total.type }}'
+	 	        },
+	 	        title: {
+	 	            text: '{{ total.title }}'
+	 	        },
+	 	        xAxis: {
+	 	            categories: [ 
+	 	                          {% for x in  total.xaxis %}
+	 	                           		'{{ x }}',
+	 	                           {% endfor %}
+	 	                        ]
+	 	        },
+	 	        yAxis: {
+	 	            title: {
+	 	                text: '{{ total.yaxis_name }}'
+	 	            }
+	 	        },
+	 	        series: [
+	 	            {% for data in total.data %}  
+	 	   				{% for key,value in data.items %}	                 
+	 	        			{
+	 	            		name: '{{ key }}',
+	 	            		data: {{ value }} 
+	 	        			},
+	 	            	{% endfor %}     
+	 	        	{% endfor %}     
+	 	    	]
+	 	    }
+	    );
+	});
+   </script>
+
+{% endblock %}
+

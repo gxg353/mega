@@ -1,0 +1,47 @@
+{% extends "admin/admin_base.html" %}
+{% block subcontent %}
+<div class="table-responsive">
+  <table class="table table-striped">
+    <thead>
+      <tr>
+      	
+      	<th>IP</th>
+      	<th>VERSION</th>
+      	<th>HEARTBEAT</th>
+        <th>STAT</th>
+        <th>UPGRADE</th>
+      </tr>
+    </thead>
+    <tbody>
+       {% for client in client_list %}
+	     <tr>
+	     
+	     	<td><a href="/resource/server_detail/?server_id={{ client.server_id }}">{{ client.ip }}</a></td>
+			<td><a href="#">{{ client.version }}</a></td>
+			<td>{{ client.heartbeat|date:"Y-m-d H:i:s" }}</td>
+			<td> 
+			{% ifequal client.stat 1 %} 
+				<span style="color:green">Online</span>
+			{% else %}
+				<span style="color:red">Offline</span>
+			{% endifequal %}
+			</td>
+	     	<td>
+				<a href="?action=client_upgrade&ip={{ client.ip }}"><span class="glyphicon glyphicon-open"></span></a>
+			</td>
+
+         </tr>
+	   {% endfor %}
+     </tbody>
+  </table>
+</div>
+{{ msg }}
+<ul class="pagination">
+  <li><a href="?page=1">&laquo;</a></li>
+  {% for page in page_range %}
+  	<li><a href="?page={{ page }}">{{ page }}</a></li>
+  {% endfor%}
+  <li><a href="?page=1">&raquo;</a></li>
+
+</ul>
+{% endblock %}

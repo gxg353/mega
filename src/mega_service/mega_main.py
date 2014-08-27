@@ -1,5 +1,3 @@
-import sys
-sys.path.append("..")
 import datetime
 import multiprocessing
 from listener import tcp_server
@@ -11,22 +9,24 @@ MODEL='MAIN'
 log=Logger(MODEL).log()
 
 
+
 class SubProcess:
     def __init__(self):
         self.threads=[]
         self.child_pids=[]
-        
+
     #===========================================================================
     # sub_process
     # Start the child processes:
     #    1.worker         Resolve and do the jobs 
     #    2.listens        Accept task from mega sender 
     #    3.trackers       Track task from database
+    #    4.monitor        Internal monitor 
     #===========================================================================
-    def sub_process(self):
+    def sub_process(self,pidfile):
         global queue
         queue = multiprocessing.Queue()
-        worker=Worker(queue).worker
+        worker=Worker(queue,).worker
         tracker=Tracker(queue).tracker
         try:
             log.info('Start Subprocess: ')
@@ -45,29 +45,32 @@ class SubProcess:
             #backuper=multiprocessing.Process(target=backuper,args=(),name="Backup worker")
             #threads.append(backuper)        
             for t in self.threads:
+                t.daemon=True
                 t.start()
                 self.child_pids.append(t.pid)
-            log.debug(self.child_pids)
-            #for t in self.threads:
-            #    t.join()
+                log.info([t.name,t.pid])
+                if pidfile:
+                    file(pidfile,'a+').write("%s\n" % t.pid)
+            for t in self.threads:
+                t.join()
         except Exception as ex:
-            log.debug('Get interrupt from keyboard,quit now')
+            log.warning('Get interrupt signal,quit now!')
             log.error(ex)
+        self.pool_close()
         return self.child_pids
     
     #===========================================================================
     # monitor
     #===========================================================================
     def monitor(self):
-        self._name=multiprocessing.current_process().name
-        log.info("%s is Starting..." % self._name)           
         log.debug(self.child_pids)
     
-def main():
+
+    
+def main(pidfile):
     log.info("=============BEGIN===========")
     log.info('Mega server start at %s ' % datetime.datetime.now())
-    child_pid_list=SubProcess().sub_process()
-    return child_pid_list
+    SubProcess().sub_process(pidfile)
 
 if __name__ == "__main__":
         main()

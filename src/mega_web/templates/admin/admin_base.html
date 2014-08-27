@@ -1,0 +1,23 @@
+{% extends "./base.html" %}
+{% block title %}
+Admin-Mega
+{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+      <div class="row">
+        <div class="col-sm-3 col-md-1 sidebar">
+          <ul class="nav nav-sidebar">
+            <li><a href="/admin/client/">客户端管理</a></li>
+            <li><a href="/portal/document/"></a></li>
+           </ul>
+        </div>
+        
+       </div>
+    </div>
+  <div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1 main">
+    {% block subcontent %}
+    {% endblock %}
+
+ </div>
+{% endblock %}

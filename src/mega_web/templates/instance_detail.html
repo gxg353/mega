@@ -7,7 +7,7 @@
 <input type="hidden" name="type" value='mod' >
 	<div class="input-group">
 		<span class="input-group-addon">NAME</span>
-  		<input type="text" class="form-control" name="instance_name" placeholder='NAME' style="width:200px;" maxlength=20 value='{{ instance.name }}' readonly= {{ readonly }}>
+  		<input type="text" class="form-control" name="instance_name" placeholder='NAME' style="width:200px;" maxlength=50 value='{{ instance.name }}' readonly= {{ readonly }}>
   		<span class="input-group-addon">IP</span>
   		<input type="text" class="form-control"  name="instance_ip" placeholder= "IP" style="width:200px;" maxlength=15 value='{{ instance.ip }}' readonly= {{ readonly }} >  		
   	</div>
@@ -75,6 +75,27 @@
   
 </div>
 <br>
+<div class="input-group">
+  <span class="input-group-addon">ROLE	</span>
+  	<select name="instance_role" class="form-control" style="width:200px;"readonly= {{ readonly }}>
+		{% ifequal instance.role 1 %} 
+			<option value={{ instance.role }} selected="selected">Master</option>
+		{% else %}
+			<option value={{ instance.role }} selected="selected">Slave</option>
+		{% endifequal %}
+		<option value=1 >Master</option>
+		<option value=2 >Slave</option>
+		<option value=3 >Single</option>
+	</select> 
+	  <span class="input-group-addon">master</span>
+	 <select name="instance_master" class="form-control" style="width:200px;"readonly= {{ readonly }}>
+		<option value={{ instance.master_id }} selected="selected">{{ instance.master_ip }}:{{instance.master_port}}</option>
+	{% for instance in instance_list %}
+		<option value={{ instance.id }}>{{ instance.ip }}:{{instance.port}}</option>
+	{% endfor %}
+	</select>
+	
+</div>
 <button type="button" class="btn btn-default btn" onclick="change_readonly('all')">
   		<span class="glyphicon glyphicon-wrench"></span>编辑
 </button>

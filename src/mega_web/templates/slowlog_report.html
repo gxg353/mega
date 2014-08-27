@@ -1,0 +1,186 @@
+{% extends "tunning_base.html" %}
+{% block subcontent %}
+<div class="row">
+<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+		<div class="panel panel-default">
+			<div class="panel-heading">总体</div>
+       <div id='total' style='min-width: 400px; height: 300px; margin: 0 auto'></div>
+</div>
+</div>
+
+<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
+		<div class="panel panel-default">
+			<div class="panel-heading">时间分布</div>
+       <div id='groupbytime' style='min-width: 400px; height: 300px; margin: 0 auto'></div>
+</div>
+</div>
+
+
+
+</div>
+<div class="row">
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+		<div class="panel panel-default">
+			<div class="panel-heading">实例分布</div>
+       <div id='groupbyinstance' style='min-width: 400px; height: 300px; margin: 0 auto'></div>
+    
+</div>
+</div>
+
+</div>
+<div class="row">
+<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+		<div class="panel panel-default" >
+			<div class="panel-heading">top sql</div>
+    		<div class="table-responsive pre-scrollable" style='min-width: 400px; height: 1000px; margin: 0 auto'>
+			<table class="table table-hover ">
+			<thead>
+			<tr>
+				<th>sql</th>
+				<th>counts</th>
+				<th>max_time</th>
+				<th>min_time</th>
+				<th>avg_time</th>
+				<th>max_row</th>
+				<th>min_row</th>
+				<th>avg_row</th>
+			</tr>
+			
+			</thead>
+    		<tbody>
+    			{% for sql in topsql %}
+    			<tr>
+    			<td><a href='sql/?hash_code={{sql.hash_code}}' onMouseOver="$(this).tooltip('show')" data-toggle="tooltip" title="{{ sql.sql_parsed }}" >{{ sql.sql_parsed|slice:":50" }}</a></td>
+    			<td>{{ sql.counts }}</td>
+    			    			<td>{{ sql.max_time }}</td>
+    			    			<td>{{ sql.min_time }}</td>
+    			    			<td>{{ sql.avg_time }}</td>
+    			    			<td>{{ sql.max_row }}</td>
+    			    			<td>{{ sql.min_row }}</td>
+    			    			<td>{{ sql.avg_row }}</td>
+    			
+    			</tr>
+    			{% endfor %}
+			</tbody>
+			</table>
+	</div>
+		
+</div>
+</div>
+
+</div>
+  <script>
+	 $(function () { 
+	    $('#groupbyinstance').highcharts({
+	    		chart: {
+	 	            type: '{{ groupbyinstance.type }}'
+	 	        },
+	 	        title: {
+	 	            text: '{{ groupbyinstance.title }}'
+	 	        },
+	 	        xAxis: {
+	 	            categories: [ 
+	 	                          {% for x in  groupbyinstance.xaxis %}
+	 	                           		'{{ x }}',
+	 	                           {% endfor %}
+	 	                        ]
+	 	        },
+	 	        yAxis: {
+	 	            title: {
+	 	                text: '{{ groupbyinstance.yaxis_name }}'
+	 	            }
+	 	        },
+	 	        series: [
+	 	            {% for data in groupbyinstance.data %}  
+	 	   				{% for key,value in data.items %}	                 
+	 	        			{
+	 	            		name: '{{ key }}',
+	 	            		data: {{ value }} 
+	 	        			},
+	 	            	{% endfor %}     
+	 	        	{% endfor %}     
+	 	    	]
+	 	    }
+	    );
+	});
+   </script>
+<script>
+	 $(function () { 
+	    $('#total').highcharts({
+	    		chart: {
+	 	            type: '{{ total.type }}'
+	 	        },
+	 	        title: {
+	 	            text: '{{ total.title }}'
+	 	        },
+	 	        xAxis: {
+	 	            categories: [ 
+	 	                          {% for x in  total.xaxis %}
+	 	                           		'{{ x }}',
+	 	                           {% endfor %}
+	 	                        ]
+	 	        },
+	 	        yAxis: {
+	 	            title: {
+	 	                text: '{{ total.yaxis_name }}'
+	 	            }
+	 	        },
+	 	        series: [
+	 	            {% for data in total.data %}  
+	 	   				{% for key,value in data.items %}	                 
+	 	        			{
+	 	            		name: '{{ key }}',
+	 	            		data: {{ value }} 
+	 	        			},
+	 	            	{% endfor %}     
+	 	        	{% endfor %}     
+	 	    	]
+	 	    }
+	    );
+	});
+   </script>
+<script>
+	 $(function () { 
+	    $('#groupbytime').highcharts({
+	    		chart: {
+	    	         plotBackgroundColor: null,
+	    	         plotBorderWidth: 1,//null,
+	    	         plotShadow: false
+	 	        },
+	 	        title: {
+	 	            text: '{{ groupbytime.title }}'
+	 	        },
+	 	        tooltip: {
+	 	            pointFormat: '{series.name}: <b>{point.percentage:.1f}%</b>'
+	 	        },
+	 	        plotOptions: {
+	 	            pie: {
+	 	                allowPointSelect: true,
+	 	                cursor: 'pointer',
+	 	                dataLabels: {
+	 	                    enabled: true,
+	 	                    format: '<b>{point.name}</b>: {point.percentage:.1f} %',
+	 	                    style: {
+	 	                        color: (Highcharts.theme && Highcharts.theme.contrastTextColor) || 'black'
+	 	                    }
+	 	                }
+	 	            }
+	 	        },
+	 	        series: [{
+	 	            type: '{{ groupbytime.type }}',
+	 	            name: '',
+	 	            data: [
+	 	              		{% for d in groupbytime.data %}
+	 	              			{% for key,value in d.items %}
+	 	              				[ '{{ key }}',{{ value.0 }} ],
+	 	              			{% endfor%}
+	 	              		{% endfor %}
+	 	            ]
+	 	        }]
+	 	    }
+	    );
+	});
+   </script>
+
+{% endblock %}
+

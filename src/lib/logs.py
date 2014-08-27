@@ -1,5 +1,3 @@
-import sys
-sys.path.append('..')
 import logging
 try:
     from conf.GlobalConf import DEAFULT_LOG_DEBUG

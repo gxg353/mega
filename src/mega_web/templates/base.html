@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="zh-CN">
   <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -18,38 +18,51 @@
   <body>
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
       	<div class="container-fluid">
-        	<div class="navbar-header">
-          		<button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-            		<span class="sr-only">Toggle navigation</span>
-            		<span class="icon-bar"></span>
-            		<span class="icon-bar"></span>
-            		<span class="icon-bar"></span>
-          		</button>
-            		<a class="navbar-brand" href="/charts/"></a>
+        	<div class="navbar-header">      	
+            	<a class="navbar-brand" href="/">Mega
+            	</a>            	
         	</div>
         	<div class="navbar-collapse collapse">
-        		<ul class="nav navbar-nav navbar-right">
-            		<li><a href="/">Mega</a></li>
-            		<li><a href="/resource/">资源池</a></li>
-            		<li><a href="/console/">控制台</a></li>
-            		<li><a href="/portal/">传送门</a></li>
-          		</ul>
-          		<form class="navbar-form navbar-left">
-            		<input type="text" class="form-control" placeholder="Mega...">
-          		</form>
+        		<ul class="nav navbar-nav ">
+        		    <form class="navbar-form navbar-right">
+            			<input type="text" class="form-control" placeholder="什么也搜不到的">
+          			</form>
+
+        			<li><a href="/"><span class="glyphicon glyphicon-home"></span><b>首页</b></a></li>
+            		<li><a href="/resource/"><span class="glyphicon glyphicon-th"></span><b>资源池</b></a></li>
+            		<li><a href="/resource/"><span class="glyphicon glyphicon-dashboard"></span><b>仪表盘</b></a></li>
+            		
+            		<li><a href="/console/"><span class="glyphicon glyphicon-cog"></span><b>控制台</b></a></li>
+            		<li><a href="/tunning/"><span class="glyphicon glyphicon-pushpin"></span><b>调优室</b></a></li>
+            		<li><a href="/portal/"><span class="glyphicon glyphicon-send"></span><b>传送门</b></a>  </li>
+  				</ul>
+  			    <ul class="nav navbar-nav navbar-right">
+  					<li class="dropdown ">
+          				<a href="#" class="dropdown-toggle" data-toggle="dropdown">登录<span class ="glyphicon glyphicon-user"></span><span class="caret"></span></a>
+          				<ul class="dropdown-menu" role="menu">
+            				<li><a href="#">登录</a></li>
+            				<li><a href="#">注销</a></li>
+            				<li class="divider"></li>
+            				<li><a href="/admin/">后台</a></li>
+            				<li><a href="#">mega</a></li>
+          				</ul>
+        			</li> 
+        		</ul>         		        		
         	</div>
-      	</div>
-    </div>
-    <div>
+         </div>        
+  		</div>
+    
+  <div>  
  	{% block content %}
     {% endblock %}
-    </div>
+  </div>
   <footer>  
 
   </footer>  
-    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
- {# <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script> #}   
-{# <script src="http://code.jquery.com/jquery.js"></script> #}  
+ <!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
+ <!--   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>    
+ 		<script src="http://code.jquery.com/jquery.js"></script>   --> 
+		<script src="/static/higncharts.js"></script>
     
      
     <!-- Include all compiled plugins (below), or include individual files as needed -->

@@ -1,20 +1,22 @@
 #-*- coding: utf-8 -*-
 from django.shortcuts import render_to_response,RequestContext
-
 from resource import instance_manage,server_manage,business_manage,database_manage,resource_manage,user_manage
 from console.backup import Backup,Backup_Config
 from lib import paginator
-from lib.meta_data import MetaData as meta_data
-from charts.visit import Visit
+from lib.meta_data import MetaData 
 from mega_portal.file_manage import UploadFileForm
 from mega_web.entity.models import Document
+from mega_service.task import Task
+from mega_web.console.task import TaskManage 
+from mega_web.admin.views import * 
+from mega_web.tunning import slowlog
 
+meta_data=MetaData()
 
 def home(request):
-    if request.method=="GET":
-        return render_to_response('home.html')
-    else:
-        return render_to_response('home.html')
+    slow_log=slowlog.get_chart_total()
+    return render_to_response('home.html',{'slowlog':slow_log},context_instance=RequestContext(request))
+   
 
 def monitor(request):
     if request.method=="GET":
@@ -27,6 +29,12 @@ def console(request):
         return render_to_response('console.html')
     else:
         return render_to_response('console.html')
+
+def tunning(request):
+    if request.method=="GET":
+        return render_to_response('tunning.html')
+    else:
+        return render_to_response('tunning.html')
 
 def portal(request):
     if request.method=="GET":
@@ -47,9 +55,11 @@ def resource(request):
     else:
         return render_to_response('resource.html')
 
-def charts(request):
-    cht=Visit(request)
-    return render_to_response('visit.html',{'visit': cht})
+def chart(request):
+    return
+    #cht=visit.Visit(request)
+    #return render_to_response('visit.html',{'visit': cht})
+
 
 #Sub sites
 ##resource
@@ -74,9 +84,10 @@ def instance_add(request):
         result,msg=instance_manage.InstanceManage(request.POST).add_instance()
         if result:
             msg='Sucess'  
-    return render_to_response('instance_add.html',{"business_list":meta_data.business_list,"owner_list":meta_data.owner_list,
+    return render_to_response('instance_add.html',{"business_list":meta_data.business_list(),"owner_list":meta_data.owner_list(),
                                                         "db_type":meta_data.db_type,"level":meta_data.level,
-                                                       "ha_type":meta_data.ha_type,"msg":msg,"version_list":meta_data.version
+                                                       "ha_type":meta_data.ha_type,"msg":msg,"version_list":meta_data.version,
+                                                       "instance_list":meta_data.instance_list()
                                                        },context_instance=RequestContext(request))
 
 def instance_detail(request):
@@ -93,9 +104,10 @@ def instance_detail(request):
     else:
         stat_action='上'
     return render_to_response('instance_detail.html',{"instance":instance,"readonly":"true","stat_action":stat_action,
-                                                      "business_list":meta_data.business_list,"owner_list":meta_data.owner_list,
+                                                      "business_list":meta_data.business_list(),"owner_list":meta_data.owner_list(),
                                                        "db_type":meta_data.db_type,"level":meta_data.level,
-                                                       "ha_type":meta_data.ha_type,"version_list":meta_data.version
+                                                       "ha_type":meta_data.ha_type,"version_list":meta_data.version,
+                                                       "instance_list":meta_data.instance_list()
                                                    },context_instance=RequestContext(request))
 
 ##server
@@ -125,7 +137,7 @@ def server_add(request):
         result,msg=server_manage.ServerManage(request.POST).add_server()
         if result:
             msg='Sucess'
-    return render_to_response('server_add.html',{'owner_list':meta_data.owner_list,'os_list':meta_data.os,'msg':msg},context_instance=RequestContext(request))
+    return render_to_response('server_add.html',{'owner_list':meta_data.owner_list(),'os_list':meta_data.os,'msg':msg},context_instance=RequestContext(request))
 def server_detail(request):
     if request.method=="GET":
         server=server_manage.ServerGet().get_server(request.GET)
@@ -141,7 +153,7 @@ def server_detail(request):
     else:
         stat_action='上'
     return render_to_response('server_detail.html',{"server":server,"stat_action":stat_action,
-                                                    'os_list':meta_data.os,'owner_list':meta_data.owner_list
+                                                    'os_list':meta_data.os,'owner_list':meta_data.owner_list()
                                                     },context_instance=RequestContext(request))
    
 #business
@@ -169,7 +181,7 @@ def business_add(request):
         result,msg=business_manage.BusinessManage(request.POST).add_business()
         if result:
             msg='Success'
-        return render_to_response('business_add.html',{"msg":msg,'owner_list':meta_data.owner_list},context_instance=RequestContext(request))
+        return render_to_response('business_add.html',{"msg":msg,'owner_list':meta_data.owner_list()},context_instance=RequestContext(request))
 def business_detail(request):
     if request.method=="GET":
         business=business_manage.BusinessGet().get_business(request.GET)
@@ -184,7 +196,7 @@ def business_detail(request):
         stat_action='下'
     else:
         stat_action='上'
-    return render_to_response('business_detail.html',{"business":business,"stat_action":stat_action,'owner_list':meta_data.owner_list},context_instance=RequestContext(request))
+    return render_to_response('business_detail.html',{"business":business,"stat_action":stat_action,'owner_list':meta_data.owner_list()},context_instance=RequestContext(request))
 
 #database
 def database(request):
@@ -207,8 +219,8 @@ def database(request):
 def database_add(request):
     instance_list=instance_manage.InstanceGet().get_instance_list(None) #.values("id","ip","port")
     if request.method=="GET":
-        return render_to_response('database_add.html',{"instance_list":instance_list,"business_list":meta_data.business_list,
-                                                       "level":meta_data.level,'owner_list':meta_data.owner_list},context_instance=RequestContext(request))
+        return render_to_response('database_add.html',{"instance_list":instance_list,"business_list":meta_data.business_list(),
+                                                       "level":meta_data.level,'owner_list':meta_data.owner_list()},context_instance=RequestContext(request))
     else:
         (result,msg)=database_manage.DatabaseManage(request.POST).add_database()
         return render_to_response('database_add.html',{"msg":msg,"instance_list":instance_list,"business_list":meta_data.business_list,
@@ -229,8 +241,8 @@ def database_detail(request):
         stat_action='上'
     
     return render_to_response('database_detail.html',{"database":database,"stat_action":stat_action,
-                                                      "instance_list":meta_data.instance_list,"business_list":meta_data.business_list,
-                                                      "level":meta_data.level,'owner_list':meta_data.owner_list},context_instance=RequestContext(request))
+                                                      "instance_list":meta_data.instance_list(),"business_list":meta_data.business_list(),
+                                                      "level":meta_data.level,'owner_list':meta_data.owner_list()},context_instance=RequestContext(request))
 
 #user
 def user(request):
@@ -283,7 +295,8 @@ def backup(request):
     page_data=paginator.paginator(backup_list_all, page)
     page_range=page_data.get('page_range')
     backup_list=page_data.get('page_data')
-    return render_to_response('backup.html',{"backup_list_all":backup_list,"page_range":page_range},context_instance=RequestContext(request))
+    today_static=Backup().get_today_statics()
+    return render_to_response('backup.html',{"backup_list_all":backup_list,"page_range":page_range,"today_static":today_static},context_instance=RequestContext(request))
 
 def backup_config(request):
     backup_type=Backup_Config().backup_type
@@ -336,7 +349,55 @@ def document(request):
     
     return render_to_response('document.html',{'form':form ,'documents':documents},context_instance=RequestContext(request))
 
-    
+def task(request):
+    if request.method=="GET":
+        page=request.GET.get('page')
+        task_list=Task().get_task_list(-1)
+    if not page:
+        page=1
+    page_data=paginator.paginator(task_list, page)
+    page_range=page_data.get('page_range')
+    task_list=page_data.get('page_data')
+    return render_to_response('task.html',{"task_list":task_list,"page_range":page_range},context_instance=RequestContext(request))
+
+def task_add(request):
+    msg=''
+    if request.method == "POST" :
+        result,msg=TaskManage(request.POST).task_add()
+    return render_to_response('task_add.html',{'owner_list':meta_data.owner_list(),'msg':msg},context_instance=RequestContext(request))
+
+def task_detail(request):
+    msg=''
+    if request.method=='GET':
+        task=TaskManage(request.GET).get_task_by_id()
+    else:
+        _task=TaskManage(request.POST)
+        result,msg=_task.task_mod()
+        task=_task.get_task_by_id()
+    return render_to_response('task_detail.html',{'task':task,'owner_list':meta_data.owner_list(),'msg':msg},context_instance=RequestContext(request))
+
+#slow log
+def slowlog_config(request):
+    if request.method=='GET':
+        result=instance_manage.InstanceManage(request.GET).stat_instance_slowlog()
+    return render_to_response('slowlog_config.html',{'instance_list':meta_data.instance_list()},context_instance=RequestContext(request))
+
+def slowlog_report(request):
+    groupbyinstance=slowlog.get_chart_groupbyinstance()
+    total=slowlog.get_chart_total()
+    groupbytime=slowlog.get_chart_groupbytime()
+    topsql=slowlog.get_chart_topsql()
+    return render_to_response('slowlog_report.html',{'groupbyinstance':groupbyinstance,'total':total,'topsql':topsql,'groupbytime':groupbytime},
+                              context_instance=RequestContext(request))
+
+def slowlog_sql(request):
+    if request.method=='GET':
+        hash_code=request.GET.get('hash_code')
+        groupbyinstance=slowlog.get_sql_hosts(hash_code)
+        total=slowlog.get_sql_time(hash_code)
+        sql_info=slowlog.get_sql_info(hash_code)
+    return render_to_response('slowlog_report_sql.html',{'groupbyinstance':groupbyinstance,'total':total,'sql_info':sql_info},context_instance=RequestContext(request))
+        
 def my_404_view(request):
         return render_to_response('404.html')
 def my_500_view(request):

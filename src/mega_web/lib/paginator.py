@@ -13,7 +13,7 @@ def paginator(object,page_num=1):
     if not object:
         return False
     result={}
-    p=Paginator(list(object),10)
+    p=Paginator(list(object),15)
     result['pages']=p.num_pages
     result['page_range']=p.page_range
     result['page_data']=p.page(page_num)

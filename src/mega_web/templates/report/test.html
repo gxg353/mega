@@ -1,0 +1,35 @@
+<script>
+	 $(function () { 
+	    $('#groupbytime').highcharts({
+	    		chart: {
+	 	            type: '{{ groupbytime.type }}'
+	 	        },
+	 	        title: {
+	 	            text: '{{ groupbytime.title }}'
+	 	        },
+	 	        xAxis: {
+	 	            categories: [ 
+	 	                          {% for x in  groupbytime.xaxis %}
+	 	                           		'{{ x }}',
+	 	                           {% endfor %}
+	 	                        ]
+	 	        },
+	 	        yAxis: {
+	 	            title: {
+	 	                text: '{{ groupbytime.yaxis_name }}'
+	 	            }
+	 	        },
+	 	        series: [
+	 	            {% for data in groupbytime.data %}  
+	 	   				{% for key,value in data.items %}	                 
+	 	        			{
+	 	            		name: '{{ key }}',
+	 	            		data: {{ value }} 
+	 	        			},
+	 	            	{% endfor %}     
+	 	        	{% endfor %}     
+	 	    	]
+	 	    }
+	    );
+	});
+   </script>

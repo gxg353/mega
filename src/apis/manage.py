@@ -1,11 +1,12 @@
 import types
 from mega_service.backup import Backuper
-from mega_service.slow_log import SlowLog
+from mega_service.slowlog.slow_log import SlowLog
+from mega_service.slowlog.slowlog_archive import slowlog_pack,slowlog_statics_per_hour
 from mega_service.task import Task
+from mega_web.resource.instance_manage import InstanceGet
 from lib.logs import Logger
 from lib.PyMysql import PyMySQL
 from task import remote_cmd
-
 
 MODEL='API-manage'
 log = Logger(MODEL).log()
@@ -40,7 +41,7 @@ def backup_routine(time=None,**args):
     if len_inst>0:
         script=Task().get_task_by_name('backup')
         for instance in instance_list:
-            result.append(remote_cmd(instance['host_ip'],instance['port'],script,'python',instance))
+            result.append(remote_cmd(instance['host_ip'],instance['port'],script,'python',args=instance))
     len_result=len(result)
     if result:
         log.debug(result)
@@ -119,12 +120,12 @@ def add_slow_log(log_info):
     if type(task) != types.DictionaryType:
         log.error('Failed to revert slow log data to dict !')
         return False
-    columns="db_host,port,start_time,user,user_host,query_time,lock_time,rows_sent,rows_examined,sql_text,sql_explained"
+    columns="db_host,port,start_time,user,user_host,Query_time,lock_time,Rows_sent,Rows_examined,sql_text,sql_explained,dbname"
     values=[]
     for c in columns.split(','):
         _d=task.get(c)
         if _d:
-            _d="'"+str(_d)+"'"
+            _d='"'+str(_d)+'"'
             values.append(_d)
         else:
             values.append("''")
@@ -144,7 +145,8 @@ def add_slow_log(log_info):
 
 def slowlog_routine(time=None):
     instance_list=[]    
-    config_list=SlowLog().get_instance_list()
+    config_list=SlowLog().get_slowlog_instance_list()
+    log.debug(config_list)
     for conf in config_list:
         instance={"id":conf.get('id'),
                   "ip":conf.get('ip'),
@@ -155,12 +157,56 @@ def slowlog_routine(time=None):
     inst_len=len(instance_list) 
     result=[]
     if inst_len>0:
-        script=Task().get_task_by_name('backup')
+        script=Task().get_task_by_name('slowlog')
         for instance in instance_list:
 #            log.debug(instance)
-            result.append(remote_cmd(instance['ip'],instance['port'],script,'python',instance))
+            result.append(remote_cmd(instance['ip'],instance['port'],script,'python',args=instance))
     if inst_len >0:
         log.debug(instance_list)
     if result:
         log.debug(result)
-    log.debug('%s instance slow log collect tasks are invoked.' % inst_len)
+    log.info('%s instance slow log collect tasks are invoked.' % inst_len)
+
+def slowlog_statics(time=None):
+    #get the slow log in the prior hour 
+    #undo slow log
+    sql="select * from slowlog_info where stat=0 limit 100" 
+    try:
+        while 1:
+            cursor=PyMySQL().query(sql, type='dict')
+            if not cursor:
+                break
+            data_list=cursor.fetchall()
+            if not data_list or len(data_list)==0:
+                log.warn('None slow log found!')
+                break
+            log.info('%s slow log will be computed.' % len(data_list))
+            #add hash_code and instance to each log
+            for data in data_list: 
+                sql_hash=slowlog_pack(data.get('sql_text'))
+                instance_id=InstanceGet().get_instance_by_ip_port(data.get('db_host'), data.get('port'))
+                if not instance_id:
+                    log.warn('Unknown Instance: %s' %([data.get('db_host'), data.get('port')]))
+                    instance_id=0
+                else:
+                    instance_id=instance_id[0]['id']
+                _sql="update slowlog_info set hash_code='%s',instance_id=%s,stat=1 where id = %s" %(sql_hash,instance_id,data.get('id'))
+                result,ex=PyMySQL().execute(_sql)
+                if not result:
+                    log.error(ex)
+    except Exception as ex:
+                log.debug(data)
+                log.error('Pack slow log failed:%s' % ex) 
+        
+    # do the hourly statics 
+    try:
+        slowlog_statics_per_hour(time)
+    except Exception as ex:
+        log.error('Statics slow log hourly failed:%s' % ex) 
+    
+    
+def main():
+    return
+
+if __name__ == "__main__":
+    main()       

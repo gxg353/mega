@@ -77,8 +77,10 @@ def slowlog_statics_per_hour(v_time):
     return True
         
 def slowlog_pack(sql):
-
-    sql_parsed=SQLParse(sql).var_replace()
+    try:
+        sql_parsed=SQLParse(sql).var_replace()
+    except:
+        sql_parsed=sql    
     sql_hash=md5(sql_parsed.encode('utf8')).hexdigest()
     _sql="select count(*) from sql_format where hash_code='%s'" % sql_hash
     _counts=PyMySQL().fetchOne(_sql)

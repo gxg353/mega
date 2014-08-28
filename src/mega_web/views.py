@@ -217,7 +217,7 @@ def database(request):
             page_range=paginator.paginator(database_list)['page_range']
         return render_to_response('database.html',{"database_list":database_list,'page_range':page_range},context_instance=RequestContext(request))
 def database_add(request):
-    instance_list=instance_manage.InstanceGet().get_instance_list(None) #.values("id","ip","port")
+    instance_list=instance_manage.InstanceGet().get_instance_list(None,count=0) #.values("id","ip","port")
     if request.method=="GET":
         return render_to_response('database_add.html',{"instance_list":instance_list,"business_list":meta_data.business_list(),
                                                        "level":meta_data.level,'owner_list':meta_data.owner_list()},context_instance=RequestContext(request))
@@ -391,13 +391,30 @@ def slowlog_report(request):
                               context_instance=RequestContext(request))
 
 def slowlog_sql(request):
+    msg=''
     if request.method=='GET':
         hash_code=request.GET.get('hash_code')
-        groupbyinstance=slowlog.get_sql_hosts(hash_code)
-        total=slowlog.get_sql_time(hash_code)
-        sql_info=slowlog.get_sql_info(hash_code)
-    return render_to_response('slowlog_report_sql.html',{'groupbyinstance':groupbyinstance,'total':total,'sql_info':sql_info},context_instance=RequestContext(request))
-        
+    else:
+        hash_code=request.POST.get('hash_code')
+        msg=slowlog.add_opt_record(request.POST)
+    groupbyinstance=slowlog.get_sql_hosts(hash_code)
+    total=slowlog.get_sql_time(hash_code)
+    sql_info=slowlog.get_sql_info(hash_code)
+    opt_record=slowlog.get_opt_record(hash_code)
+    return render_to_response('slowlog_report_sql.html',{'groupbyinstance':groupbyinstance,'total':total,'sql_info':sql_info,'msg':msg,"opt_record":opt_record},
+                              context_instance=RequestContext(request))
+
+def slowlog_instance(request):
+    instance_id=request.GET.get('instance_id',0)
+    total=slowlog.get_chart_total(instance_id=instance_id)
+    instance=instance_manage.InstanceGet().get_instance_by_id(instance_id)
+    groupbydb=slowlog.get_chart_groupbydb(instance_id=instance_id)
+    topsql=slowlog.get_instance_topsql(instance_id)
+    print topsql
+    return render_to_response('slowlog_report_instance.html',{'instance_list':meta_data.instance_list(),'total':total,'instance':instance,'groupbydb':groupbydb,'topsql':topsql},
+                              context_instance=RequestContext(request))
+
+
 def my_404_view(request):
         return render_to_response('404.html')
 def my_500_view(request):

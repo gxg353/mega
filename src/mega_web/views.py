@@ -55,11 +55,6 @@ def resource(request):
     else:
         return render_to_response('resource.html')
 
-def chart(request):
-    return
-    #cht=visit.Visit(request)
-    #return render_to_response('visit.html',{'visit': cht})
-
 
 #Sub sites
 ##resource
@@ -279,6 +274,10 @@ def user_detail(request):
     else:
         stat_action='启用'
     return render_to_response('user_detail.html',{"user":user,"msg":msg,"stat_action":stat_action},context_instance=RequestContext(request))
+
+#vip
+def vip(request):
+    return render_to_response('vip.html',context_instance=RequestContext(request))
 
 #backup
 

@@ -64,7 +64,7 @@ def slowlog_statics_per_hour(v_time):
             row_id=PyMySQL().fetchOne(sql_3)
             c=data.get('count_all')
             if not row_id or row_id == 0:
-                _sql="insert into slowlog_time_day(instance_id,db,log_time,counts,lt_one,lt_five,lt_ten,lt_hundred,gt_hundred) values(%s,'%s',from_unixtime('%s'),%s,%s,%s,%s,%s,%s)" % (data.get('instance_id'), 
+                _sql="insert into slowlog_time_day(instance_id,db,log_time,counts,lt_one,lt_five,lt_ten,lt_hundred,gt_hundred) values(%s,'%s',from_unixtime(%s),%s,%s,%s,%s,%s,%s)" % (data.get('instance_id'), 
                                                                                                                                               data.get('dbname'),data.get('start_time'),
                                                                                                                                               data.get('counts'),c[0],c[1],c[2],c[3],c[4])
             else:

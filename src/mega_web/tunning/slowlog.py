@@ -66,7 +66,7 @@ def get_instance_topsql(instance_id,begin=None,end=None):
     
     sql="select a.hash_code,b.sql_parsed,count(*) as counts,max(query_time) as max_time,min(query_time) as min_time,avg(query_time) as avg_time,\
         max(rows_examined) as max_row,min(rows_examined) as min_row,avg(rows_examined) as avg_row from slowlog_info a ,sql_format  b where instance_id=%s \
-        and a.hash_code=b.hash_code and date(from_unixtime(a.start_time)) between '%s' and '%s' group by a.hash_code;" %(instance_id,begin,end)
+        and a.hash_code=b.hash_code and date(from_unixtime(a.start_time)) between '%s' and '%s' group by a.hash_code order by counts desc;" %(instance_id,begin,end)
     data=cursor.query(sql,type='dict').fetchall()
     return data
 

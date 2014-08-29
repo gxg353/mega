@@ -4,16 +4,32 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="A database manage platform">
+    <meta name="author" content="xchliu">
     <title>{% block title %}{% endblock %}</title>
     <link rel="shortcut icon" href="/static/img/favicon.ico	" type="image/x-icon" />
   	
   	<script language="javascript" type="text/javascript" src="/static/My97DatePicker/WdatePicker.js"></script>
   	<script src="/static/jquery-2.1.1.min.js"></script>
+  	<script src="/static/higncharts.js"></script>     
+    <!-- Include all compiled plugins (below), or include individual files as needed -->
+    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
+    <script src="/static/docs.min.js"></script>
   	
     <!-- Bootstrap -->
-    <link href="/static/bootstrap/css/boot.css" rel="stylesheet">
+    <link href="/static/bootstrap/css/boot.css" rel="stylesheet">    
     <link href="/static/dashboard.css" rel="stylesheet">
+    <link href="/static/footer.css" rel="stylesheet">
     
+    <!-- dropdown auto show -->
+    <style type="text/css">
+    .navbar .nav > li .dropdown-menu {
+			margin: 0;
+	}
+	.navbar .nav > li:hover .dropdown-menu {
+			display: block;
+	}
+     </style>
   </head>
   <body>
     <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
@@ -24,12 +40,22 @@
         	</div>
         	<div class="navbar-collapse collapse">
         		<ul class="nav navbar-nav ">
-        		    <form class="navbar-form navbar-right">
-            			<input type="text" class="form-control" placeholder="什么也搜不到的">
+        		    <form class="navbar-form navbar-left">
+            			<input type="text" class="form-control" placeholder="Search in Mega">
           			</form>
 
-        			<li><a href="/"><span class="glyphicon glyphicon-home"></span><b>首页</b></a></li>
-            		<li><a href="/resource/"><span class="glyphicon glyphicon-th"></span><b>资源池</b></a></li>
+        			<li class="dropdown ">
+          				<a id="resource" href="#"  class="dropdown-toggle" data-toggle="dropdown"><span class ="glyphicon glyphicon-th"></span>资源池</a>
+          				<ul class="dropdown-menu" role="menu">
+		            	<li><a href="/resource/">Overview</a></li>
+            			<li><a href="/resource/instance/">实例</a></li>
+            			<li><a href="/resource/database/">数据库</a></li>
+            			<li><a href="/resource/business/">业务线</a></li>
+            			<li><a href="/resource/server/">服务器</a></li>
+            			<li><a href="/resource/user/">用户</a></li>
+            			<li><a href="/resource/vip/">VIP</a></li>		
+          				</ul>
+        			</li> 
             		<li><a href="/resource/"><span class="glyphicon glyphicon-dashboard"></span><b>仪表盘</b></a></li>
             		
             		<li><a href="/console/"><span class="glyphicon glyphicon-cog"></span><b>控制台</b></a></li>
@@ -38,7 +64,7 @@
   				</ul>
   			    <ul class="nav navbar-nav navbar-right">
   					<li class="dropdown ">
-          				<a href="#" class="dropdown-toggle" data-toggle="dropdown">登录<span class ="glyphicon glyphicon-user"></span><span class="caret"></span></a>
+          				<a id="login" href="#"  class="dropdown-toggle" data-toggle="dropdown">登录<span class ="glyphicon glyphicon-user"></span><span class="caret"></span></a>
           				<ul class="dropdown-menu" role="menu">
             				<li><a href="#">登录</a></li>
             				<li><a href="#">注销</a></li>
@@ -47,7 +73,7 @@
             				<li><a href="#">mega</a></li>
           				</ul>
         			</li> 
-        		</ul>         		        		
+        		</ul>
         	</div>
          </div>        
   		</div>
@@ -56,18 +82,10 @@
  	{% block content %}
     {% endblock %}
   </div>
-  <footer>  
-
-  </footer>  
- <!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
- <!--   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>    
- 		<script src="http://code.jquery.com/jquery.js"></script>   --> 
-		<script src="/static/higncharts.js"></script>
-    
-     
-    <!-- Include all compiled plugins (below), or include individual files as needed -->
-    <script src="/static/bootstrap/js/bootstrap.min.js"></script>
-    <script src="/static/docs.min.js"></script>
+  	<div class="footer">
+      <div class="container pull-right">
+        <p class="text-muted">Power by WY DBA team</p>
+     </div>
+  </div>
   </body>
-  
 </html>

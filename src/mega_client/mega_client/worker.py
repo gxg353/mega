@@ -76,8 +76,8 @@ class Monitor():
     def monitor(self):
         log.info("Monitor is Starting...")
         _count=0  
-        try:
-            while 1:
+        while 1:
+            try:
                 keepalive=ping.main()
                 if keepalive == 'failed':
                     _count+=1
@@ -86,6 +86,6 @@ class Monitor():
                     break
                     log.error('keepalive check  :%s for %s times ,abort!'% (keepalive,_count))
                 time.sleep(self.sleep)
-        except Exception as ex:
-            log.error(ex)
+            except Exception as ex:
+                log.error(ex)
         return

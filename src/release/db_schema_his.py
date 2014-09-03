@@ -37,7 +37,7 @@ alter table slowlog_info add hash_code varchar(50) not null after id;
 alter table slowlog_info add instance_id int not null after hash_code;
 alter table slowlog_info add stat int not null default 0;
 
-2014-08-27
+#2014-08-27
 CREATE TABLE `slowlog_opt` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `hash_code` varchar(64) NOT NULL,

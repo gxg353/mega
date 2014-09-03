@@ -1,3 +1,5 @@
+# -*- coding:utf-8 -*-
+
 import os,sys
 #
 app_path=os.path.dirname(sys.path[0])

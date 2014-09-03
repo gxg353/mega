@@ -9,6 +9,7 @@ from views import backup,backup_config,backup_config_list
 from views import task,task_add,task_detail
 from views import user,user_add,user_detail
 from views import slowlog_config,slowlog_report,slowlog_sql,slowlog_instance
+from views import failover,switch
 from views import document
 from views import vip
 from views import document
@@ -77,6 +78,9 @@ urlpatterns = patterns('',
     url(r'^tunning/slowlog/report/$',slowlog_report),
     url(r'^tunning/slowlog/report/sql/$',slowlog_sql),
     url(r'^tunning/slowlog/report/instance/$',slowlog_instance),
+
+    url(r'^console/failover/$',failover),
+    url(r'^console/failover/switch/$',switch),
 
     url(r'^portal/document/$',document),
     

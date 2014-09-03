@@ -10,11 +10,13 @@
     <link rel="shortcut icon" href="/static/img/favicon.ico	" type="image/x-icon" />
   	
   	<script language="javascript" type="text/javascript" src="/static/My97DatePicker/WdatePicker.js"></script>
-  	<script src="/static/jquery-2.1.1.min.js"></script>
+  	
+   	<script src="/static/jquery-2.1.1.min.js"></script> 
   	<script src="/static/higncharts.js"></script>     
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="/static/bootstrap/js/bootstrap.min.js"></script>
     <script src="/static/docs.min.js"></script>
+  	<script type="text/javascript" src="/static/prototype.js"></script> 
   	
     <!-- Bootstrap -->
     <link href="/static/bootstrap/css/boot.css" rel="stylesheet">    
@@ -55,10 +57,19 @@
             			<li><a href="/resource/user/">用户</a></li>
             			<li><a href="/resource/vip/">VIP</a></li>		
           				</ul>
-        			</li> 
+        			<li class="dropdown "> 
+        			
             		<li><a href="/resource/"><span class="glyphicon glyphicon-dashboard"></span><b>仪表盘</b></a></li>
             		
-            		<li><a href="/console/"><span class="glyphicon glyphicon-cog"></span><b>控制台</b></a></li>
+            		<li class="dropdown ">
+            		    <a id="console" href="#"  class="dropdown-toggle" data-toggle="dropdown"><span class ="glyphicon glyphicon-th"></span>控制台</a>
+          				<ul class="dropdown-menu" role="menu">
+					        <li><a href="/console/">Overview</a></li>
+            				<li><a href="/console/backup/">备份管理</a></li>
+            				<li><a href="/console/task/">任务调度</a></li>
+            				<li><a href="/console/failover/">故障切换</a></li>
+						</ul>
+					</li>            		
             		<li><a href="/tunning/"><span class="glyphicon glyphicon-pushpin"></span><b>调优室</b></a></li>
             		<li><a href="/portal/"><span class="glyphicon glyphicon-send"></span><b>传送门</b></a>  </li>
   				</ul>

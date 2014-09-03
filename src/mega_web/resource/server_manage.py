@@ -103,7 +103,7 @@ class ServerGet():
         if str_filter:
             column=str_filter[0]
             value=str_filter[1]
-            result=self.server.objects.filter(column=value)[offset:count]
+            result=self.server.objects.filter(type=value).values()
         else:
             if count==0:
                 result=self.server.objects.all().order_by('-stat').values()

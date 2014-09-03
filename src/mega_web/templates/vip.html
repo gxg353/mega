@@ -3,9 +3,9 @@
 <h4><span class="label label-default">VIP管理</span></h4>
 <div class="row">
 
-<form class="navbar-form navbar-left" role="search" action="/resource/user/" method='post'>
+<form class="navbar-form navbar-left" role="search" action="/resource/vip/" method='get'>
   <div class="form-group">
-    <input type="text" name="user" class="form-control" placeholder="Search...">
+    <input type="text" name="vip" class="form-control" placeholder="Search...">
   </div>
   <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
   {% csrf_token %}
@@ -14,7 +14,7 @@
 </div>
 <div class="row">
 <div class="col-xs-6 col-sm-6  col-md-6 col-lg-6"> 
-	<div class="panel panel-default col-md-offset-0">
+	<div class="panel panel-default " style='height:500px;'>
     	<div class="table-responsive pre-scrollable" style='min-width: 400px; height: 800px; margin: 0 auto'>
 		<div class="table-responsive">
   		<table class="table table-striped">
@@ -30,10 +30,21 @@
        	{% for vip in vip_list %}
 	     	<tr>
 			{#	<td><a href="/resource/user_detail/?user_id={{ user.owner }}">{{ user.owner_name }}</a></td> #}
-				<td>{{ vip.name }}</td>
-				<td>{{ vip.ip }}</td>
-				<td>{{ vip.type }}</td>
-				<td>{{ vip.stat }}</td>
+				<td>{{ vip.domain }}</td>
+				<td>{{ vip.vip }}</td>
+				<td>
+					{% ifequal  vip.type 1 %}
+						写VIP
+					{% else %}
+						读VIP
+					{% endifequal %}
+				</td>
+				<td>
+					{% ifequal  vip.stat 1 %}
+						<span style="color:green">已占用</span>
+					{% else %}
+						未占用
+					{% endifequal %}
          	</tr>
 	   	{% endfor %}
      	</tbody>
@@ -46,20 +57,25 @@
        <form action="/resource/vip/" method="post">
 			<div class="input-group">
   				<span class="input-group-addon">VIP</span>
-  				<input type="text" class="form-control" name="VIP_ip" placeholder="IP" maxlength=50>
+  				<input type="text" class="form-control" name="vip" placeholder="IP" maxlength=50>
   			</div>
 
   			<div class="input-group">
   				<span class="input-group-addon">域名</span>
-  				<input type="text" class="form-control" name="VIP_domain" placeholder="域名"  maxlength=50>
+  				<input type="text" class="form-control" name="domain" placeholder="域名"  maxlength=50>
   			</div>
   			<div class="input-group">
   				<span class="input-group-addon">类型</span>
-  				<input type="text" class="form-control" name="VIP_type" placeholder="类型"  maxlength=50>
-  			</div>
-  			  			<div class="input-group">
-  				<span class="input-group-addon">状态</span>
-  				<input type="text" class="form-control" name="VIP_stat" placeholder="状态"  maxlength=50>
+	  			<select name="type" class="form-control" style="width:80px;">
+				   <option value=1>写VIP</option>
+				   <option value=2>读VIP</option>			
+				</select> 
+  			<span class="input-group-addon">状态</span>
+  			<select name="stat" class="form-control" style="width:100px;">
+			   <option value=0>未占用</option>
+			   <option value=1>已占用</option>
+			   
+			</select> 
   			</div>
   			<br>
   			<button type="submit" class="btn btn-default btn pull-right">
@@ -68,7 +84,7 @@
   			
   			  {% csrf_token %}
 	   </form>
-       
+    {{ msg }}   
 </div>
 </div>
 

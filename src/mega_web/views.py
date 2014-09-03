@@ -1,7 +1,8 @@
 #-*- coding: utf-8 -*-
 from django.shortcuts import render_to_response,RequestContext
-from resource import instance_manage,server_manage,business_manage,database_manage,resource_manage,user_manage
+from resource import instance_manage,server_manage,business_manage,database_manage,resource_manage,user_manage,vip_manage
 from console.backup import Backup,Backup_Config
+from console.failover import FailoverGet,FailoverManage
 from lib import paginator
 from lib.meta_data import MetaData 
 from mega_portal.file_manage import UploadFileForm
@@ -277,7 +278,17 @@ def user_detail(request):
 
 #vip
 def vip(request):
-    return render_to_response('vip.html',context_instance=RequestContext(request))
+    msg=''
+    if request.method=="GET":
+        vip=request.GET.get('vip')
+        if vip:
+            vip_list=vip_manage.VipGet().get_vip_by_ip(vip)
+        else:
+            vip_list=meta_data.vip_list()
+    else:
+        result,msg=vip_manage.VipManage(request.POST).add_vip()
+        vip_list=meta_data.vip_list()        
+    return render_to_response('vip.html',{"msg":msg,'vip_list':vip_list},context_instance=RequestContext(request))
 
 #backup
 
@@ -413,6 +424,25 @@ def slowlog_instance(request):
     return render_to_response('slowlog_report_instance.html',{'instance_list':meta_data.instance_list(),'total':total,'instance':instance,'groupbydb':groupbydb,'topsql':topsql},
                               context_instance=RequestContext(request))
 
+def failover(request):
+    msg=''
+    if request.method=='GET':
+        pass
+    if request.method=='POST':
+        action=request.POST.get('action')
+        if action=='add':
+            result,msg=FailoverManage(request.POST).add_failover()
+        else:
+            result,msg=FailoverManage(request.POST).mod_failover()
+    failover_list=FailoverGet().get_failover_list()
+    wvips=meta_data.vip_list(type=1)
+    rvips=meta_data.vip_list(type=2)
+    managers=meta_data.server_list(('type',2))
+    masters=meta_data.instance_list({'i.role':1})
+    return render_to_response('failover.html',{'msg':msg,'wvips':wvips,'rvips':rvips,'managers':managers,'masters':masters,'failover_list':failover_list},context_instance=RequestContext(request))
+def switch(request):
+    id=request.GET.get('id')
+    return render_to_response('switch.html',{'id':id})
 
 def my_404_view(request):
         return render_to_response('404.html')

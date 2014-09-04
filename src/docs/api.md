@@ -200,3 +200,10 @@
     port : instance port
 
     db: db name
+
+* def failover(group_name,old_master,new_master,method,time):
+    '''
+        1.update the instance and failover table ,change the replication relationship
+        2.save the switch log
+    '''
+    

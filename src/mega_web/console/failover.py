@@ -7,6 +7,7 @@ Created on Sep 2, 2014
 @module:mega_web.console.failover
 '''
 from lib.PyMysql import PyMySQL
+from apis.task import remote_cmd
 from conf.GlobalConf import MSG_ERR_SERVER_EXITST,MSG_ERR_NAME
 
 class FailoverManage():
@@ -63,6 +64,15 @@ class FailoverManage():
         if not result:
             return False,ex
         return True,''
+    def change_master(self,failoverid,new_master,method):
+        return
+        sql='select s.ip from failover f ,server s where f.id=12 and f.manager=s.id ;' %failoverid       
+        ip=self.q.fetchOne(sql)
+        cmd=''
+        cmd_type=''
+        #args={""}
+        #group name ,old master ,new master,action
+        remote_cmd(ip,None,cmd,cmd_type,args='')
         
         
 class FailoverGet():
@@ -71,9 +81,12 @@ class FailoverGet():
     def __init__(self):
         self.q=PyMySQL()
         
-    def get_failover_list(self):
+    def get_failover_list(self,ip=None):
+        
         sql='''select f.id as id,f.name as name,f.type as type,i.id as instance_id,concat(i.ip ,':',i.port) as master,s.id as server_id,s.ip as manager,v.id as rvip_id,v.vip as rvip,
-            v2.id as wvip_id,v2.vip as wvip from failover f left join instance i on f.master=i.id  left join server s on f.manager=s.id left join vip v on f.rvip=v.id left join vip v2 on f.wvip=v2.id;'''
+            v2.id as wvip_id,v2.vip as wvip, f.last_time from failover f left join instance i on f.master=i.id  left join server s on f.manager=s.id left join vip v on f.rvip=v.id left join vip v2 on f.wvip=v2.id where 1=1 '''
+        if ip :
+            sql+="and v.vip='%s' or v2.vip='%s'" % (ip,ip)
         failover_list=self.q.query(sql, type='dict')
         return failover_list
 

@@ -19,6 +19,7 @@ class MetaData(object):
     level=GlobalConf.LEVEL
     version=GlobalConf.VERSION
     os=GlobalConf.OS
+    failover_method=GlobalConf.FAILOVER
     
 
     def business_list(self):

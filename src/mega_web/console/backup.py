@@ -17,7 +17,7 @@ class Backup():
         if (not ip) or (ip == ''):
             sql="select * from backup_history_info order by id desc limit 150;"
         else:
-            sql="select * from backup_history_info where host_ip='%s' limit 150;" % ip 
+            sql="select * from backup_history_info where host_ip='%s' limit 150;" % ip
         _data=[dict(d.__dict__) for d in self.backup_info.objects.raw(sql)]
         for _d in _data:
             ip=_d['host_ip']

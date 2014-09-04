@@ -203,6 +203,13 @@ def slowlog_statics(time=None):
         slowlog_statics_per_hour(time)
     except Exception as ex:
         log.error('Statics slow log hourly failed:%s' % ex) 
+
+def failover(group_name,old_master,new_master,method,time):
+    '''
+        1.update the instance and failover table ,change the replication relationship
+        2.save the switch log
+    '''
+    return
     
     
 def main():

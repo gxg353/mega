@@ -302,6 +302,7 @@ def backup(request):
         backup_list_all=Backup().get_newest_backup_list(ip=ip)
     if not page:
         page=1
+    print backup_list_all
     page_data=paginator.paginator(backup_list_all, page)
     page_range=page_data.get('page_range')
     backup_list=page_data.get('page_data')
@@ -427,22 +428,31 @@ def slowlog_instance(request):
 def failover(request):
     msg=''
     if request.method=='GET':
-        pass
+        ip=request.GET.get('ip')
+        failover_list=FailoverGet().get_failover_list(ip=ip)
+
     if request.method=='POST':
         action=request.POST.get('action')
         if action=='add':
             result,msg=FailoverManage(request.POST).add_failover()
         else:
             result,msg=FailoverManage(request.POST).mod_failover()
-    failover_list=FailoverGet().get_failover_list()
+        failover_list=FailoverGet().get_failover_list()
     wvips=meta_data.vip_list(type=1)
     rvips=meta_data.vip_list(type=2)
     managers=meta_data.server_list(('type',2))
     masters=meta_data.instance_list({'i.role':1})
     return render_to_response('failover.html',{'msg':msg,'wvips':wvips,'rvips':rvips,'managers':managers,'masters':masters,'failover_list':failover_list},context_instance=RequestContext(request))
-def switch(request):
-    id=request.GET.get('id')
-    return render_to_response('switch.html',{'id':id})
+
+def switch(request):    
+    failover=request.GET
+    slaves=[]
+    if failover.get('method'):
+        result=FailoverManage(failover).change_master(failover.get('id'),failover.get('new_master'),failover.get('method'))
+    else:
+        masterid=failover.get('masterid')
+        slaves=instance_manage.InstanceGet().get_instance_slaves(masterid)
+    return render_to_response('switch.html',{'failover':failover,'slaves':slaves,'methods':meta_data.failover_method})
 
 def my_404_view(request):
         return render_to_response('404.html')

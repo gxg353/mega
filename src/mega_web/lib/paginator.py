@@ -10,9 +10,9 @@ Created on Jul 1, 2014
 from django.core.paginator import Paginator
 
 def paginator(object,page_num=1):
-    if not object:
-        return False
     result={}
+    if not object:
+        return result
     p=Paginator(list(object),15)
     result['pages']=p.num_pages
     result['page_range']=p.page_range

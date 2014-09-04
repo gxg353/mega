@@ -183,3 +183,8 @@ class InstanceGet():
         else:
             result=self.inst.objects.raw(sql)[offset:count]
         return result 
+    
+    def get_instance_slaves(self,instance_id):
+        result=self.inst.objects.filter(master_id=instance_id).values()
+        return result
+        

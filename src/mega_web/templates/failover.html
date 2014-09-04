@@ -33,13 +33,15 @@
     <tbody>
     {% for failover in failover_list %}
 	    <tr>
-			<td><a href="switch/?id={{ failover.id }}">{{ failover.name }}</a></td>	
+			<td><a href="?id={{ failover.id }}">{{ failover.name }}</a></td>	
 			<td>{{ failover.wvip }}</td>	
 			<td>{{ failover.rvip }}</td>	
 			<td>{{ failover.manager }}</td>	
 			<td>{{ failover.master }}</td>
 			<td>
-			    <button type="button" class="btn btn-default btn-sm" onclick="call_div('{{ failover.id }}','{{ failover.name }}','{{ failover.type }}','{{ failover.wvip_id }}','{{ failover.rvip_id }}','{{ failover.server_id }}','{{ failover.instance_id }}')">
+			    <button type="button" class="btn btn-default btn-sm" onclick="call_div('{{ failover.id }}','{{ failover.name }}','{{ failover.type }}',
+			    		'{{ failover.wvip_id }}','{{ failover.rvip_id }}','{{ failover.server_id }}','{{ failover.instance_id }}','{{ failover.wvip }}',
+			    		'{{ failover.rvip }}','{{ failover.master }}','{{ failover.last_time }}')">
     				<span class="glyphicon glyphicon-hand-right"></span>
     			</button>
 			</td>
@@ -63,7 +65,7 @@
 	  			<select id='type' name="type" class="form-control" style="width:80px;">
 				   <option value=1>MHA</option>
 				</select> 
-				<button type="button"  class="btn btn-default btn pull-right" data-toggle="modal" data-target="#sub_div">
+				<button id='switch' type="button"  class="btn btn-default btn pull-right" data-toggle="modal" data-target="#sub_div" disabled='disabled'>
   					<span class="glyphicon glyphicon-sort">切换</span>
   			</button>
 				
@@ -131,10 +133,10 @@
 
     			
 <script type="text/javascript"> 
-function update_div(){ 
+function update_div(masterid,name,wvip,rvip,master,last_time){ 
 	
 	var request_url = "/console/failover/switch/";       // 需要获取内容的url 
-	var request_pars = {'id':document.all.id.value};//请求参数 
+	var request_pars = {'masterid':masterid,'name':name,'wvip':wvip,'rvip':rvip,'master':master,'last_time':last_time};//请求参数 
 	var myAjax = new Ajax.Updater('subdiv', request_url,{ // 将request_url返回内容绑定到id为result的容器中 
 	method     : 'get', //HTTP请求的方法,get or post 
 	parameters : request_pars, //请求参数 
@@ -145,19 +147,36 @@ function update_div(){
 
 </script> 
 <script type="text/javascript">
-function call_div(id,name,type,wvip,rvip,manager,master){
+function call_div(id,name,type,wvipid,rvipid,managerid,masterid,wvip,rvip,master,last_time){
 	document.all.id.value=id;
 
 	document.all.action.value='mod';
 	document.all.type.value=type;
 	document.all.name.value=name;
-	document.all.wvip.value=wvip;
-	document.all.rvip.value=rvip;
-	document.all.manager.value=manager;
-	document.all.master.value=master;
-	update_div()
+	document.all.wvip.value=wvipid;
+	document.all.rvip.value=rvipid;
+	document.all.manager.value=managerid;
+	document.all.master.value=masterid;
+	document.all.switch.disabled='';
+
+	update_div(masterid,name,wvip,rvip,master,last_time)
 	}
 </script>
+<script>
+function change_master(failoverid,new_master,method){
+	var request_url='/console/failover/switch/'
+	var failoverid=document.all.id.value
+	var new_master=document.all.slave.value
+	var method=document.all.method.value
+	var request_pars={'id':failoverid,'new_master':new_master,'method':method}
+	var myAjax = new Ajax.Request(request_url,{
+		method:'get',
+		parameters : request_pars,
+	})
+}
+
+</script>
+
 
 
   {% endblock %}

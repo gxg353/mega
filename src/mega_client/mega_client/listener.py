@@ -1,5 +1,6 @@
 # -*- coding: UTF-8 -*-
-import time,sys
+import time
+import sys
 import SocketServer
 import signal
 from SocketServer import StreamRequestHandler as SRH
@@ -75,7 +76,6 @@ def tcp_server(host=TCP_HOST,port=TCP_PORT):
     server=None
     signal.signal(signal.SIGINT, sign_killed)
     signal.signal(signal.SIGTERM, sign_killed)
-
     try:
         server = SocketServer.ThreadingTCPServer(addr,Servers)
         server.daemon_threads=True
@@ -88,8 +88,6 @@ def tcp_server(host=TCP_HOST,port=TCP_PORT):
         if server:
             server.shutdown()
             server.server_close()
-    
-        
         
 if __name__=="__main__":
     tcp_server()

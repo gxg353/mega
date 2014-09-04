@@ -8,15 +8,7 @@ Created on Jul 1, 2014
 
 import socket
 import types
-import sys, os
-app_path=os.path.dirname(sys.path[0])
-sys.path.append(app_path)
 
-from logs import Logger
-
-
-MODEL='Sender'
-log = Logger(MODEL).log()
 
 
 TCP_HEADER={'HEAD':'MEGA'}
@@ -34,11 +26,11 @@ class MegaClient():
             * else only a 0 in the list means something goes into failure
         code example: 
             cmd='get_all_instance'
-                c=MegaClient(cmd=cmd)
-                if c:
-                    data=c.run(func_args="model='backup',stat=1,role=1",CYCLE=1)
-                    c.close()
-                    return data
+            c=MegaClient(cmd=cmd)
+            if c:
+                data=c.run(func_args="model='backup',stat=1,role=1",CYCLE=1)
+                c.close()
+                return data
     '''
     HOST='localhost'
     PORT=1104
@@ -74,7 +66,7 @@ class MegaClient():
             self.s.connect((self.host,self.port))
             return True
         except Exception as ex:
-            log.error("Connect to host : %s failed! %s" % (self.host,ex))
+#            log.error("Connect to host : %s failed! %s" % (self.host,ex))
             return False
     
     def cmd_run(self,cmd=None):
@@ -99,7 +91,7 @@ class MegaClient():
                     header=header-HEADER_LENGTH
             return self._data_unpack(data)
         except Exception as ex:
-            log.error(ex)
+#            log.error(ex)
             return ''
     
     def _cmd_pack(self,data):

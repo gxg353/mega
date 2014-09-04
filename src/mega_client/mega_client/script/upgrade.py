@@ -56,7 +56,7 @@ class Upgrade():
             return False
         #install package
         cmd={
-             'Update package':'cd %s && python %s/setup.py install' % (self.setup_path,self.setup_path),
+             'Update package':'cd %s && bash %s/setpu.py install' % (self.setup_path,self.setup_path),
              'Replace client source':'cp -ar %s %s' % (self.setup_path,CLIENT_DIR),
              'Stop mega client':'python /etc/init.d/mega_client upgrade'}
         for _action in cmd:

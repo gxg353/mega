@@ -16,10 +16,10 @@ setup(name='mega',
       description='Mega client',
       author='XCHLIU',
       author_email='liu.xiaocheng0312@gmail.com',
-      #py_modules=['sender'],
+      py_modules=['mega_client.sender','mega_client.utils'],
       #url='',
-      packages=['mega_client','mega_client/script'],
+      #packages=['mega_client','mega_client/script'],
       #package_dir={'mypkg': 'src/mypkg'},
       # package_data={'mypkg': ['data/*.dat']},
-      data_files=[('',['install.sh'])]
+      #data_files=[('',['install.sh'])]
      )

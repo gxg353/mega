@@ -12,6 +12,7 @@ from signal import SIGTERM
 from setting import DAEMON_PID,DAEMON_LOG,SERVICE_PID
 from logs import Logger
 
+
 MODEL='Daemon'
 log = Logger(MODEL).log()
 

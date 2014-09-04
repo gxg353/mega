@@ -65,6 +65,8 @@ class Worker():
         if status <>0:
             log.error(str(status)+' : '+output)
         return status,output
+    
+    
 class Monitor():
     '''
         client monitor

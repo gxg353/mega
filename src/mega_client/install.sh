@@ -20,7 +20,11 @@ chmod -R 777 /var/log/mega/
 
 cd $p_path
 echo "install python package..."
-python  setup.py install
+echo build >>record.info
+cat record.info| xargs rm -rf
+
+python setup.py build
+python setup.py install --record record.info
 chmod a+x $l_path/mega_client/mega_client.py
 ln -sf  $l_path/mega_client/mega_client.py /etc/init.d/$PROJECT
 echo "add to rc.local"

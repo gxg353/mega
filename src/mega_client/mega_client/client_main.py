@@ -6,7 +6,8 @@ Created on Jul 29, 2014
 
 @module:mega_service.mega_client.client_main
 '''
-import os,sys
+import os
+import sys
 app_path=os.path.dirname(sys.path[0])
 sys.path.append(app_path)
 
@@ -20,9 +21,6 @@ from worker import Monitor
 
 MODEL='ClientMain'
 log = Logger(MODEL).log()
-
-
-
 
 def main(pidfile=None): 
     log.info("=============BEGIN===========")

@@ -4,7 +4,7 @@ try:
     from setting import LOG_FILE_NAME
 except:
     DEAFULT_LOG_DEBUG=False
-    LOG_FILE_NAME='/tmp/mega-client.log'
+    LOG_FILE_NAME='/tmp/mega_client.log'
 
 
 class Logger:

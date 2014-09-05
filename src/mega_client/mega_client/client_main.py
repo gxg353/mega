@@ -8,12 +8,12 @@ Created on Jul 29, 2014
 '''
 import os
 import sys
-app_path=os.path.dirname(sys.path[0])
-sys.path.append(app_path)
-
 import time
 import datetime
 import multiprocessing
+
+app_path=os.path.dirname(sys.path[0])
+sys.path.append(app_path)
 
 from listener import tcp_server
 from logs import Logger
@@ -39,16 +39,27 @@ def main(pidfile=None):
         t.start()
         child_pids.append(t.pid)
         log.info((t.pid,t.name))
-        if pidfile:
-            file(pidfile,'a+').write("%s\n" % t.pid)
-    time.sleep(10)
-    #restart the tcp server if error return  
-    if listener.is_alive() == False and listener.exitcode==1:
-        _listener=multiprocessing.Process(target=tcp_server,args=(),name='Client Listener')
-        _listener.start()
-        thread.append(_listener)
-    for t in thread:
-        t.join()
+
+    #restart the subprocess if error occur
+    for pid in child_pids:
+        file(pidfile,'a+').write("%s\n" % pid)
+             
+    while 1:
+        time.sleep(10)
+        try:
+            for t in thread:
+                if t.is_alive() == False:
+                    if t.pid in child_pids:
+                        child_pids.remove(t.pid)
+                    t.start()
+                    child_pids.append(t.pid)
+                    if pidfile:
+                        for pid in child_pids:
+                            file(pidfile,'w+').write("%s\n" % t.pid)
+                    
+        except Exception as ex:
+            log.error(ex)
+            break
     return child_pids
     
 if __name__=='__main__':

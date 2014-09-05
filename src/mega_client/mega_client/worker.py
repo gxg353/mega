@@ -6,12 +6,13 @@ Created on Jul 29, 2014
 
 @module:mega_service.mega_client.worker
 '''
-import commands
-import sys,os
+import os
+import sys
 import time
+import commands
 
-from setting import SCRIPT_DIR,DEFAULT_TARGET,KEEPALIVE
 import ping
+from setting import SCRIPT_DIR,DEFAULT_TARGET,KEEPALIVE
 from logs import Logger
 
 

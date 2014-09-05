@@ -6,8 +6,8 @@ Created on Jul 1, 2014
 
 '''
 
-import socket
 import types
+import socket
 
 
 

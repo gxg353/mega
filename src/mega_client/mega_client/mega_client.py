@@ -85,7 +85,14 @@ class Daemon:
     def stop(self):
         self._kill_pid(self.pidfile)
         self._kill_pid(SERVICE_PID)
-    
+        sub_process=os.popen("ps aux |grep python |grep  mega_client |grep -E 'start|restart' |grep -v grep |awk {'print $2'}").read().strip()
+        try:
+            for process in sub_process.split():
+                log.debug("Process %s killed" % process)
+                os.kill(int(process.strip()), SIGTERM)
+        except OSError, err:    
+            log.error(err)        
+            
     def restart(self):
         self.stop()
         time.sleep(5)
@@ -97,7 +104,7 @@ class Daemon:
     def _run(self):
         '''
         Call the main service ,put the child pid into pid file
-        loop : try to restart mega_client if the subprocesses exit
+        loop : try to restart mega_client service if the subprocesses exit
         '''
         
         while 1:
@@ -109,10 +116,15 @@ class Daemon:
                 client=__import__('client_main')
                 client_main=getattr(client,'main')
                 #wait for the subprocess exit
-                client_main(SERVICE_PID)
+                pids=client_main(SERVICE_PID)
+                log.debug(pids)
+                f=open(SERVICE_PID,'w+')
+                for pid in pids:
+                    f.write("%s\n" % pid)
+                f.close()
                 log.debug("daemon loop end!")
-            time.sleep(5)
-   
+            time.sleep(10)
+
     def _kill_pid(self,pidfile):
         if not os.path.exists(pidfile):
             return 
@@ -129,17 +141,14 @@ class Daemon:
             return # not an error in a restart
         # Try killing the daemon process            
         try:
-            while 1:
-                for p in pid:
-                    os.kill(int(p.strip()), SIGTERM)
-                    time.sleep(0.1)
+            for p in pid:
+                log.debug('Process %s killed' % p.strip())
+                os.kill(int(p.strip()), SIGTERM)
         except OSError, err:    
-            err = str(err)
-            if err.find("No such process") > 0:
-                if os.path.exists(pidfile):
-                    os.remove(pidfile)
-            else:
-                log.error(err)
+            log.error(err)
+        if os.path.exists(pidfile):
+            os.remove(pidfile)
+
         return 
         
 if __name__ == "__main__":

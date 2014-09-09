@@ -85,11 +85,16 @@ class Daemon:
     def stop(self):
         self._kill_pid(self.pidfile)
         self._kill_pid(SERVICE_PID)
+        _pid=os.getpid()
         sub_process=os.popen("ps aux |grep python |grep  mega_client |grep -E 'start|restart' |grep -v grep |awk {'print $2'}").read().strip()
+        
         try:
             for process in sub_process.split():
+                pid=int(process.strip())
+                if pid==_pid:
+                    continue
                 log.debug("Process %s killed" % process)
-                os.kill(int(process.strip()), SIGTERM)
+                os.kill(pid, SIGTERM)
         except OSError, err:    
             log.error(err)        
             
@@ -106,7 +111,7 @@ class Daemon:
         Call the main service ,put the child pid into pid file
         loop : try to restart mega_client service if the subprocesses exit
         '''
-        
+        counts=1
         while 1:
             process_count=os.popen("ps aux |grep python |grep mega_client |grep -v grep |wc -l").read().strip()
             if int(process_count) < 3:
@@ -117,13 +122,10 @@ class Daemon:
                 client_main=getattr(client,'main')
                 #wait for the subprocess exit
                 pids=client_main(SERVICE_PID)
+                log.info('loop: %s' % counts)
                 log.debug(pids)
-                f=open(SERVICE_PID,'w+')
-                for pid in pids:
-                    f.write("%s\n" % pid)
-                f.close()
-                log.debug("daemon loop end!")
-            time.sleep(10)
+            time.sleep(30)
+            counts+=1
 
     def _kill_pid(self,pidfile):
         if not os.path.exists(pidfile):

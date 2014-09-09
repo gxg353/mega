@@ -37,7 +37,7 @@ class Upgrade():
         self.setup_path=tmp_dir
         if not os.path.isdir(tmp_dir):
             os.mkdir(tmp_dir)
-        for p in pag:
+        for p in pag:            
             #/mega_client/__init__.py
             file_name=p.items()[0][0].lstrip('/')
             file_content=p.items()[0][1]
@@ -57,7 +57,7 @@ class Upgrade():
         cmd=(
              ['Remove old package','cat %s/record.info| xargs rm -rf' % CLIENT_DIR ],
              ['Update package','python %s/setup.py install' %self.setup_path],
-             ['Replace client source','cp -r %s %s' % (self.setup_path,CLIENT_DIR)],
+             ['Replace client source','cp -ar %s %s' % (self.setup_path,CLIENT_DIR)],
              ['Change file mod','chmod a+x /etc/init.d/mega_client'],
              ['Stop mega client','python /etc/init.d/mega_client upgrade']
              )

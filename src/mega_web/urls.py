@@ -1,27 +1,12 @@
 from django.conf.urls import patterns, include, url
 from django.conf.urls.static import static
-from views import home,monitor,console,resource,portal,fun,tunning
-from views import instance,instance_add,instance_detail
-from views import server,server_add,server_detail
-from views import business,business_add,business_detail
-from views import database,database_add,database_detail
-from views import backup,backup_config,backup_config_list
-from views import task,task_add,task_detail
-from views import user,user_add,user_detail
-from views import slowlog_config,slowlog_report,slowlog_sql,slowlog_instance
-from views import failover,switch
-from views import document
-from views import vip
-from views import document
-
-from views import my_404_view,my_500_view
-from views import admin,client
+from views import * 
 
 
 from django.conf import settings
 # Uncomment the next two lines to enable the admin:
-#from django.contrib import admin
-#admin.autodiscover()
+from django.contrib import admin
+admin.autodiscover()
 
 #for error catch
 handler404 = my_404_view
@@ -34,12 +19,15 @@ urlpatterns = patterns('',
     url(r'^portal/$',portal),
     url(r'^monitor/$',monitor),
     url(r'^tunning/$',tunning),
-    url(r'console/$',console),
-    url(r'admin/$',admin),
+    url(r'^console/$',console),
+    url(r'^mega-admin/$',mega_admin),
+    url(r'^login/$',login),
+    url(r'^accounts/login/$',login),
+    url(r'^logout/$',logout),
 
     
 #django
-#    (r'^admin/', include(admin.site.urls)),
+    url(r'^admin/', include(admin.site.urls)),
 
 #sub url
     url(r'^resource/instance/$',instance),
@@ -84,7 +72,7 @@ urlpatterns = patterns('',
 
     url(r'^portal/document/$',document),
     
-    url(r'^admin/client/$',client),
+    url(r'^mega-admin/client/$',client),
     
 #for static like css ,js ,ima,music     
     url(r'^static/(?P<path>.*)$', 'django.views.static.serve',{'document_root': settings.STATIC_URLS },name="static"),

@@ -1,5 +1,7 @@
 #-*- coding: utf-8 -*-
 from django.shortcuts import render_to_response,RequestContext
+from django.contrib.auth.decorators import login_required
+
 from resource import instance_manage,server_manage,business_manage,database_manage,resource_manage,user_manage,vip_manage
 from console.backup import Backup,Backup_Config
 from console.failover import FailoverGet,FailoverManage
@@ -25,6 +27,7 @@ def monitor(request):
     else:
         return render_to_response('monitor.html')
 
+@login_required
 def console(request):
     if request.method=="GET":
         return render_to_response('console.html')
@@ -48,7 +51,8 @@ def fun(request):
         return render_to_response('fun.html')
     else:
         return render_to_response('fun.html')
-    
+
+@login_required    
 def resource(request):
     if request.method=="GET":
         count=resource_manage.get_total_count()
@@ -421,10 +425,9 @@ def slowlog_instance(request):
     instance=instance_manage.InstanceGet().get_instance_by_id(instance_id)
     groupbydb=slowlog.get_chart_groupbydb(instance_id=instance_id)
     topsql=slowlog.get_instance_topsql(instance_id)
-    print topsql
     return render_to_response('slowlog_report_instance.html',{'instance_list':meta_data.instance_list(),'total':total,'instance':instance,'groupbydb':groupbydb,'topsql':topsql},
                               context_instance=RequestContext(request))
-
+@login_required    
 def failover(request):
     msg=''
     if request.method=='GET':

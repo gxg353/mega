@@ -14,10 +14,13 @@ from lib.utils import today
 cursor=PyMySQL()
     
 
-def get_chart_groupbyinstance():
+def get_chart_groupbyinstance(begin=None,end=None):
     #default recent 7 days
+    if not begin or not  end:
+        begin=today(7)
+        end=today()
     sql=''' select concat(ip,':',port),sum(counts) as counts from slowlog_time_day a,instance b where a.instance_id=b.id and   
-            date(log_time) between '%s' and '%s' group by instance_id order by counts desc limit 10;''' % (today(7),today())
+            date(log_time) between '%s' and '%s' group by instance_id order by counts desc limit 10;''' % (begin,end)
     data=cursor.query(sql).fetchall()
     c=Chart()
     c.type='column'
@@ -42,10 +45,14 @@ def get_chart_total(instance_id=None,begin=None,end=None):
     c.data_list=["counts",]
     return c.generate(data, '')
 
-def get_chart_groupbytime():
+def get_chart_groupbytime(begin=None,end=None):
+    if not begin or not  end:
+        begin=today(7)
+        end=today()
+    
     sql='''select date(log_time) as day,sum(lt_one) as lt_one,sum(lt_five) as lt_five,sum(lt_ten) as lt_ten,sum(lt_hundred) as \
          lt_hundred,sum(gt_hundred) as gt_hundred  from slowlog_time_day
-         where date(log_time) between '%s' and '%s' group by hour(log_time);''' % (today(7),today())
+         where date(log_time) between '%s' and '%s' group by hour(log_time);''' % (begin,end)
     data=cursor.query(sql).fetchall()
     c=Chart()
     c.type='pie'
@@ -53,10 +60,19 @@ def get_chart_groupbytime():
     c.data_list=["<1s","<5s","<10s","<100s",">100s"]
     return c.generate(data, 'slow log by time') 
 
-def get_chart_topsql():
+def get_chart_topsql(begin=None,end=None):
+    if not begin or not  end:
+        begin=today(7)
+        end=today()    
     sql="select b.hash_code,b.sql_parsed,counts,max_time,min_time,avg_time,max_row,min_row,avg_row from slowlog_sql_hour a ,sql_format b \
-        where a.hash_code=b.hash_code and date(log_time) between '%s' and '%s' order by counts desc limit 100 ;" % (today(7),today())
+        where a.hash_code=b.hash_code and date(log_time) between '%s' and '%s' group by a.hash_code order by counts desc limit 100 ;" % (begin,end)
     data=cursor.query(sql,type='dict').fetchall()
+    for d in data:
+        opt_count=0
+        sql="select count(*) from slowlog_opt where hash_code='%s'" % d.get('hash_code')
+        opt_count=cursor.fetchOne(sql)
+        if opt_count:
+            d['opt_count']=opt_count
     return data
 
 def get_instance_topsql(instance_id,begin=None,end=None):

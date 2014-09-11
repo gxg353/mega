@@ -23,42 +23,42 @@ def home(request):
 
 def monitor(request):
     if request.method=="GET":
-        return render_to_response('monitor.html')
+        return render_to_response('monitor.html',context_instance=RequestContext(request))
     else:
-        return render_to_response('monitor.html')
+        return render_to_response('monitor.html',context_instance=RequestContext(request))
 
 @login_required
 def console(request):
     if request.method=="GET":
-        return render_to_response('console.html')
+        return render_to_response('console.html',context_instance=RequestContext(request))
     else:
-        return render_to_response('console.html')
+        return render_to_response('console.html',context_instance=RequestContext(request))
 
 def tunning(request):
     if request.method=="GET":
-        return render_to_response('tunning.html')
+        return render_to_response('tunning.html',context_instance=RequestContext(request))
     else:
-        return render_to_response('tunning.html')
+        return render_to_response('tunning.html',context_instance=RequestContext(request))
 
 def portal(request):
     if request.method=="GET":
-        return render_to_response('portal.html')
+        return render_to_response('portal.html',context_instance=RequestContext(request))
     else:
-        return render_to_response('portal.html')
+        return render_to_response('portal.html',context_instance=RequestContext(request))
 
 def fun(request):
     if request.method=="GET":
-        return render_to_response('fun.html')
+        return render_to_response('fun.html',context_instance=RequestContext(request))
     else:
-        return render_to_response('fun.html')
+        return render_to_response('fun.html',context_instance=RequestContext(request))
 
 @login_required    
 def resource(request):
     if request.method=="GET":
         count=resource_manage.get_total_count()
-        return render_to_response('resource.html',{'count':count})
+        return render_to_response('resource.html',{'count':count},context_instance=RequestContext(request))
     else:
-        return render_to_response('resource.html')
+        return render_to_response('resource.html',context_instance=RequestContext(request))
 
 
 #Sub sites
@@ -398,10 +398,15 @@ def slowlog_config(request):
     return render_to_response('slowlog_config.html',{'instance_list':meta_data.instance_list()},context_instance=RequestContext(request))
 
 def slowlog_report(request):
-    groupbyinstance=slowlog.get_chart_groupbyinstance()
-    total=slowlog.get_chart_total()
-    groupbytime=slowlog.get_chart_groupbytime()
-    topsql=slowlog.get_chart_topsql()
+    if request.method=='GET':
+        begin=end=None
+    else:
+        begin=request.POST.get('begin_date')
+        end=request.POST.get('end_date')
+    groupbyinstance=slowlog.get_chart_groupbyinstance(begin,end)
+    total=slowlog.get_chart_total(begin,end)
+    groupbytime=slowlog.get_chart_groupbytime(begin,end)
+    topsql=slowlog.get_chart_topsql(begin,end)
     return render_to_response('slowlog_report.html',{'groupbyinstance':groupbyinstance,'total':total,'topsql':topsql,'groupbytime':groupbytime},
                               context_instance=RequestContext(request))
 
@@ -420,11 +425,16 @@ def slowlog_sql(request):
                               context_instance=RequestContext(request))
 
 def slowlog_instance(request):
-    instance_id=request.GET.get('instance_id',0)
+    if request.method=='GET':
+        begin=end=None
+    else:
+        begin=request.POST.get('begin_date')
+        end=request.POST.get('end_date')
+        instance_id=request.POST.get('instance_id',0)
     total=slowlog.get_chart_total(instance_id=instance_id)
     instance=instance_manage.InstanceGet().get_instance_by_id(instance_id)
-    groupbydb=slowlog.get_chart_groupbydb(instance_id=instance_id)
-    topsql=slowlog.get_instance_topsql(instance_id)
+    groupbydb=slowlog.get_chart_groupbydb(instance_id,begin,end)
+    topsql=slowlog.get_instance_topsql(instance_id,begin,end)
     return render_to_response('slowlog_report_instance.html',{'instance_list':meta_data.instance_list(),'total':total,'instance':instance,'groupbydb':groupbydb,'topsql':topsql},
                               context_instance=RequestContext(request))
 @login_required    

@@ -47,14 +47,16 @@ def slowlog_statics_per_hour(v_time):
     if data_list and len(data_list) >0 :
         _list=(1,5,10,100)
         for data in data_list:
-            _counts=[]
             c=''
+            _pre_c=0            
+            _counts=[]
             for l in _list:
                 _c=0
-                _sql="select count(*) from slowlog_info where instance_id=%s and dbname='%s' and start_time between '%s' and '%s' and query_time<%s;" \
-                        %(data.get('instance_id'),data.get('dbname'),_pre_time,_time,l)
+                _sql="select count(*) from slowlog_info where instance_id=%s and dbname='%s' and start_time between '%s' and '%s' and query_time between %s and %s;" \
+                        %(data.get('instance_id'),data.get('dbname'),_pre_time,_time,_pre_c,l)
                 _c=PyMySQL().fetchOne(_sql)
                 _counts.append(int(_c))
+                _pre_c=l
             _counts.append(int(data.get('counts')-sum(_counts)))
             #make sure all the values bigger than zero
             _counts=map(lambda x :abs(x),_counts)

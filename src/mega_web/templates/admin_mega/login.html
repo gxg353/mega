@@ -5,6 +5,7 @@ login-Mega
 
 {% block content %}
 <div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-3 main">
+<div class="row">
 <div class="col-xs-6 col-sm-6  col-md-6 col-lg-3">
        <form action="/login/" method="post">
  		<input name='next' value='{{ next }}' type='hidden'>
@@ -27,10 +28,12 @@ login-Mega
   			 {% csrf_token %}
   		</form>
   		<br>
-  			<div class="well well-lg">
-  			<span class="glyphicon glyphicon-question-sign">{{ request }} 
-  			</span>
-  			</div>
 	</div>
+</div>	  			
+<div class="" style="width:200px;">
+  			<a href="mailto:wyliuxiaocheng@chinabank.com.cn" title="">注册用户</a>
+  			
+</div>
+	
 </div>
 {% endblock %}

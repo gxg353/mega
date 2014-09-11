@@ -15,12 +15,12 @@ from client_manage import ClientGet
 from mega_web.lib import paginator
 from mega_service.mega import client_update
 
-
+@login_required
 def mega_admin(request):
     if request.method=="GET":
-        return render_to_response('admin_mega/admin.html')
+        return render_to_response('admin_mega/admin.html',context_instance=RequestContext(request))
     else:
-        return render_to_response('admin_mega/admin.html')
+        return render_to_response('admin_mega/admin.html',context_instance=RequestContext(request))
     
 def client(request):
     _msg=''

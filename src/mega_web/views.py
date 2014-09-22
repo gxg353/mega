@@ -404,7 +404,7 @@ def slowlog_report(request):
         begin=request.POST.get('begin_date')
         end=request.POST.get('end_date')
     groupbyinstance=slowlog.get_chart_groupbyinstance(begin,end)
-    total=slowlog.get_chart_total(begin,end)
+    total=slowlog.get_chart_total(None,begin,end)
     groupbytime=slowlog.get_chart_groupbytime(begin,end)
     topsql=slowlog.get_chart_topsql(begin,end)
     return render_to_response('slowlog_report.html',{'groupbyinstance':groupbyinstance,'total':total,'topsql':topsql,'groupbytime':groupbytime},
@@ -427,11 +427,13 @@ def slowlog_sql(request):
 def slowlog_instance(request):
     if request.method=='GET':
         begin=end=None
+        instance_id=request.GET.get('instance_id',1)
+
     else:
         begin=request.POST.get('begin_date')
         end=request.POST.get('end_date')
-        instance_id=request.POST.get('instance_id',0)
-    total=slowlog.get_chart_total(instance_id=instance_id)
+        instance_id=request.POST.get('instance_id',1)
+    total=slowlog.get_chart_total(instance_id,begin,end)
     instance=instance_manage.InstanceGet().get_instance_by_id(instance_id)
     groupbydb=slowlog.get_chart_groupbydb(instance_id,begin,end)
     topsql=slowlog.get_instance_topsql(instance_id,begin,end)

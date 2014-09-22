@@ -64,8 +64,9 @@ def get_chart_topsql(begin=None,end=None):
     if not begin or not  end:
         begin=today(7)
         end=today()    
-    sql="select b.hash_code,b.sql_parsed,counts,max_time,min_time,avg_time,max_row,min_row,avg_row from slowlog_sql_hour a ,sql_format b \
-        where a.hash_code=b.hash_code and date(log_time) between '%s' and '%s' group by a.hash_code order by counts desc limit 100 ;" % (begin,end)
+    sql="select b.hash_code,b.sql_parsed,sum(counts) as counts,max_time,min_time,avg(avg_time) as avg_time,max_row,min_row,avg(avg_row) as avg_row from slowlog_sql_hour a ,sql_format b \
+              where a.hash_code=b.hash_code and date(log_time) between '%s' and '%s' group by a.hash_code order by counts desc limit 100 ;" % (begin,end)
+         
     data=cursor.query(sql,type='dict').fetchall()
     for d in data:
         opt_count=0
@@ -97,7 +98,7 @@ def get_sql_hosts(hash_code):
     return c.generate(data, ' by instance') 
 
 def get_sql_time(hash_code):
-    sql="select date(log_time) as log_time,count(*) as counts from slowlog_sql_hour where hash_code='%s' group by date(log_time) order by counts desc;" % hash_code
+    sql="select date(log_time) as log_time,count(*) as counts from slowlog_sql_hour where hash_code='%s' group by date(log_time) order by log_time,counts desc;" % hash_code
     data=cursor.query(sql).fetchall()
     c=Chart()
     c.yaxis_name='counts'

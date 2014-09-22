@@ -1,16 +1,17 @@
 # Django settings for mega_web project.
 import os
-DEBUG = True
-#DEBUG = False
+import socket
 from conf.settings import DbConfig
 
-TEMPLATE_DEBUG = DEBUG
-
+if socket.gethostname() == "xchliu.lan":
+    DEBUG = TEMPLATE_DEBUG = True
+else:
+    DEBUG = TEMPLATE_DEBUG = False
 PROJECT_PATH=os.path.dirname(__file__)
 STATIC_URLS = os.path.join(PROJECT_PATH,'static/')
 MEDIA_PATH=os.path.join(PROJECT_PATH,'media/')
 ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
+     ('Xiaocheng', 'wyliuxiaocheng@jd.com'),
 )
 
 MANAGERS = ADMINS

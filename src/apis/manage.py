@@ -171,8 +171,8 @@ def slowlog_statics(time=None):
     #get the slow log in the prior hour 
     #undo slow log
     sql="select * from slowlog_info where stat=0 limit 100" 
-    try:
-        while 1:
+    while 1:
+        try:
             cursor=PyMySQL().query(sql, type='dict')
             if not cursor:
                 break
@@ -194,7 +194,7 @@ def slowlog_statics(time=None):
                 result,ex=PyMySQL().execute(_sql)
                 if not result:
                     log.error(ex)
-    except Exception as ex:
+        except Exception as ex:
                 log.debug(data)
                 log.error('Pack slow log failed:%s' % ex) 
         

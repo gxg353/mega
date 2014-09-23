@@ -62,7 +62,7 @@ class SendMail():
 #        log.debug("Get mail task : %s for %s" % (subject,self.module))
         if len(str(subject))*len(content)*len(temail) == 0:
             return False,'illegal argument!'
-        mime = MIMEText(content)
+        mime = MIMEText(content,'html', 'utf-8')
         mime['To'] = ", ".join(temail)
         mime['From'] = femail
         mime['Subject'] =  Header.Header(subject,'utf-8')
@@ -76,9 +76,6 @@ class SendMail():
         except smtplib.SMTPException, se:
             return False,se
 #            log.error(se)
-        finally:
-            if s:
-                s.close()
     
 def sms(to_mail,msg):
     '''

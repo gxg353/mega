@@ -17,6 +17,6 @@ class DbConfig():
     db_db='mega'
     db_charset='utf8'
 
-MEGA_SERVER="mega_server.d.chinabank.com.cn"    #mega 后台服务
-EMAIL_SERVER="mega_email.d.chinabank.com.cn"    # mega 邮件服务器
-SMS_SERVER="mega_sms.d.chinabank.com.cn"       #mega 短信服务器
+MEGA_SERVER="mega-server.d.chinabank.com.cn"    #mega 后台服务
+EMAIL_SERVER="mega-email.d.chinabank.com.cn"    # mega 邮件服务器
+SMS_SERVER="mega-sms.d.chinabank.com.cn"       #mega 短信服务器

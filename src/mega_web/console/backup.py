@@ -6,6 +6,7 @@ from mega_web.resource.business_manage import BusinessGet
 from mega_web.resource.server_manage import ServerGet
 
 from lib.PyMysql import PyMySQL
+from lib.utils import today
 
 class Backup():
     def __init__(self):
@@ -51,28 +52,48 @@ class Backup():
         else:
             sql="select * from backup_policy where host_ip='%s';" % ip
         return self.backup_policy.objects.raw(sql)
-    def get_today_statics(self):
-        
+    def get_today_statics(self,date=None): 
+        if not date:
+            date=today()               
         #planed counts
         _now={}
-        _now["week"]=time.strftime('%a',time.localtime(time.time()))
-        _now["month"]=time.strftime('%d',time.localtime(time.time()))
+        _now["week"]=time.strftime('%a',time.strptime(date,'%Y-%m-%d'))
+        _now["month"]=time.strftime('%d',time.strptime(date,'%Y-%m-%d'))        
         sql="select count(*) from backup_policy where cycle='day' and is_schedule=1"
         count_day=self.q.fetchOne(sql)
         sql="select count(*) from backup_policy where cycle='week' and find_in_set('%s',backup_time) and is_schedule=1" %(_now['week'])
         count_week=self.q.fetchOne(sql)
-        sql="select count(*) from backup_policy where cycle='week' and find_in_set('%s',backup_time) and is_schedule=1" %(_now['month'])
+        sql="select count(*) from backup_policy where cycle='month' and find_in_set('%s',backup_time) and is_schedule=1" %(_now['month'])
         count_month=self.q.fetchOne(sql)
         total_today=count_day+count_week+count_month
         
         #ran backup
-        sql="select count(*) from backup_history_info where date(backup_begin_time)=date(now()) and backup_status='Y' "
+        sql="select count(*) from backup_history_info where date(backup_begin_time)='%s' and backup_status='Y' " % date
         success_count=self.q.fetchOne(sql)
-        sql="select count(*) from backup_history_info where date(backup_begin_time)=date(now()) and backup_status='N' "
+        sql="select count(*) from backup_history_info where date(backup_begin_time)='%s' and backup_status='N' " % date
         failure_count=self.q.fetchOne(sql)
         success_ratio=(success_count*100)/total_today
         failure_ratio=(failure_count*100)/total_today
         return {"total_today":total_today,"success_count":success_count,"success_ratio":success_ratio,"failure_count":failure_count,"failure_ratio":failure_ratio}
+    def get_uninvoked_backup(self,date=None):
+        if not date:
+            date=today()
+        _now={}
+        _now["week"]=time.strftime('%a',time.strptime(date,'%Y-%m-%d'))
+        _now["month"]=time.strftime('%d',time.strptime(date,'%Y-%m-%d'))
+        sql="select a.* from backup_policy a left join backup_history_info b  on a.host_ip=b.host_ip and a.port=b.port and a.backup_tool=b.backup_tool and \
+            a.backup_level=b.backup_level and date(b.backup_begin_time)='%s' where a.cycle='day' and a.is_schedule=1  and  b.id is null;" %(date)
+        _day=self.q.fetchAll(sql)
+        sql="select a.*,b.id from backup_policy a left join backup_history_info b  on a.host_ip=b.host_ip and a.port=b.port and a.backup_tool=b.backup_tool \
+             and a.backup_level=b.backup_level and date(b.backup_begin_time)='%s' where a.cycle='week' and a.is_schedule=1 and find_in_set('%s',backup_time)\
+               and  b.id is null;" %(date,_now['week'])
+        _week=self.q.fetchAll(sql)
+        sql="select a.*,b.id from backup_policy a left join backup_history_info b  on a.host_ip=b.host_ip and a.port=b.port and a.backup_tool=b.backup_tool \
+             and a.backup_level=b.backup_level and date(b.backup_begin_time)='%s' where a.cycle='month' and a.is_schedule=1 and find_in_set('%s',backup_time)\
+               and  b.id is null;" %(date,_now['month'])
+        _month=self.q.fetchAll(sql)
+        data=[x for x in _day]+[x for x in _week]+[x for x in _month]
+        return data
         
 class Backup_Config():
     def __init__(self):

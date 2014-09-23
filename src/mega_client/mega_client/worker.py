@@ -85,8 +85,10 @@ class Monitor():
                 if keepalive == 'failed':
                     _count+=1
                     log.error('keepalive check :%s'% keepalive)
+                else:
+                    self.sleep=KEEPALIVE                    
                 if _count >100:
-                    break
+                    self.sleep+=60
                     log.error('keepalive check  :%s for %s times ,abort!'% (keepalive,_count))
                 time.sleep(self.sleep)
             except Exception as ex:

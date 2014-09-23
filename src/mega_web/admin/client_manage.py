@@ -19,7 +19,9 @@ class ClientGet():
     def get_client_list(self):
         client_list=self.client.objects.all().values().order_by("-heartbeat")
         for client in client_list:
-            client['ip']=self.server.objects.filter(id=client['server_id']).values('ip')[0]['ip']
+            _server=self.server.objects.filter(id=client['server_id'])
+            if _server:
+                client['ip']=_server.values('ip')[0]['ip']
             _heartbeat=(datetime.datetime.now()-client['heartbeat']).seconds
             if _heartbeat > 300:
                 client['stat']=0

@@ -1,0 +1,7 @@
+uwsgi:
+  http: 0.0.0.0:8080
+  chdir: /Users/xchliu/Documents/workspace/mega/src
+  module: django_wsgi
+  processes: 2
+  daemonize: /tmp/uwsgi.log
+  pidfile: /tmp/uwsgi.pid

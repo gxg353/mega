@@ -46,7 +46,7 @@ BACKUP_TOOL=['xtrabackup','mysqldump','mysqlbinlog','mydumper','rman','expdp','e
 BACKUP_TYPE=['full','increment','binlog','archivelog']
 BACKUP_LEVEL=['instance','db','table']
 BACKUP_CYCLE=['day','week','month']
-
+MIN_BACKUP_PERIOD=7
 #meta data
 OS=['Linux','Other']
 LEVEL=[1,2,3]

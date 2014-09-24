@@ -25,6 +25,10 @@ def is_int(value):
     except:
         return False
 def today(day=None,format=None):
+    '''
+        if day is given ,return the date N(day) days ago 
+        else is today
+    '''
     if not format:
         format='%Y-%m-%d'
     if day:

@@ -16,6 +16,7 @@ from mega_web.tunning import slowlog
 
 meta_data=MetaData()
 
+@login_required
 def home(request):
     slow_log=slowlog.get_chart_total()
     return render_to_response('home.html',{'slowlog':slow_log},context_instance=RequestContext(request))
@@ -306,7 +307,6 @@ def backup(request):
         backup_list_all=Backup().get_newest_backup_list(ip=ip)
     if not page:
         page=1
-    print backup_list_all
     page_data=paginator.paginator(backup_list_all, page)
     page_range=page_data.get('page_range')
     backup_list=page_data.get('page_data')

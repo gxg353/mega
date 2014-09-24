@@ -29,23 +29,17 @@ class SubProcess:
         worker=Worker(queue,).worker
         tracker=Tracker(queue).tracker
         try:
-            log.info('Start Subprocess: ')
-            
+            log.info('Start Subprocess: ')            
             workers=multiprocessing.Process(target=worker,args=(),name="Main Worker")
-            self.threads.append(workers)
-            
+            self.threads.append(workers)            
             listeners=multiprocessing.Process(target=tcp_server,args=(queue,),name="TCP Listener")        
-            self.threads.append(listeners)
-            
+            self.threads.append(listeners)            
             trackers=multiprocessing.Process(target=tracker,args=(),name="Tracker")
-            self.threads.append(trackers)                      
-            
+            self.threads.append(trackers)                                  
             monitor=multiprocessing.Process(target=self.monitor,args=(),name="Monitor")
             self.threads.append(monitor)
-            #backuper=multiprocessing.Process(target=backuper,args=(),name="Backup worker")
-            #threads.append(backuper)        
             for t in self.threads:
-               # t.daemon=True
+                # t.daemon=True
                 t.start()
                 self.child_pids.append(t.pid)
                 log.info([t.name,t.pid])

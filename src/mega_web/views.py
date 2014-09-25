@@ -13,20 +13,23 @@ from mega_service.task import Task
 from mega_web.console.task import TaskManage 
 from mega_web.admin.views import * 
 from mega_web.tunning import slowlog
+from mega_web.monitor import alert_manage
 
 meta_data=MetaData()
 
 @login_required
 def home(request):
     slow_log=slowlog.get_chart_total()
-    return render_to_response('home.html',{'slowlog':slow_log},context_instance=RequestContext(request))
+    alert_list=alert_manage.get_alert_list()
+    return render_to_response('home.html',{'slowlog':slow_log,'alert_list':alert_list},context_instance=RequestContext(request))
    
-
+@login_required
 def monitor(request):
-    if request.method=="GET":
-        return render_to_response('monitor.html',context_instance=RequestContext(request))
-    else:
-        return render_to_response('monitor.html',context_instance=RequestContext(request))
+    if request.method=='POST':
+        alert_id=request.POST.get('alert_id')
+        alert_manage.update_alert(alert_id)
+    alert_list=alert_manage.get_alert_list()
+    return render_to_response('monitor.html',{'alert_list':alert_list},context_instance=RequestContext(request))
 
 @login_required
 def console(request):
@@ -138,7 +141,9 @@ def server_add(request):
         result,msg=server_manage.ServerManage(request.POST).add_server()
         if result:
             msg='Sucess'
-    return render_to_response('server_add.html',{'owner_list':meta_data.owner_list(),'os_list':meta_data.os,'msg':msg},context_instance=RequestContext(request))
+    return render_to_response('server_add.html',{'owner_list':meta_data.owner_list(),'os_list':meta_data.os,'msg':msg,
+                                                 'plant_list':meta_data.plant_list},
+                              context_instance=RequestContext(request))
 def server_detail(request):
     if request.method=="GET":
         server=server_manage.ServerGet().get_server(request.GET)
@@ -153,7 +158,7 @@ def server_detail(request):
         stat_action='下'
     else:
         stat_action='上'
-    return render_to_response('server_detail.html',{"server":server,"stat_action":stat_action,
+    return render_to_response('server_detail.html',{"server":server,"stat_action":stat_action,'plant_list':meta_data.plant_list,
                                                     'os_list':meta_data.os,'owner_list':meta_data.owner_list()
                                                     },context_instance=RequestContext(request))
    
@@ -291,9 +296,12 @@ def vip(request):
         else:
             vip_list=meta_data.vip_list()
     else:
-        result,msg=vip_manage.VipManage(request.POST).add_vip()
+        if request.POST.get('action') == 'add':                        
+            result,msg=vip_manage.VipManage(request.POST).add_vip()
+        else:
+            result,msg=vip_manage.VipManage(request.POST).mod_vip()
         vip_list=meta_data.vip_list()        
-    return render_to_response('vip.html',{"msg":msg,'vip_list':vip_list},context_instance=RequestContext(request))
+    return render_to_response('vip.html',{"msg":msg,'vip_list':vip_list,'plant_list':meta_data.plant_list},context_instance=RequestContext(request))
 
 #backup
 

@@ -83,7 +83,7 @@ class SQLParse():
         sql=self.sql.split()
         l=len(sql)
         for i in range(l):
-            print sql[i],i
+            #print sql[i],i
             if sql[i] in self.SIGNS:                    
                 if i==0 and l>0:
                     sql[i]=str(sql[i])+str(sql[i+1])

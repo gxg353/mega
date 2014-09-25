@@ -3,14 +3,35 @@
 Mega
 {% endblock%}
 {% block content %}
-
 <div class="row">
 	<div class="col-xs-12 col-sm-12 col-md-6 col-lg-6">
 		<div class="panel panel-default">
 			<div class="panel-heading">报警信息
+				<div class="pull-right">
+  					<a href="/monitor/"><span class="glyphicon glyphicon-list"></span> 全部报警</a>
+				</div>			
 			</div>
-    		
-       <div id='' style='min-width: 400px; height: 300px; margin: 0 auto'></div>
+    	<div class="table-responsive pre-scrollable"  style='min-width: 100px; height: 300px; margin: 0'>
+			<table class="table table-hover ">
+				<thead>
+					<tr>
+						<th>对象</th>
+						<th>模块</th>
+						<th>级别</th>
+						<th>内容</th>
+					</tr>
+				</thead>
+				<tbody>
+					{% for alert in alert_list %}
+					<tr>
+						<td>{{ alert.target }}</td>
+						<td>{{ alert.model }}</td>
+						<td>{{ alert.level }}</td>
+						<td><a onMouseOver="$(this).tooltip('show')" data-toggle="tooltip" title="{{ alert.msg }}" >{{ alert.msg|slice:":40"}}</a> </td>
+					</tr>	
+					{% endfor %}
+			</table>
+			</div>	
     
 </div>
 </div>

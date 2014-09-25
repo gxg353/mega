@@ -17,7 +17,7 @@ class ClientGet():
         self.server=Server
         
     def get_client_list(self):
-        client_list=self.client.objects.all().values().order_by("-heartbeat")
+        client_list=self.client.objects.all().values().order_by("-heartbeat","ip")
         for client in client_list:
             _server=self.server.objects.filter(id=client['server_id'])
             if _server:

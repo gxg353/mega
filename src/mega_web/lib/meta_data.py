@@ -20,7 +20,7 @@ class MetaData(object):
     version=GlobalConf.VERSION
     os=GlobalConf.OS
     failover_method=GlobalConf.FAILOVER
-    
+    plant_list=GlobalConf.PLANT
 
     def business_list(self):
         return business_manage.BusinessGet().get_business_list(None,count=1000).values()

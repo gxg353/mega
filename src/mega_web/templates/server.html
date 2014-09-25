@@ -31,7 +31,7 @@
        {% for server in server_list %}
 	     <tr>
 	     	<td><a href="/resource/server_detail/?server_id={{ server.id }}">{{ server.name }}</a></td>
-			<td><a href="/resource/server_detail/?server_ip={{ server.ip }}">{{ server.ip }}</a></td>
+			<td>{{ server.ip }}</td>
 			<td> {{ server.os }} </td>
 			<td><a href="/resource/user_detail/?user_id={{ server.owner }}">{{ server.owner_name }}</a></td>
 			<td>{{ server.online_date }}</td>

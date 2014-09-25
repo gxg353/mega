@@ -40,7 +40,7 @@
        {% for instance in instance_list %}
 	     <tr>
 	     	<td><a href="/resource/instance_detail/?instance_id={{ instance.id }}">{{ instance.name }}</a></td>
-			<td><a href="/resource/server_detail/?server_ip={{ instance.ip }}">{{ instance.ip }}</a></td>
+			<td><a href="/resource/server_detail/?server_id={{ instance.server_id }}">{{ instance.ip }}</a></td>
 			<td> {{ instance.port }} </td>
 			<td> {% ifequal instance.role 1 %} 
 					Master

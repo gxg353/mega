@@ -1,3 +1,5 @@
+#-*- coding: utf-8 -*-
+
 import os
 #bool
 DEV=True
@@ -54,3 +56,4 @@ DB_TYPE=['MySQL','Oracle','Other']
 HA_TYPE=['MS','None']
 VERSION=['5.1','5.5','5.6']
 FAILOVER=['ONLINE','ENFORCE']
+PLANT=['亦庄','M6_jr','M6_wy']

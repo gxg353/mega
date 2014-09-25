@@ -1,66 +1,70 @@
 {% extends "resource_base.html" %}
 {% block subcontent %}
-
-<div class="well well-lg">服务器基本信息管理</div>
+<div class="col-sm-9 col-sm-offset-3 col-md-4 col-md-offset-0 main">
+<div class="panel panel-default">
+<div class="panel-heading">修改服务器</div>
 <form action="/resource/server_detail/" method="post">
 <input type="hidden" name="server_id" value='{{ server.id }}' >
 <input type="hidden" name="type" value='mod' >
 	<div class="input-group">
-  		<span class="input-group-addon">Name</span>
-  		<input type="text" class="form-control" name="server_name" placeholder='NAME' style="width:200px;" maxlength=50 value='{{ server.name }}' readonly= {{ readonly }}>
-	</div>
-	<br>
-	<div class="input-group">
-  		<span class="input-group-addon">IP</span>
+  		<span class="input-group-addon" style="width:200px;">IP</span>
   		<input type="text" class="form-control"  name="server_ip" placeholder= "IP" style="width:200px;" maxlength=15 value='{{ server.ip }}' readonly= {{ readonly }} >
 	</div>
-	<br>
 	<div class="input-group">
-  		<span class="input-group-addon">OS</span>
+  		<span class="input-group-addon" style="width:200px;">域名</span>
+  		<input type="text" class="form-control" name="server_name" placeholder='NAME' style="width:200px;" maxlength=50 value='{{ server.name }}' readonly= {{ readonly }}>
+	</div>
+	<div class="input-group">
+  		<span class="input-group-addon" style="width:200px;">系统类型</span>
   		<select name="server_os" class="form-control" style="width:200px;" readonly= {{ readonly }}>
   		<option value={{ server.os }}>{{ server.os }}</option>
 		{% for os in os_list %}
 		   <option value={{ os }}>{{ os }}</option>
 		{% endfor %}
-		</select> 
-  		
+		</select>   		
 	</div>
-<br>
-<div class="input-group">
-  <span class="input-group-addon">OWNER</span>
-    	<select name="server_owner" class="form-control" style="width:200px;"readonly= {{ readonly }}>
-    	<option  value={{ server.owner }}>{{ server.owner_name }}</option>
-		{% for owner in owner_list %}
-		   <option value={{ owner.id }}>{{ owner.name }}</option>
-		{% endfor %}
-		</select> 
-  
-</div>
-<br>
-<div class="input-group">
-  <span class="input-group-addon">ONLINE</span>
-  <input type="text" class="form-control" name="server_online" placeholder='ONLINE_DATE' value='{{ server.online_date }}' style="width:200px;" maxlength=20  readonly= '{{ readonly }}' onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',isShowClear:false,readOnly:true})">
-</div>
-<br>
-<button type="button" class="btn btn-default btn" onclick="change_readonly('all')">
-  		<span class="glyphicon glyphicon-wrench"></span>编辑
-</button>
-<button type="submit" class="btn btn-default btn" disabled="disabled" id='commit'>
-  		<span class="glyphicon glyphicon-ok"></span> 提交
-</button>
+	<div class="input-group">
+  		<span class="input-group-addon" style="width:200px;">联系人</span>
+    		<select name="server_owner" class="form-control" style="width:200px;"readonly= {{ readonly }}>
+    			<option  value={{ server.owner }}>{{ server.owner_name }}</option>
+				{% for owner in owner_list %}
+		   			<option value={{ owner.id }}>{{ owner.name }}</option>
+				{% endfor %}
+			</select> 
+	</div>	
+	<div class="input-group">
+  		<span class="input-group-addon" style="width:200px;">机房</span>
+    		<select name="server_plant" class="form-control" style="width:200px;"readonly= {{ readonly }}>
+    			<option  value={{ server.plant }}>{{ server.plant }}</option>
+				{% for plant in plant_list %}
+		   			<option value={{ plant }}>{{ plant }}</option>
+				{% endfor %}
+			</select> 
+	</div>	
 
-{% csrf_token %}
+	<div class="input-group">
+  		<span class="input-group-addon" style="width:200px;">上线时间</span>
+  		<input type="text" class="form-control" name="server_online" placeholder='ONLINE_DATE' value='{{ server.online_date }}' style="width:200px;" maxlength=20  readonly= '{{ readonly }}' onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',isShowClear:false,readOnly:true})">
+	</div>
+	<button type="submit" class="btn btn-default btn pull-right" disabled="disabled" id='commit'>
+  		<span class="glyphicon glyphicon-ok"></span> 提交
+	</button>
+	<button type="button" class="btn btn-default btn pull-right" onclick="change_readonly('all')">
+  		<span class="glyphicon glyphicon-wrench"></span>编辑
+	</button>
+	{% csrf_token %}
 </form>
-<br>
 <form action="/resource/server_detail/" method="post">
 	<input type="hidden" name="server_id" value='{{ server.id }}' >
 	<input type="hidden" name="type" value='del' >
 	
-	<button type="submit" class="btn btn-default btn">
+	<button type="submit" class="btn btn-default btn ">
   		<span class="glyphicon glyphicon-trash"></span> {{ stat_action }}线服务器
 	</button>
 	{% csrf_token %}
 </form>
+</div>
+</div>
 <script>
 function change_readonly(id){
 	if (id == 'all')

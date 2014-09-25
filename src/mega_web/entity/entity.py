@@ -13,6 +13,7 @@ class Server(models.Model):
     online_date = models.DateTimeField(default=0)
     stat= models.IntegerField(default=1)
     type= models.IntegerField(default=1)
+    plant= models.CharField(max_length=50)
 
 class Instance(models.Model):
     class Meta(object):
@@ -127,6 +128,8 @@ class Vip(models.Model):
     domain = models.CharField(max_length=50)
     type = models.IntegerField()
     stat =  models.IntegerField()
+    plant= models.CharField(max_length=50)
+
     
 class Document(models.Model):
     class Meta(object):

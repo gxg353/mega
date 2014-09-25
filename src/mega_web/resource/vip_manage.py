@@ -20,6 +20,8 @@ class VipManage():
         self.domain=request.get('domain')
         self.type=request.get('type')
         self.stat=request.get('stat')
+        self.plant=request.get('plant')
+        self.id=request.get('id')
         
     def _data_check(self): 
         if not self.vip :
@@ -29,10 +31,28 @@ class VipManage():
     def add_vip(self):
         if not self._data_check():
             return False,MSG_ERR_IP
-        v=Vip(vip=self.vip,domain=self.domain,type=self.type,stat=self.stat)
+        v=Vip()
+        v.vip=self.vip
+        v.domain=self.domain
+        v.type=self.type
+        v.stat=self.stat
+        v.plant=self.plant        
         v.save()
         return True,''
-
+    
+    def mod_vip(self):
+        if not self._data_check():
+            return False,MSG_ERR_IP
+        v=Vip.objects.get(id=self.id)
+        v.vip=self.vip
+        v.domain=self.domain
+        v.type=self.type
+        v.stat=self.stat
+        v.plant=self.plant        
+        v.save()
+        return True,''
+        
+        
 class VipGet():
     '''
     '''

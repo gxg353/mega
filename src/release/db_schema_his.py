@@ -46,3 +46,6 @@ CREATE TABLE `slowlog_opt` (
   `opt_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+
+#2014-09-25
+alter table server add column plant varchar(50) not null default '';

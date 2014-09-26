@@ -67,7 +67,7 @@
 	</select> 
     <span class="input-group-addon">VERSION</span>
   	<select name="instance_version" class="form-control" style="width:200px;"readonly= {{ readonly }}>
-		<option value={{ instance.version }} selected="selected">{{ instance.version }}</option>
+		<option selected="selected" value={{ instance.version }} >{{ instance.version }}</option>
 		{% for ver in version_list %}
 		   <option value={{ ver }}>{{ ver }}</option>
 		{% endfor %}

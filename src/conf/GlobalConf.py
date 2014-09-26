@@ -1,10 +1,12 @@
 #-*- coding: utf-8 -*-
 
-import os
+import socket
 #bool
-DEV=True
-DEBUG=True
-#DEBUG=False
+if socket.gethostname() == "xchliu.lana":
+    DEBUG  = True
+else:
+    DEBUG  = False
+DEV=DEBUG
 #log
 DEAFULT_LOG_DEBUG=DEBUG
 #Service

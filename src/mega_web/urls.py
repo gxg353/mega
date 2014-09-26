@@ -1,11 +1,11 @@
-from django.conf.urls import patterns, include, url
-from django.conf.urls.static import static
 from views import * 
-
-
 from django.conf import settings
-# Uncomment the next two lines to enable the admin:
 from django.contrib import admin
+from django.conf.urls.static import static
+from django.conf.urls import patterns, include, url
+
+
+#admin
 admin.autodiscover()
 
 #for error catch
@@ -24,12 +24,9 @@ urlpatterns = patterns('',
     url(r'^login/$',login),
     url(r'^accounts/login/$',login),
     url(r'^logout/$',logout),
-
-    
-#django
+    #django
     url(r'^admin/', include(admin.site.urls)),
-
-#sub url
+    #sub url
     url(r'^resource/instance/$',instance),
     url(r'^resource/instance_add/$',instance_add),
     url(r'^resource/instance_detail/$',instance_detail),
@@ -74,11 +71,9 @@ urlpatterns = patterns('',
     
     url(r'^mega-admin/client/$',client),
     
-#for static like css ,js ,ima,music     
+    #for static like css ,js ,ima,music     
     url(r'^static/(?P<path>.*)$', 'django.views.static.serve',{'document_root': settings.STATIC_URLS },name="static"),
 
-#other
-    url(r'^fun/$',fun),
-    
-
+    #other
+    url(r'^fun/$',fun),    
 )+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

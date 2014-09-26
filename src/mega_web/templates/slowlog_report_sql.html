@@ -1,76 +1,23 @@
 {% extends "tunning_base.html" %}
 {% block subcontent %}
 <div class="row">
-<div class="well well-sm col-xs-4 col-sm-4 col-md-4 col-lg-4">SQL来源：{{ sql_info.db_host}}: {{sql_info.port}} ： {{sql_info.dbname }}</div>
+	<div class="well well-sm col-xs-4 col-sm-4 col-md-4 col-lg-4">SQL来源：{{ sql_info.db_host}}: {{sql_info.port}} ： {{sql_info.dbname }}</div>
 </div>
-
 <div class="row">
-<form action="/tunning/slowlog/report/sql/" method="post">
-<input type='hidden' name='hash_code' value={{ sql_info.hash_code }}>
-<h5>添加优化记录：</h5>
- <div class="col-xs-2">
-    <input type="text" name='opt_method' class="form-control" placeholder="优化方式">
-    
- </div>
-  <div class="col-xs-4">
-  	<input type="text" name='opt_explain' class="form-control" placeholder="说明">
-  </div>
-<button type="submit" class="btn btn-default btn">
-  		<span class="glyphicon glyphicon-plus"></span> 添加
-</button>
-{{msg}}
-{% csrf_token %}
-</form>
-</div>
-
-<br>
-<div class="row">
-<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+	<div class="col-xs-12 col-sm-12 col-md-6">
 		<div class="panel panel-default">
 			<div class="panel-heading">总体</div>
-       <div id='total' style='min-width: 400px; height: 300px; margin: 0 auto'></div>
-</div>
-</div>
-
-
-
-
-</div>
-<div class="row">
-<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-		<div class="panel panel-default">
-			<div class="panel-heading">实例分布</div>
-       <div id='groupbyinstance' style='min-width: 400px; height: 300px; margin: 0 auto'></div>
-    
-</div>
+       	<div id='total' style='min-width: 400px; height: 300px; margin: 0 auto'></div>
+	</div>
 </div>
 
-</div>
-<div class="row">
-<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
-		<div class="panel panel-default" >
-			<div class="panel-heading">优化历史</div>
-    		<div class="table-responsive pre-scrollable">
-  				<table class="table table-hover">
-	 				<tbody>       
-    				{% for record in opt_record %}
-	 				<tr>
-	 					<td>{{record.opt_time}}</td>
-	 					<td>{{record.opt_method}}</td>
-	 					<td>{{record.opt_explain}}</td>
-	 					
-	 				</tr>
-	 				{% endfor %}
-    				</tbody>
-    			</table>
-    		</div>
-    	
-    	
-    	</div>
-		
+<div class="col-xs-12 col-sm-12 col-md-6">
+	<div class="panel panel-default">
+		<div class="panel-heading">实例分布</div>
+    	<div id='groupbyinstance' style='min-width: 400px; height: 300px; margin: 0 auto'></div>    
+	</div>
 </div>
 </div>
-
 <div class="row">
 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 		<div class="panel panel-default" >
@@ -84,13 +31,59 @@
 <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
 		<div class="panel panel-default" >
 			<div class="panel-heading">执行计划</div>
-		<div>	{{ sql_info.sql_explained }}</div>
+<!--      		<div class="table-responsive pre-scrollable">
+  				<table class="table table-hover">
+					{% for ex in sql_info.sql_explained %}
+						<td>{{ ex }}</td>
+					{% endfor %}
+				</table>
+			</div>
+-->		{{ sql_info.sql_explained }}	
     </div>
 		
 </div>
 </div>
 
-  <script>
+
+<div class="row">
+	<div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+		<div class="panel panel-default" >
+			<div class="panel-heading">优化历史</div>
+    		<div class="table-responsive pre-scrollable">
+  				<table class="table table-hover">
+	 				<tbody>       
+    				{% for record in opt_record %}
+	 				<tr>
+	 					<td>{{record.opt_time}}</td>
+	 					<td>{{record.opt_method}}</td>
+	 					<td>{{record.opt_explain}}</td>	 					
+	 				</tr>
+	 				{% endfor %}
+    				</tbody>
+    			</table>
+    		</div>
+    	</div>		
+	</div>
+</div>
+<div class="row">
+<form action="/tunning/slowlog/report/sql/" method="post">
+	<input type='hidden' name='hash_code' value={{ sql_info.hash_code }}>
+	<h5>添加优化记录：</h5>
+	<div class="col-xs-2">
+    	<input type="text" name='opt_method' class="form-control" placeholder="优化方式">    
+	</div>
+  	<div class="col-xs-8">
+  		<input type="text" name='opt_explain' class="form-control" placeholder="说明">
+  	</div>
+	<button type="submit" class="btn btn-default btn">
+  		<span class="glyphicon glyphicon-plus"></span> 添加
+	</button>
+	{{msg}}
+	{% csrf_token %}
+	</form>
+</div>
+
+<script>
 	 $(function () { 
 	    $('#groupbyinstance').highcharts({
 	    		chart: {
@@ -124,7 +117,7 @@
 	 	    }
 	    );
 	});
-   </script>
+</script>
 <script>
 	 $(function () { 
 	    $('#total').highcharts({

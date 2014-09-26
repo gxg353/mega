@@ -98,7 +98,7 @@ def get_sql_hosts(hash_code):
     return c.generate(data, ' by instance') 
 
 def get_sql_time(hash_code):
-    sql="select date(log_time) as log_time,count(*) as counts from slowlog_sql_hour where hash_code='%s' group by date(log_time) order by log_time,counts desc;" % hash_code
+    sql="select date(log_time) as log_time,count(*) as counts from slowlog_sql_hour where hash_code='%s' group by date(log_time) order by date(log_time);" % hash_code
     data=cursor.query(sql).fetchall()
     c=Chart()
     c.yaxis_name='counts'

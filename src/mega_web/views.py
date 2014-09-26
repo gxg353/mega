@@ -435,13 +435,12 @@ def slowlog_sql(request):
 def slowlog_instance(request):
     if request.method=='GET':
         begin=end=None
-        instance_id=request.GET.get('instance_id',1)
-
     else:
         begin=request.POST.get('begin_date')
         end=request.POST.get('end_date')
-        instance_id=request.POST.get('instance_id',1)
-    total=slowlog.get_chart_total(instance_id,begin,end)
+    instance_id=request.POST.get('instance_id',0)
+    #total=slowlog.get_chart_total(instance_id,begin,end)
+    total=slowlog.get_chart_total(instance_id)
     instance=instance_manage.InstanceGet().get_instance_by_id(instance_id)
     groupbydb=slowlog.get_chart_groupbydb(instance_id,begin,end)
     topsql=slowlog.get_instance_topsql(instance_id,begin,end)
@@ -478,7 +477,10 @@ def switch(request):
     return render_to_response('switch.html',{'failover':failover,'slaves':slaves,'methods':meta_data.failover_method})
 
 def my_404_view(request):
-        return render_to_response('404.html')
+    response = render_to_response('404.html',context_instance=RequestContext(request))
+    response.status_code = 404
+    return response
+    
 def my_500_view(request):
         return render_to_response('500.html')
 

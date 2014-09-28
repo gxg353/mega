@@ -1,56 +1,63 @@
 {% extends "resource_base.html" %}
+{% block tag %}
+	<span class=" glyphicon glyphicon-bookmark ">用户基本管理</span>
+{% endblock %}
+
 {% block subcontent %}
-
-<div class="well well-lg">用户基本信息管理</div>
-<form action="/resource/user_detail/" method="post">
-<input type="hidden" name="user_id" value='{{ user.id }}' >
-<input type="hidden" name="type" value='mod' >
-	<div class="input-group">
-  		<span class="input-group-addon">*</span>
-  		<input type="text" class="form-control" name="name" placeholder='NAME' style="width:200px;" maxlength=20 value='{{ user.name }}' readonly= {{ readonly }}>
-  		<span class="input-group-addon">*</span>
-  		<input type="text" class="form-control" name="sign" placeholder='SIGN' style="width:200px;" maxlength=20 value='{{ user.sign }}' readonly= {{ readonly }}>
-
+<div class="col-sm-9 col-sm-offset-3 col-md-3 col-md-offset-0 main">
+	<div class="panel panel-default">
+		<form action="/resource/user_detail/" method="post">
+		<input type="hidden" name="user_id" value='{{ user.id }}' >
+		<input type="hidden" name="type" value='mod' >
+			<div class="input-group">
+		  		<span class="input-group-addon"style="width:150px;">名称</span>
+		  		<input type="text" class="form-control" name="name" placeholder='NAME' style="width:200px;" maxlength=20 value='{{ user.name }}' readonly= {{ readonly }}>
+		  	</div>
+		  	<div class="input-group">		  	
+		  		<span class="input-group-addon"style="width:150px;">签名</span>
+		  		<input type="text" class="form-control" name="sign" placeholder='SIGN' style="width:200px;" maxlength=20 value='{{ user.sign }}' readonly= {{ readonly }}>		
+			</div>
+			<div class="input-group">
+		  		<span class="input-group-addon"style="width:150px;">角色</span>
+		  		<input type="text" class="form-control"  name="role" placeholder= "ROLE" style="width:200px;" maxlength=15 value='{{ user.role }}' readonly= {{ readonly }} >
+			</div>
+			<div class="input-group">
+		  		<span class="input-group-addon"style="width:150px;">密码</span>
+		  		<input type="text" class="form-control"  name="pwd" placeholder= "PWD" style="width:200px;" maxlength=15 value='{{ user.pwd }}' readonly= {{ readonly }} >		
+			</div>
+			<div class="input-group">
+		  		<span class="input-group-addon"style="width:150px;">电话</span>
+		  		<input type="text" class="form-control" name="phone" placeholder='PHONE' style="width:200px;" maxlength=20 value='{{ user.phone }}' readonly= {{ readonly }} >
+			</div>
+			<div class="input-group">
+			  <span class="input-group-addon"style="width:150px;">上级用户</span>
+			  <input type="text" class="form-control" name="p_id"  placeholder='PARENT' style="width:200px;" maxlength=20 value='{{ user.p_id }}' readonly= {{ readonly }}>
+			</div>
+			<button type="submit" class="btn btn-default pull-right" disabled="disabled" id='commit'>
+		  		<span class="glyphicon glyphicon-ok"></span> 提交
+			</button>		
+			<button type="button" class="btn btn-default pull-right" onclick="change_readonly('all')">
+		  		<span class="glyphicon glyphicon-pencil"></span>编辑
+			</button>
+			{% csrf_token %}
+		</form>
+		<form action="/resource/user_detail/" method="post">
+			<input type="hidden" name="user_id" value='{{ user.id }}' >
+			<input type="hidden" name="type" value='del' >
+			{% ifequal user.stat  0 %}
+				<button type="submit" class="btn btn-success btn">
+		  			<span class="glyphicon glyphicon-trash"></span> 启用用户
+				</button>
+			{% else %}
+				<button type="submit" class="btn btn-danger btn">
+		  			<span class="glyphicon glyphicon-trash"></span> 禁用用户
+				</button>
+			{% endifequal %}				
+			{% csrf_token %}
+		</form>
 	</div>
-	<br>
-	<div class="input-group">
-  		<span class="input-group-addon">*</span>
-  		<input type="text" class="form-control"  name="role" placeholder= "ROLE" style="width:200px;" maxlength=15 value='{{ user.role }}' readonly= {{ readonly }} >
-  		<span class="input-group-addon">*</span>
-  		<input type="text" class="form-control"  name="pwd" placeholder= "PWD" style="width:200px;" maxlength=15 value='{{ user.pwd }}' readonly= {{ readonly }} >
-
-	</div>
-	<br>
-	<div class="input-group">
-  		<span class="input-group-addon">*</span>
-  		<input type="text" class="form-control" name="phone" placeholder='PHONE' style="width:200px;" maxlength=20 value='{{ user.phone }}' readonly= {{ readonly }} >
-	</div>
-<br>
-<div class="input-group">
-  <span class="input-group-addon">*</span>
-  <input type="text" class="form-control" name="p_id"  placeholder='PARENT' style="width:200px;" maxlength=20 value='{{ user.p_id }}' readonly= {{ readonly }}>
 </div>
-<br>
-<br>
-<button type="button" class="btn btn-default btn" onclick="change_readonly('all')">
-  		<span class="glyphicon glyphicon-wrench"></span>编辑
-</button>
-<button type="submit" class="btn btn-default btn" disabled="disabled" id='commit'>
-  		<span class="glyphicon glyphicon-ok"></span> 提交
-</button>
 
-{% csrf_token %}
-</form>
-<br>
-<form action="/resource/user_detail/" method="post">
-	<input type="hidden" name="user_id" value='{{ user.id }}' >
-	<input type="hidden" name="type" value='del' >
-	
-	<button type="submit" class="btn btn-default btn">
-  		<span class="glyphicon glyphicon-trash"></span> {{ stat_action }}用户
-	</button>
-	{% csrf_token %}
-</form>
 <script>
 function change_readonly(id){
 	if (id == 'all')

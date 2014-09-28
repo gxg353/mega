@@ -69,6 +69,7 @@ def get_chart_topsql(begin=None,end=None):
          
     data=cursor.query(sql,type='dict').fetchall()
     for d in data:
+        d['sql_parsed']=d['sql_parsed'].decode('utf-8', 'ignore')
         opt_count=0
         sql="select count(*) from slowlog_opt where hash_code='%s'" % d.get('hash_code')
         opt_count=cursor.fetchOne(sql)
@@ -85,6 +86,8 @@ def get_instance_topsql(instance_id,begin=None,end=None):
         max(rows_examined) as max_row,min(rows_examined) as min_row,avg(rows_examined) as avg_row from slowlog_info a ,sql_format  b where instance_id=%s \
         and a.hash_code=b.hash_code and date(from_unixtime(a.start_time)) between '%s' and '%s' group by a.hash_code order by counts desc;" %(instance_id,begin,end)
     data=cursor.query(sql,type='dict').fetchall()
+    for d in data:
+        d['sql_parsed']=d['sql_parsed'].decode('utf-8', 'ignore')
     return data
 
 

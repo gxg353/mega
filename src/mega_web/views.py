@@ -103,12 +103,8 @@ def instance_detail(request):
         else:
             instance_manage.InstanceManage(request.POST).stat_instance()
         instance=instance_manage.InstanceGet().get_instance(request.POST)
-    if instance.get("stat")==1:
-        stat_action='下'
-    else:
-        stat_action='上'
-    return render_to_response('instance_detail.html',{"instance":instance,"readonly":"true","stat_action":stat_action,
-                                                      "business_list":meta_data.business_list(),"owner_list":meta_data.owner_list(),
+    return render_to_response('instance_detail.html',{"instance":instance,"readonly":"true","business_list":meta_data.business_list(),
+                                                      "owner_list":meta_data.owner_list(),
                                                        "db_type":meta_data.db_type,"level":meta_data.level,
                                                        "ha_type":meta_data.ha_type,"version_list":meta_data.version,
                                                        "instance_list":meta_data.instance_list()
@@ -154,11 +150,7 @@ def server_detail(request):
         else:
             server_manage.ServerManage(request.POST).stat_server()
             server=server_manage.ServerGet().get_server(request.POST)
-    if server.get("stat")==1:
-        stat_action='下'
-    else:
-        stat_action='上'
-    return render_to_response('server_detail.html',{"server":server,"stat_action":stat_action,'plant_list':meta_data.plant_list,
+    return render_to_response('server_detail.html',{"server":server,'plant_list':meta_data.plant_list,
                                                     'os_list':meta_data.os,'owner_list':meta_data.owner_list()
                                                     },context_instance=RequestContext(request))
    
@@ -198,11 +190,7 @@ def business_detail(request):
         else:
             business_manage.BusinessManage(request.POST).stat_business()
             business=business_manage.BusinessGet().get_business(request.POST)
-    if business.get("stat")==1:
-        stat_action='下'
-    else:
-        stat_action='上'
-    return render_to_response('business_detail.html',{"business":business,"stat_action":stat_action,'owner_list':meta_data.owner_list()},context_instance=RequestContext(request))
+    return render_to_response('business_detail.html',{"business":business,'owner_list':meta_data.owner_list()},context_instance=RequestContext(request))
 
 #database
 def database(request):
@@ -241,12 +229,7 @@ def database_detail(request):
         else:
             database_manage.DatabaseManage(request.POST).stat_database()
             database=database_manage.DatabaseGet().get_database(request.POST)
-    if database.get("stat")==1:
-        stat_action='下'
-    else:
-        stat_action='上'
-    
-    return render_to_response('database_detail.html',{"database":database,"stat_action":stat_action,
+    return render_to_response('database_detail.html',{"database":database,
                                                       "instance_list":meta_data.instance_list(),"business_list":meta_data.business_list(),
                                                       "level":meta_data.level,'owner_list':meta_data.owner_list()},context_instance=RequestContext(request))
 
@@ -280,11 +263,7 @@ def user_detail(request):
     else:
         user_id=request.GET.get('user_id')
     user=user_manage.UserGet().get_user_by_id(user_id)
-    if user.get("stat")==1:
-        stat_action='禁用'
-    else:
-        stat_action='启用'
-    return render_to_response('user_detail.html',{"user":user,"msg":msg,"stat_action":stat_action},context_instance=RequestContext(request))
+    return render_to_response('user_detail.html',{"user":user,"msg":msg,},context_instance=RequestContext(request))
 
 #vip
 def vip(request):

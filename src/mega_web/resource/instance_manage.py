@@ -24,9 +24,8 @@ class InstanceManage():
         self.inst_version=instance.get("instance_version")
         self.inst_role=instance.get('instance_role')
         self.inst_master=instance.get('instance_master')
-        if not self.inst_id:
-            self.inst_id=InstanceGet().get_instance_by_ip_port(self.inst_ip, self.inst_port)
         self.msg=''
+        
     def data_check(self):
         if not self.inst_ip or not check_ip(self.inst_ip):
             self.msg+=MSG_ERR_IP
@@ -50,6 +49,7 @@ class InstanceManage():
             self.inst_business=DEFAULT_BUSINESS
         
         return True
+    
     def add_instance(self):
         '''
             save new instance
@@ -80,6 +80,8 @@ class InstanceManage():
         inst.save()
         return True,self.msg
     def mod_instance(self):
+        if not self.inst_id:
+            self.inst_id=InstanceGet().get_instance_by_ip_port(self.inst_ip, self.inst_port)
         if not self.inst_id:
             return False,MSG_ERR_INSTANCE_NOT_EXITST
         inst=Instance.objects.get(id=self.inst_id)        

@@ -29,7 +29,6 @@ def client(request):
         page=request.GET.get('page')
         action = request.GET.get('action')
         host=request.GET.get('ip')
-        print action,host
         if action == 'client_upgrade' and host:
             result=client_update(host)
             if result:
@@ -43,7 +42,9 @@ def client(request):
     page_data=paginator.paginator(client_list, page)
     page_range=page_data.get('page_range')
     client_list=page_data.get('page_data')
-    return render_to_response('admin_mega/client.html',{'client_list':client_list,'page_range':page_range,'msg':_msg},context_instance=RequestContext(request))
+    count=ClientGet().get_client_statics()
+    return render_to_response('admin_mega/client.html',{'client_list':client_list,'page_range':page_range,'count':count,'msg':_msg},
+                              context_instance=RequestContext(request))
 
 def login(request):
     next='/login/'

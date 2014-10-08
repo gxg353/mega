@@ -2,7 +2,7 @@
 
 import socket
 #bool
-if socket.gethostname() == "xchliu.lana":
+if socket.gethostname() == "xchliu.lan":
     DEBUG  = True
 else:
     DEBUG  = False

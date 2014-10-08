@@ -196,8 +196,8 @@ def slowlog_statics(time=None):
                     log.error(ex)
         except Exception as ex:
                 log.debug(data)
-                log.error('Pack slow log failed:%s' % ex) 
-        
+                log.error('Pack slow log failed:%s' % ex)
+                break
     # do the hourly statics 
     try:
         slowlog_statics_per_hour(time)

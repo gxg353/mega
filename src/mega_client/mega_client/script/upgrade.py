@@ -73,7 +73,7 @@ class Upgrade():
             log.error('%s failed : %s' % (action,_output))
             return False
         else:
-            log.info('%s success!:%s' % (action,_output))
+            log.info('%s success:%s' % (action,_output))
             return True
 
 

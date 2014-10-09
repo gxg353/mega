@@ -29,9 +29,9 @@ class Logger:
                             datefmt='%Y-%m-%d %H:%M:%S',
                             format='%(asctime)s %(name)-12s %(levelname)-5s %(message)s')
         logger=logging.getLogger(self.model)
-        handler = logging.handlers.RotatingFileHandler(
-              self.logfile, maxBytes=1024*1024, backupCount=5) 
-        logger.addHandler(handler)
+        #handler = logging.handlers.RotatingFileHandler(
+        #      self.logfile, maxBytes=1024*1024, backupCount=5) 
+        #logger.addHandler(handler)
         return logger
 
 if __name__=="__main__":

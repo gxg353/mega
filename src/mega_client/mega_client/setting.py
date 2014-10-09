@@ -12,7 +12,7 @@ version='mega-client 0.1'
 TCP_HOST=''  # default 0.0.0.0
 TCP_PORT=1105
 MEGA_HOST='mega-server.d.chinabank.com.cn'
-MEGA_HOST='localhost'
+#MEGA_HOST='localhost'
 
 
 KEEPALIVE=300

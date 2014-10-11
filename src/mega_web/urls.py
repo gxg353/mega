@@ -66,6 +66,7 @@ urlpatterns = patterns('',
 
     url(r'^console/failover/$',failover),
     url(r'^console/failover/switch/$',switch),
+    url(r'^console/failover/switch/detail/$',switch_detail),
 
     url(r'^portal/document/$',document),
     

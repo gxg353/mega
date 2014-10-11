@@ -1,9 +1,11 @@
 {% extends "console_base.html" %}
-{% block tag %}
-	<span class=" glyphicon glyphicon-bookmark ">高可用管理</span>
-{% endblock %}
+1.切换操作的基本信息
+2.切换进度
+3.切换结果
+
 
 {% block subcontent %}
+<h4><span class="label label-default">È´òÂèØÁî®ÁÆ°ÁêÜ</span></h4>
 
 <div class="row">
 <form class="navbar-form navbar-left" role="search" action="/console/failover/" method="get">
@@ -25,10 +27,10 @@
   <table class="table table-striped">
     <thead>
       <tr>
-        <th>名称</th>
+        <th>ÂêçÁß∞</th>
         <th>WVIP</th>
         <th>RVIP</th>
-        <th>管理节点</th>
+        <th>ÁÆ°ÁêÜËäÇÁÇπ</th>
         <th>MASTER</th>
         <th></th>
       </tr>
@@ -47,7 +49,8 @@
 			    		'{{ failover.rvip }}','{{ failover.master }}','{{ failover.last_time }}')">
     				<span class="glyphicon glyphicon-hand-right"></span>
     			</button>
-			</td>				
+			</td>
+				
 		</tr>
 	   {% endfor %}
      </tbody>
@@ -63,22 +66,22 @@
        <input id='id' type="hidden" name="id" value=0 >
        
   			<div class="input-group">
-  				<span class="input-group-addon">类型</span>
+  				<span class="input-group-addon">Á±ªÂûã</span>
 	  			<select id='type' name="type" class="form-control" style="width:80px;">
 				   <option value=1>MHA</option>
 				</select> 
 				<button id='switch' type="button"  class="btn btn-default btn pull-right" data-toggle="modal" data-target="#sub_div" disabled='disabled'>
-  					<span class="glyphicon glyphicon-sort">切换</span>
+  					<span class="glyphicon glyphicon-sort">ÂàáÊç¢</span>
   			</button>
 				
   			</div>
        
 			<div class="input-group">
-  				<span class="input-group-addon">名称</span>
-  				<input id='name' type="text" class="form-control" name="name" placeholder="名称" maxlength=50>
+  				<span class="input-group-addon">ÂêçÁß∞</span>
+  				<input id='name' type="text" class="form-control" name="name" placeholder="ÂêçÁß∞" maxlength=50>
   			</div>
 			<div class="input-group">
-  				<span class="input-group-addon">写VIP</span>
+  				<span class="input-group-addon">ÂÜôVIP</span>
 	  			<select id='wvip' name="wvip" class="form-control" >
 				   {% for wvip in wvips %}
 				   <option value={{ wvip.id }}>{{ wvip.vip }}</option>
@@ -86,7 +89,7 @@
 				</select>   				
   			</div>
   			<div class="input-group">  			
-  			<span class="input-group-addon">读VIP</span>
+  			<span class="input-group-addon">ËØªVIP</span>
 	  			<select id='rvip' name="rvip" class="form-control" >
 				   {% for rvip in rvips %}
 				   <option value={{ rvip.id }}>{{ rvip.vip }}</option>
@@ -96,7 +99,7 @@
   			</div>
   			
   			<div class="input-group">
-  				<span class="input-group-addon">管理节点</span>
+  				<span class="input-group-addon">ÁÆ°ÁêÜËäÇÁÇπ</span>
 	  			<select id='manager' name="manager" class="form-control" >
 				   {% for manager in managers %}
 				   <option value={{ manager.id }}>{{ manager.ip }}</option>
@@ -117,7 +120,7 @@
   			<br>
   			<div class="">
   			<button type="submit" class="btn btn-default btn pull-right">
-  				<span class="glyphicon glyphicon-save"></span> 保存
+  				<span class="glyphicon glyphicon-save"></span> ‰øùÂ≠ò
   			</button>
   			</div>  			
   			  {% csrf_token %}
@@ -138,11 +141,11 @@
 <script type="text/javascript"> 
 function update_div(masterid,name,wvip,rvip,master,last_time){ 
 	
-	var request_url = "/console/failover/switch/";       // 需要获取内容的url 
-	var request_pars = {'masterid':masterid,'name':name,'wvip':wvip,'rvip':rvip,'master':master,'last_time':last_time};//请求参数 
-	var myAjax = new Ajax.Updater('subdiv', request_url,{ // 将request_url返回内容绑定到id为result的容器中 
-	method     : 'get', //HTTP请求的方法,get or post 
-	parameters : request_pars, //请求参数 
+	var request_url = "/console/failover/switch/";       // ÈúÄË¶ÅËé∑ÂèñÂÜÖÂÆπÁöÑurl 
+	var request_pars = {'masterid':masterid,'name':name,'wvip':wvip,'rvip':rvip,'master':master,'last_time':last_time};//ËØ∑Ê±ÇÂèÇÊï∞ 
+	var myAjax = new Ajax.Updater('subdiv', request_url,{ // Â∞Ürequest_urlËøîÂõûÂÜÖÂÆπÁªëÂÆöÂà∞id‰∏∫resultÁöÑÂÆπÂô®‰∏≠ 
+	method     : 'get', //HTTPËØ∑Ê±ÇÁöÑÊñπÊ≥ï,get or post 
+	parameters : request_pars, //ËØ∑Ê±ÇÂèÇÊï∞ 
 	}); 
 } 
 
@@ -172,7 +175,7 @@ function change_master(failoverid,new_master,method){
 	var new_master=document.all.slave.value;
 	if (!new_master)
 	{
-		alert('无效切换！');
+		alert('Êó†ÊïàÂàáÊç¢ÔºÅ');
 		return false;
 	}
 	var method=document.all.method.value;

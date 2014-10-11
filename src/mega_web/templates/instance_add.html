@@ -82,6 +82,7 @@
 	<div class="input-group">	
 		<span class="input-group-addon"style="width:150px;">主库</span>
   		<select name="instance_master" class="form-control" style="width:200px;"readonly= {{ readonly }}>
+  			<option value=0>None</option>
 			{% for instance in instance_list %}
 				<option value={{ instance.id }}>{{ instance.ip }}:{{instance.port}}</option>
 			{% endfor %}

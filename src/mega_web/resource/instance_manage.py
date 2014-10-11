@@ -187,6 +187,8 @@ class InstanceGet():
         return result 
     
     def get_instance_slaves(self,instance_id):
+        if not instance_id:
+            return None 
         result=self.inst.objects.filter(master_id=instance_id).values()
         return result
         

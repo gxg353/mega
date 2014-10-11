@@ -449,11 +449,17 @@ def switch(request):
     failover=request.GET
     slaves=[]
     if failover.get('method'):
-        result=FailoverManage(failover).change_master(failover.get('id'),failover.get('new_master'),failover.get('method'))
+        result=FailoverManage(failover).change_master(failover.get('id'),failover.get('slave'),failover.get('method'))
     else:
         masterid=failover.get('masterid')
         slaves=instance_manage.InstanceGet().get_instance_slaves(masterid)
     return render_to_response('switch.html',{'failover':failover,'slaves':slaves,'methods':meta_data.failover_method})
+
+@login_required    
+def switch_detail(request):
+    failoverid=request.GET.get('failoverid')
+    
+    return render_to_response('switch_detail.html')
 
 def my_404_view(request):
     response = render_to_response('404.html',context_instance=RequestContext(request))
@@ -461,5 +467,5 @@ def my_404_view(request):
     return response
     
 def my_500_view(request):
-        return render_to_response('500.html')
+    return render_to_response('500.html')
 

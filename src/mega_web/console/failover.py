@@ -9,6 +9,7 @@ Created on Sep 2, 2014
 from lib.PyMysql import PyMySQL
 from apis.task import remote_cmd
 from conf.GlobalConf import MSG_ERR_SERVER_EXITST,MSG_ERR_NAME
+from mega_web.resource.instance_manage import InstanceGet
 
 class FailoverManage():
     '''
@@ -65,14 +66,23 @@ class FailoverManage():
             return False,ex
         return True,''
     def change_master(self,failoverid,new_master,method):
-        return
-        sql='select s.ip from failover f ,server s where f.id=12 and f.manager=s.id ;' %failoverid       
-        ip=self.q.fetchOne(sql)
-        cmd=''
-        cmd_type=''
-        #args={""}
+        '''            
+            usage: python mha_switch.py --group=xx --old_master=ip:port --new_master=ip:port --type=xx
+        '''
+        cmd='mha_switch.py'
+        cmd_type='python'
+        sql='select s.name,s.ip,master from failover f ,server s where  f.manager=s.id and f.id=%s' %failoverid       
+        (group,ip,old_master)=self.q.fetchRow(sql)
+        #data=self.q.fetchRow(sql)
+        _old=InstanceGet().get_instance_by_id(old_master)
+        _new=InstanceGet().get_instance_by_id(new_master)
+        args="--group=%s --old_master=%s:%s --new_master=%s:%s --type=%s" %(group,_old.get('ip'),_old.get('port'),_new.get('ip'),_new.get('port'),method)
         #group name ,old master ,new master,action
-        remote_cmd(ip,None,cmd,cmd_type,args='')
+        result=remote_cmd(ip,None,cmd,cmd_type,args)
+        if result == 0:
+            return False
+        else:
+            return result
         
         
 class FailoverGet():

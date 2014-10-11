@@ -1,28 +1,27 @@
 {% extends "console.html" %}
+{% block tag %}
+	<span class=" glyphicon glyphicon-bookmark ">备份管理</span>
+{% endblock %}
+
 {% block subcontent %}
-<div class="well">备份状态:已配置备份实例最近一次备份信息
-</div>
-<div> 今日进度：（共： {{ today_static.total_today }}个）
+<div> 今日进度：（共： {{ today_static.total_today }}个）</div>
 <div class="progress">
-  <div class="progress-bar progress-bar-success" style="width: {{today_static.success_ratio}}%">
-    <span class="sr-only"></span>成功 {{today_static.success_count}}个
-  </div>
-  <div class="progress-bar progress-bar-warning progress-bar-striped" style="width: {{today_static.failure_ratio}}%">
-    <span class="sr-only"></span>失败{{today_static.failure_count}}个
-  </div>
-</div>
+	<div class="progress-bar progress-bar-success" style="width: {{today_static.success_ratio}}%">
+    	<span class="sr-only"></span>成功 {{today_static.success_count}}个
+  	</div>
+  	<div class="progress-bar progress-bar-warning progress-bar-striped" style="width: {{today_static.failure_ratio}}%">
+    	<span class="sr-only"></span>失败{{today_static.failure_count}}个
+  	</div>
 </div>
 <div>
-<button type="button" class="btn btn-default navbar-btn" onclick="window.location.href='backup_config_list/'">配置管理</button>
-
-<form class="navbar-form navbar-left" role="search" action="/console/backup/" method='post' >
+	<button type="button" class="btn btn-default navbar-btn" onclick="window.location.href='backup_config_list/'">配置管理</button>
+	<form class="navbar-form navbar-left" role="search" action="/console/backup/" method='post' >
         <div class="form-group">
-          <input name='ip' type="text" class="form-control" placeholder="IP">
+         	<input name='ip' type="text" class="form-control" placeholder="IP">
         </div>        
       	<button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
-      		{% csrf_token %}
-      	
-</form>
+      		{% csrf_token %}      	
+	</form>
 </div>
 <div class="table-responsive">
 

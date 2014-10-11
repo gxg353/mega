@@ -38,6 +38,8 @@ class ServerManage():
             self.server_os=DEFAULT_OS
         if not self.server_owner:
             self.server_owner=DEFAULT_OWNER
+        if not self.server_plant:
+            self.server_plant=PLANT[0]
         return True
     
     def add_server(self):
@@ -78,8 +80,11 @@ class ServerManage():
         if self.server_id and self.server_ip:
             instance=Instance.objects.filter(server_id=self.server_id)
             if instance:
-                instance.ip=self.server_ip
-                instance.save()            
+                for i in instance:
+                    inst=Instance.objects.get(id=i.id)                
+                    if inst.ip <> self.server_ip:
+                        inst.ip=self.server_ip
+                        inst.save()            
         return True,self.msg
    
     def stat_server(self,action=False):

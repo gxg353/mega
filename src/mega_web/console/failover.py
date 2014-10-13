@@ -6,6 +6,7 @@ Created on Sep 2, 2014
 
 @module:mega_web.console.failover
 '''
+import types
 from lib.PyMysql import PyMySQL
 from apis.task import remote_cmd
 from conf.GlobalConf import MSG_ERR_SERVER_EXITST,MSG_ERR_NAME
@@ -67,7 +68,7 @@ class FailoverManage():
         return True,''
     def change_master(self,failoverid,new_master,method):
         '''            
-            usage: python mha_switch.py --group=xx --old_master=ip:port --new_master=ip:port --type=xx
+            usage: python mha_switch.py --group=xx --old_master=ip:port --new_master=ip:port --type=xx --record=xx
         '''
         cmd='mha_switch.py'
         cmd_type='python'
@@ -76,14 +77,46 @@ class FailoverManage():
         #data=self.q.fetchRow(sql)
         _old=InstanceGet().get_instance_by_id(old_master)
         _new=InstanceGet().get_instance_by_id(new_master)
-        args="--group=%s --old_master=%s:%s --new_master=%s:%s --type=%s" %(group,_old.get('ip'),_old.get('port'),_new.get('ip'),_new.get('port'),method)
+        _old_m="%s:%s" %(_old.get('ip'),_old.get('port'))
+        _new_m="%s:%s" %(_new.get('ip'),_new.get('port'))
+        record_id=self.add_failover_record(failoverid, method,_old_m,_new_m)
+        args="--group=%s --old_master= --new_master=%s:%s --type=%s --record=%s" %(group,_old_m,_new_m,method,record_id)
         #group name ,old master ,new master,action
         result=remote_cmd(ip,None,cmd,cmd_type,args)
         if result == 0:
+            self.stat_failover_record(record_id, 'Failed')
             return False
         else:
-            return result
-        
+            return True
+            
+    def add_failover_record(self,failover_id,method,old_master,new_master,failover_name=None):
+        if not failover_id:
+            if not failover_name:
+                return None
+            else:
+                sql="select id from failover where name='%s'" % failover_name                
+                failover_id=self.q.fetchOne(sql)
+        sql="insert into failover_record (failover_id,method,re_time,old_master,new_master,result) values(%s,'%s',now(),'%s','%s','Running')"\
+                                                                                 %(failover_id,method,old_master,new_master)
+        result,ex=self.q.execute(sql)
+        if result:
+            record_id=self.q.fetchOne("select last_insert_id()")
+        else:
+            record_id=None
+        return record_id
+    
+    def stat_failover_record(self,record_id,stat='Y'):
+        if not record_id:
+            return None
+        sql="update failover_record set result='%s' where id=%s" % (stat,record_id)
+        self.q.execute(sql)
+    
+    def add_failover_record_detail(self,record_id,module,re_time,time_used,result,content):
+        if not record_id:
+            return False
+        sql="insert into failover_record_detail(record_id,module,re_time,time_used,result,content) \
+            values(%s,'%s','%s',%s,'%s','%s');" %(record_id,module,re_time,time_used,result,content)
+        self.q.execute(sql)
         
 class FailoverGet():
     '''
@@ -99,7 +132,39 @@ class FailoverGet():
             sql+="and v.vip='%s' or v2.vip='%s'" % (ip,ip)
         failover_list=self.q.query(sql, type='dict')
         return failover_list
+    
+    def get_failover_by_id(self,id):
+        if not id:
+            return None 
+        sql="select a.name,concat(b.ip,':',b.port) as old_master,d.vip as rvip,e.vip as wvip from failover a,instance b,vip d,vip e \
+                where a.master=b.id and a.rvip=d.id and a.wvip=e.id and a.id=%s" % id
+        return self.q.query(sql, type='dict').fetchone()
 
+    def get_failover_history(self,id): 
+        if not id:
+            return None 
+        sql="select * from failover_record where failover_id=%s order by id desc" %id
+        return self.q.query(sql, type='dict').fetchall()
+    
+    def get_failover_history_detail(self,record_id,failover_id=None):
+        if not record_id:
+            if not failover_id:
+                return None
+            else:                
+                record_id=self.get_newest_record(failover_id)
+        sql="select * from failover_record_detail where record_id=%s order by id desc " %record_id
+        return self.q.query(sql, type='dict').fetchall()
+
+    def get_newest_record(self,failover_id):
+        sql="select max(id) from failover_record where failover_id=%s" %failover_id
+        return self.q.fetchOne(sql)
+
+    def get_failover_result(self,record_id): 
+        if not record_id:
+            return {}
+        sql="select result from failover_record where id=%s" %record_id
+        return self.q.query(sql, type='dict').fetchone()
+        
 def main():
     return
 

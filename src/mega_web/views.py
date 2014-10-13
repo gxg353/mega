@@ -1,5 +1,5 @@
 #-*- coding: utf-8 -*-
-from django.shortcuts import render_to_response,RequestContext
+from django.shortcuts import render_to_response,RequestContext,HttpResponse
 from django.contrib.auth.decorators import login_required
 
 from resource import instance_manage,server_manage,business_manage,database_manage,resource_manage,user_manage,vip_manage
@@ -450,6 +450,8 @@ def switch(request):
     slaves=[]
     if failover.get('method'):
         result=FailoverManage(failover).change_master(failover.get('id'),failover.get('slave'),failover.get('method'))
+        #return HttpResponse('123')
+        return HttpResponse(result)
     else:
         masterid=failover.get('masterid')
         slaves=instance_manage.InstanceGet().get_instance_slaves(masterid)
@@ -457,10 +459,30 @@ def switch(request):
 
 @login_required    
 def switch_detail(request):
+    '''
+        only recieve get request
+    '''
+    if request.method=='POST':
+        return render_to_response('switch_detail.html')
+    #failover
     failoverid=request.GET.get('failoverid')
-    
+    new_masterid=request.GET.get('new_master')
+    method=request.GET.get('method','')    
+    new_master=instance_manage.InstanceGet().get_instance_by_id(new_masterid)
+    failover=FailoverGet().get_failover_by_id(failoverid)
+    if failover:
+        failover['method']=method
+        failover['new_master']=new_master.get('ip')+':'+str(new_master.get('port'))
+        #history
+        failover_his=FailoverGet().get_failover_history(failoverid)
+        #log
+        record_id=FailoverGet().get_newest_record(failoverid)
+        failover_log=FailoverGet().get_failover_history_detail(record_id)
+        result=FailoverGet().get_failover_result(record_id)
+        failover['result']=result.get('result')
+        return render_to_response('switch_detail.html',{'failover':failover,'failover_his':failover_his,'failover_log':failover_log})
     return render_to_response('switch_detail.html')
-
+    
 def my_404_view(request):
     response = render_to_response('404.html',context_instance=RequestContext(request))
     response.status_code = 404

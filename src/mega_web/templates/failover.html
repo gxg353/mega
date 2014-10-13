@@ -161,7 +161,6 @@ function call_div(id,name,type,wvipid,rvipid,managerid,masterid,wvip,rvip,master
 	document.all.manager.value=managerid;
 	document.all.master.value=masterid;
 	document.all.switch.disabled='';
-
 	update_div(masterid,name,wvip,rvip,master,last_time)
 	}
 </script>
@@ -181,7 +180,8 @@ function change_master(failoverid,new_master,method){
 		method:'get',
 		parameters : request_pars,
 	});
-	window.location.href="switch/detail/?failoverid="+failoverid;
+	window.location.href="switch/detail/?failoverid="+failoverid+"&new_master="+new_master+"&method="+method;			
+
 }
 
 </script>

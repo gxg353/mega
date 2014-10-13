@@ -204,15 +204,27 @@ def slowlog_statics(time=None):
     except Exception as ex:
         log.error('Statics slow log hourly failed:%s' % ex) 
 
-def failover(group_name,old_master,new_master,method,time):
+def update_ha_info(self,new_master,old_master):
     '''
-        1.update the instance and failover table ,change the replication relationship
-        2.save the switch log
+        switch the role inside a ha group
+        master format:'1.1.1.1:3306' 
     '''
-    
-    return
-    
-    
+    try:
+        _new_host,_new_port=new_master.split(':')
+        _old_host,_old_port=old_master.split(':')
+        _new_instance_id=InstanceGet().get_instance_by_ip_port(_new_host, _new_port)
+        _old_instance_id=InstanceGet().get_instance_by_ip_port(_old_host,_old_port)
+        if not (_old_instance_id or _new_instance_id):
+            return False
+        _new_instance=InstanceGet().get_instance_by_id(_new_instance_id)
+        if _new_instance.get('master')==_old_instance_id:
+            sql="update instance set master_id=%s where master_id=%s" %(_new_instance_id,_old_instance_id)
+            result,ex=PyMySQL().execute(sql)
+            if not result:
+                log.error(ex)
+    except Exception as ex:        
+        log.error('update ha info failed:%s' % ex)
+
 def main():
     return
 

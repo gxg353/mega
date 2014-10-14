@@ -15,9 +15,7 @@ handler500 = my_500_view
 
 urlpatterns = patterns('',
     url(r'^$',home),
-    url(r'^resource/$',resource),
     url(r'^portal/$',portal),
-    url(r'^monitor/$',monitor),
     url(r'^tunning/$',tunning),
     url(r'^console/$',console),
     url(r'^mega-admin/$',mega_admin),
@@ -67,6 +65,12 @@ urlpatterns = patterns('',
     url(r'^console/failover/$',failover),
     url(r'^console/failover/switch/$',switch),
     url(r'^console/failover/switch/detail/$',switch_detail),
+    
+    url(r'^monitor/$',monitor),
+    url(r'^monitor/baseinfo/$',baseinfo),
+    url(r'^monitor/status/$',status),
+    url(r'^monitor/report/$',report),
+
 
     url(r'^portal/document/$',document),
     

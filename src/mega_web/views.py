@@ -56,13 +56,6 @@ def fun(request):
     else:
         return render_to_response('fun.html',context_instance=RequestContext(request))
 
-@login_required    
-def resource(request):
-    if request.method=="GET":
-        count=resource_manage.get_total_count()
-        return render_to_response('resource.html',{'count':count},context_instance=RequestContext(request))
-    else:
-        return render_to_response('resource.html',context_instance=RequestContext(request))
 
 
 #Sub sites
@@ -482,7 +475,19 @@ def switch_detail(request):
         failover['result']=result.get('result')
         return render_to_response('switch_detail.html',{'failover':failover,'failover_his':failover_his,'failover_log':failover_log})
     return render_to_response('switch_detail.html')
-    
+
+@login_required    
+def baseinfo(request):
+    return render_to_response('baseinfo.html')
+
+@login_required    
+def status(request):    
+    return render_to_response('status.html')
+
+@login_required    
+def report(request):    
+    return render_to_response('report.html')
+
 def my_404_view(request):
     response = render_to_response('404.html',context_instance=RequestContext(request))
     response.status_code = 404

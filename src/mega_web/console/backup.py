@@ -106,7 +106,8 @@ class Backup():
         if not time:
             time=datetime.datetime.now().strftime('%H:%M')
         hour,minite=time.split(':')
-        sql="select id,host_ip,port,db_type,backup_tool,backup_type,backup_begin_time,file_size,status,message from backup_history_info where date(backup_begin_time)='%s' and hour(backup_begin_time)=%s and backup_status ='N';" %(date,hour)
+        sql="select id,host_ip,port,db_type,backup_tool,backup_type,backup_begin_time,file_size,status,message from backup_history_info where \
+            date(backup_begin_time)='%s' and hour(backup_begin_time)=%s and backup_status ='N';" %(date,hour)
         return self.q.fetchAll(sql)
     
     def get_unavailable_backup(self,time=None):

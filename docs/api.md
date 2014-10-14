@@ -206,4 +206,83 @@
         1.update the instance and failover table ,change the replication relationship
         2.save the switch log
     '''
+## 高可用接口
+###MySQL
+####接口定义
+
+* def update_ha_info(new_master,old_master):
+    * new_master 新主库实例:	IP:PORT
+    * old_master 原主库实例:	IP:PORT 
     
+        	switch the role inside a ha group
+	        master format:'1.1.1.1:3306' 
+        
+    	    return ：
+        		True | False
+      
+* def add_failover_record(self,failover_id,method,old_master,new_master,failover_name=None):
+
+	* failover_id 高可用ip，脚本调用传None
+	* method   		切换方式
+	* old_master  原主库实例
+	* new_master  新主库实例
+	* failover_name  高可用组名，脚本调用传组名称
+	
+	        1.add a failover record with a given failover id  --used for mega web site
+            2.add record with a failover group name  --used for command line ha switch
+            
+            return :
+                None: failed to get the new record
+                id(int): the new record for failover switch
+* def add_failover_record_detail(self,record_id,module,re_time,time_used,result,content):
+	* record_id  任务号，由函数add_failover_record（）返回或者mega 调用时提供
+	* module     执行模块，
+	* re_time 	 任务阶段记录时间
+	* time_used  耗时
+	* result 	 本阶段执行结果
+	* content  	 执行信息
+	
+		    record_id  ,get from the function add_failover_record()
+            1.if task invoked by mega, the id will be given
+            2.if task begins from the command line, call the add_failover_record() and get the new record id befor add new detail logs
+           
+            return ：
+				True | False
+
+ 
+* def stat_failover_record(self,record_id,stat='Y'):
+	* record_id  任务号
+	* stat  执行结果，成功或者失败
+		
+			1.stat the result for a switch task
+			
+			return ：
+				True | False
+
+####测试用例
+
+		import time
+		from mega_client import sender
+		from mega_client.setting import MEGA_HOST
+		format='%Y-%m-%d %X'
+		now=time.strftime(format, time.localtime())
+
+		cmd={"update_ha_info":"'1.1.1.112:23','1.1.1.111:3306'",
+		     #"add_failover_record":"10,'ONLINE','1.1.1.112:23','1.1.1.111:3306'",
+		     "add_failover_record":"None,'ONLINE','1.1.1.112:23','1.1.1.111:3306','jjjj'",
+		     "stat_failover_record":"32,'Y'",
+		     "add_failover_record_detail":"31,'mega','%s','10','y','test the api'" % now,
+     		}
+		for _cmd,f in cmd.iteritems():
+		    c=sender.MegaClient(host=MEGA_HOST,cmd=_cmd)
+		    r=c.run(func_args=f)
+		    c.close()    
+		    print "test %s %s: %s" %(_cmd,f,r)
+
+运行效果：
+	
+		xchliu@xchliu tests]$ python console_failover.py
+		test add_failover_record None,'ONLINE','1.1.1.112:23','1.1.1.111:3306','jjjj': 32
+		test add_failover_record_detail 31,'mega','2014-10-14 14:05:25','10','y','test the api': True
+		test update_ha_info '1.1.1.112:23','1.1.1.111:3306': False
+		test stat_failover_record 32,'Y': True

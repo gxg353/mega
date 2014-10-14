@@ -1,4 +1,5 @@
 import re
+import time
 import datetime
 from email import Utils
 from email.mime.text import MIMEText
@@ -36,7 +37,14 @@ def today(day=None,format=None):
     else:
         return datetime.datetime.today().strftime(format)
 
-
+def now(format=None):
+    '''
+        return current time 
+    '''
+    if not format:
+        format='%Y-%m-%d %X'
+    return time.strftime(format, time.localtime())
+    
 class SendMail():
     '''
         A mail send client in HTML.

@@ -6,62 +6,57 @@
 {% block subcontent %}
 
 <div class="row">
-<form class="navbar-form navbar-left" role="search" action="/console/failover/" method="get">
-  <div class="form-group">
-    <input type="text" name="ip" class="form-control" placeholder="Search...">    
-  </div>
-  <button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>  
-  {% csrf_token %}
-</form>
+	<form class="navbar-form navbar-left" role="search" action="/console/failover/" method="get">
+		<div class="form-group">
+	    	<input type="text" name="ip" class="form-control" placeholder="Search...">    
+	  	</div>
+	  	<button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>  
+	  	{% csrf_token %}
+	</form>
 </div>
 
-<br>
 <div class="row">
-<div class="col-xs-6 col-sm-6  col-md-6 col-lg-8"> 
-	<div class="panel panel-default" style='height:500px;'>
-    	<div class="table-responsive pre-scrollable" style='min-width: 800px; height: 800px; margin: 0 auto'>
-<div class="table-responsive">
-
-  <table class="table table-striped">
-    <thead>
-      <tr>
-        <th>名称</th>
-        <th>WVIP</th>
-        <th>RVIP</th>
-        <th>管理节点</th>
-        <th>MASTER</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
-    {% for failover in failover_list %}
-	    <tr>
-			<td><a href="?id={{ failover.id }}">{{ failover.name }}</a></td>	
-			<td>{{ failover.wvip }}</td>	
-			<td>{{ failover.rvip }}</td>	
-			<td>{{ failover.manager }}</td>	
-			<td>{{ failover.master }}</td>
-			<td>
-			    <button type="button" class="btn btn-default btn-sm" onclick="call_div('{{ failover.id }}','{{ failover.name }}','{{ failover.type }}',
-			    		'{{ failover.wvip_id }}','{{ failover.rvip_id }}','{{ failover.server_id }}','{{ failover.instance_id }}','{{ failover.wvip }}',
-			    		'{{ failover.rvip }}','{{ failover.master }}','{{ failover.last_time }}')">
-    				<span class="glyphicon glyphicon-hand-right"></span>
-    			</button>
-			</td>				
-		</tr>
-	   {% endfor %}
-     </tbody>
-  </table>
+<div class="col-md-6" > 
+	<div class="panel panel-default" >
+		<div class="panel-heading">高可用列表</div>	
+		<div class="table-responsive pre-scrollable" style='margin: 0 auto'>
+			  <table class="table table-striped">
+			    <thead>
+			      <tr>
+			        <th>名称</th>
+			        <th>WVIP</th>
+			        <th>RVIP</th>
+			        <th>管理节点</th>
+			        <th>MASTER</th>
+			        <th></th>
+			      </tr>
+			    </thead>
+			    <tbody>
+			    {% for failover in failover_list %}
+				    <tr>
+						<td><a href="?id={{ failover.id }}">{{ failover.name }}</a></td>	
+						<td>{{ failover.wvip }}</td>	
+						<td>{{ failover.rvip }}</td>	
+						<td>{{ failover.manager }}</td>	
+						<td>{{ failover.master }}</td>
+						<td>
+						    <button type="button" class="btn btn-default btn-sm" onclick="call_div('{{ failover.id }}','{{ failover.name }}','{{ failover.type }}',
+						    		'{{ failover.wvip_id }}','{{ failover.rvip_id }}','{{ failover.server_id }}','{{ failover.instance_id }}','{{ failover.wvip }}',
+						    		'{{ failover.rvip }}','{{ failover.master }}','{{ failover.last_time }}')">
+			    				<span class="glyphicon glyphicon-hand-right"></span>
+			    			</button>
+						</td>				
+					</tr>
+				   {% endfor %}
+			     </tbody>
+			  </table>
+		</div>
+	</div>
 </div>
-</div>
-</div>
-</div>
-<div class="col-xs-6 col-sm-6  col-md-6 col-lg-3">
- 
+<div class="col-md-3">
        <form action="/console/failover/" method="post">
        <input id='action' type="hidden" name="action" value='add' >
-       <input id='id' type="hidden" name="id" value=0 >
-       
+       <input id='id' type="hidden" name="id" value=0 >       
   			<div class="input-group">
   				<span class="input-group-addon">类型</span>
 	  			<select id='type' name="type" class="form-control" style="width:80px;">

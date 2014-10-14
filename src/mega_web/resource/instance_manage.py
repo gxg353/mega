@@ -79,6 +79,7 @@ class InstanceManage():
             inst.master_id=self.inst_master
         inst.save()
         return True,self.msg
+    
     def mod_instance(self):
         if not self.inst_id:
             self.inst_id=InstanceGet().get_instance_by_ip_port(self.inst_ip, self.inst_port)

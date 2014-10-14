@@ -204,26 +204,55 @@ def slowlog_statics(time=None):
     except Exception as ex:
         log.error('Statics slow log hourly failed:%s' % ex) 
 
-def update_ha_info(self,new_master,old_master):
+def update_ha_info(new_master,old_master):
     '''
         switch the role inside a ha group
         master format:'1.1.1.1:3306' 
     '''
+    log.info('swith master role from %s to %s' % (old_master,new_master))
     try:
         _new_host,_new_port=new_master.split(':')
         _old_host,_old_port=old_master.split(':')
         _new_instance_id=InstanceGet().get_instance_by_ip_port(_new_host, _new_port)
         _old_instance_id=InstanceGet().get_instance_by_ip_port(_old_host,_old_port)
-        if not (_old_instance_id or _new_instance_id):
-            return False
+        if not _old_instance_id: 
+            log.error('Instance not found' % _old_instance_id )
+            return False        
+        if not  _new_instance_id:
+            log.error('Instance not found' % _new_instance_id )
+            return False        
+        _new_instance_id=_new_instance_id[0].get('id')
+        _old_instance_id=_old_instance_id[0].get('id') 
         _new_instance=InstanceGet().get_instance_by_id(_new_instance_id)
-        if _new_instance.get('master')==_old_instance_id:
+        #if the new master is master already,return false
+        if _new_instance.get('role') == 1:
+            log.warn("Instance %s is already master!" % new_master)
+            return False
+        if _new_instance.get('master_id') == _old_instance_id:
+            #change the master id for the slaves
             sql="update instance set master_id=%s where master_id=%s" %(_new_instance_id,_old_instance_id)
             result,ex=PyMySQL().execute(sql)
             if not result:
+                return False            
                 log.error(ex)
+            #change the old master stat
+            sql="update instance set master_id=%s,role=2 where id=%s" %(_new_instance_id,_old_instance_id)
+            result,ex=PyMySQL().execute(sql)
+            if not result:
+                return False            
+                log.error(ex)
+            #change the new master role
+            sql="update instance set role=1 where id=%s" %(_new_instance_id)
+            result,ex=PyMySQL().execute(sql)
+            if not result:
+                return False            
+                log.error(ex)   
+        else:
+            log.error("%s 's master id is %s ,not %s" %(new_master,_new_instance.get('master_id'),_old_instance_id))                     
     except Exception as ex:        
         log.error('update ha info failed:%s' % ex)
+        return False
+    return True
 
 def main():
     return

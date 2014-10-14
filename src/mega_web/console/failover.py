@@ -6,7 +6,7 @@ Created on Sep 2, 2014
 
 @module:mega_web.console.failover
 '''
-import types
+from lib.utils import now
 from lib.PyMysql import PyMySQL
 from apis.task import remote_cmd
 from conf.GlobalConf import MSG_ERR_SERVER_EXITST,MSG_ERR_NAME
@@ -17,15 +17,14 @@ class FailoverManage():
     '''
     def __init__(self,request):
         self.q=PyMySQL()
-        
-        self.name=request.get('name')
-        self.type=request.get('type')
-        self.wvip=request.get('wvip')
-        self.rvip=request.get('rvip')
-        self.master=request.get('master')
-        self.manager=request.get('manager')
-        self.id=request.get('id')
-        
+        if request:
+            self.name=request.get('name')
+            self.type=request.get('type')
+            self.wvip=request.get('wvip')
+            self.rvip=request.get('rvip')
+            self.master=request.get('master')
+            self.manager=request.get('manager')
+            self.id=request.get('id')        
         
     def _data_check(self):
         if not self.name:
@@ -80,16 +79,27 @@ class FailoverManage():
         _old_m="%s:%s" %(_old.get('ip'),_old.get('port'))
         _new_m="%s:%s" %(_new.get('ip'),_new.get('port'))
         record_id=self.add_failover_record(failoverid, method,_old_m,_new_m)
+        self.add_failover_record_detail(record_id, 'mega',now(),0, 'Y', 'Start the switch task.')
         args="--group=%s --old_master= --new_master=%s:%s --type=%s --record=%s" %(group,_old_m,_new_m,method,record_id)
         #group name ,old master ,new master,action
         result=remote_cmd(ip,None,cmd,cmd_type,args)
         if result == 0:
             self.stat_failover_record(record_id, 'Failed')
+            self.add_failover_record_detail(record_id, 'mega',now(),0, 'Y', 'End the task as failed to call remote script')
             return False
         else:
+            self.add_failover_record_detail(record_id, 'mega',now(),0, 'Y', 'Call the remote script on %s' % ip)
             return True
             
     def add_failover_record(self,failover_id,method,old_master,new_master,failover_name=None):
+        '''
+            1.add a failover record with a given failover id  --used for mega web site
+            2.add record with a failover group name  --used for command line ha switch
+            
+            return :
+                None: failed to get the new record
+                id(int): the new record for failover switch
+        '''
         if not failover_id:
             if not failover_name:
                 return None
@@ -106,17 +116,39 @@ class FailoverManage():
         return record_id
     
     def stat_failover_record(self,record_id,stat='Y'):
+        '''
+            1.stat the result for a switch task
+            return ：
+                True | False
+
+        '''
         if not record_id:
             return None
         sql="update failover_record set result='%s' where id=%s" % (stat,record_id)
-        self.q.execute(sql)
+        result,ex= self.q.execute(sql)
+        if not result :
+            return False
+        else:
+            return True
     
     def add_failover_record_detail(self,record_id,module,re_time,time_used,result,content):
+        '''
+            record_id  ,get from the function add_failover_record()
+            1.if task invoked by mega, the id will be given
+            2.if task begins from the command line, call the add_failover_record() and get the new record id 
+            befor add new detail logs
+            return ：
+                True | False
+        '''
         if not record_id:
-            return False
+            return False        
         sql="insert into failover_record_detail(record_id,module,re_time,time_used,result,content) \
             values(%s,'%s','%s',%s,'%s','%s');" %(record_id,module,re_time,time_used,result,content)
-        self.q.execute(sql)
+        result,ex=self.q.execute(sql)
+        if not result :
+            return False
+        else:
+            return True
         
 class FailoverGet():
     '''
@@ -136,8 +168,8 @@ class FailoverGet():
     def get_failover_by_id(self,id):
         if not id:
             return None 
-        sql="select a.name,concat(b.ip,':',b.port) as old_master,d.vip as rvip,e.vip as wvip from failover a,instance b,vip d,vip e \
-                where a.master=b.id and a.rvip=d.id and a.wvip=e.id and a.id=%s" % id
+        sql="select a.name,concat(b.ip,':',b.port) as old_master,c.vip as rvip,d.vip as wvip from failover a left join  instance b on \
+            a.master=b.id left join vip c on a.rvip=c.id left join vip d on a.wvip=d.id where a.id=%s;" % id
         return self.q.query(sql, type='dict').fetchone()
 
     def get_failover_history(self,id): 

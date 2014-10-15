@@ -407,10 +407,13 @@ def slowlog_sql(request):
 def slowlog_instance(request):
     if request.method=='GET':
         begin=end=None
+        instance_id=request.GET.get('instance_id',1)
+
     else:
         begin=request.POST.get('begin_date')
         end=request.POST.get('end_date')
-    instance_id=request.POST.get('instance_id',0)
+        instance_id=request.POST.get('instance_id',1)
+    
     #total=slowlog.get_chart_total(instance_id,begin,end)
     total=slowlog.get_chart_total(instance_id)
     instance=instance_manage.InstanceGet().get_instance_by_id(instance_id)
@@ -479,6 +482,10 @@ def switch_detail(request):
 @login_required    
 def baseinfo(request):
     return render_to_response('baseinfo.html')
+
+@login_required    
+def baseinfo_instance(reqeust):
+    return render_to_response('baseinfo_instance.html')
 
 @login_required    
 def status(request):    

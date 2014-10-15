@@ -85,6 +85,7 @@ def get_instance_topsql(instance_id,begin=None,end=None):
     sql="select a.hash_code,b.sql_parsed,count(*) as counts,max(query_time) as max_time,min(query_time) as min_time,avg(query_time) as avg_time,\
         max(rows_examined) as max_row,min(rows_examined) as min_row,avg(rows_examined) as avg_row from slowlog_info a ,sql_format  b where instance_id=%s \
         and a.hash_code=b.hash_code and date(from_unixtime(a.start_time)) between '%s' and '%s' group by a.hash_code order by counts desc;" %(instance_id,begin,end)
+    print sql
     data=cursor.query(sql,type='dict').fetchall()
     for d in data:
         d['sql_parsed']=d['sql_parsed'].decode('utf-8', 'ignore')
@@ -141,10 +142,10 @@ def get_chart_groupbydb(instance_id=None,begin=None,end=None):
         begin=today(7)
         end=today()
     if instance_id:
-        sql='''select db,sum(counts) as counts from slowlog_time_day where instance_id=%s and date(log_time) between '%s'  and '%s' group by db ;
+        sql='''select db,sum(counts) as counts from slowlog_time_day where instance_id=%s and date(log_time) between '%s'  and '%s' group by db order by counts desc ;
             ''' % (instance_id,begin,end)
     else:
-        sql='''select db,sum(counts) as counts from slowlog_time_day where date(log_time) between '%s'  and '%s' group by db ;
+        sql='''select db,sum(counts) as counts from slowlog_time_day where date(log_time) between '%s'  and '%s' group by db order by counts desc ;
             ''' % (begin,end)
         
     data=cursor.query(sql).fetchall()

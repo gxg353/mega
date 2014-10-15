@@ -254,6 +254,31 @@ def update_ha_info(new_master,old_master):
         return False
     return True
 
+def data_collect(time=None):
+    '''
+        collect the base info and performance data from all the online instance which data collect configuration is on
+    '''
+    result=[] 
+    instance_list=[]
+    filter={'i.stat':1,'i.data_collect':1}
+    config_list=InstanceGet().get_instance_list(filter, 0)
+    for conf in config_list:
+        instance={"ip":conf.ip,
+                  "port":conf.port                  
+                  }
+        instance_list.append(instance)
+    if len(instance_list):
+        log.debug(instance_list)
+        script=Task().get_task_by_name('datacollect')
+        for instance in instance_list:
+            result.append(remote_cmd(instance['ip'],instance['port'],script,'python',args=instance))
+    if result:
+        log.debug(result)
+    log.info("%s instance data collect task are invoked." % len(instance_list))    
+
+def data_collect_add():
+    pass      
+    
 def main():
     return
 

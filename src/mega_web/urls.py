@@ -68,6 +68,11 @@ urlpatterns = patterns('',
     
     url(r'^monitor/$',monitor),
     url(r'^monitor/baseinfo/$',baseinfo),
+    url(r'^monitor/baseinfo/instance/$',baseinfo_instance),
+    #url(r'^monitor/baseinfo/server/$',baseinfo_server),
+    #url(r'^monitor/baseinfo/database/$',baseinfo_database),
+    #url(r'^monitor/baseinfo/table/$',baseinfo_table),
+
     url(r'^monitor/status/$',status),
     url(r'^monitor/report/$',report),
 

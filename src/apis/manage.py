@@ -3,6 +3,7 @@ from mega_service.backup import Backuper
 from mega_service.slowlog.slow_log import SlowLog
 from mega_service.slowlog.slowlog_archive import slowlog_pack,slowlog_statics_per_hour
 from mega_service.task import Task
+from mega_service.resource import sync_baseinfo,sync_stat
 from mega_web.resource.instance_manage import InstanceGet
 from lib.logs import Logger
 from lib.PyMysql import PyMySQL
@@ -173,7 +174,8 @@ def slowlog_statics(time=None):
     sql="select * from slowlog_info where stat=0 limit 100" 
     while 1:
         try:
-            cursor=PyMySQL().query(sql, type='dict')
+            conn=PyMySQL()
+            cursor=conn.query(sql, type='dict')
             if not cursor:
                 break
             data_list=cursor.fetchall()
@@ -191,9 +193,10 @@ def slowlog_statics(time=None):
                 else:
                     instance_id=instance_id[0]['id']
                 _sql="update slowlog_info set hash_code='%s',instance_id=%s,stat=1 where id = %s" %(sql_hash,instance_id,data.get('id'))
-                result,ex=PyMySQL().execute(_sql)
+                result,ex=conn.execute(_sql)
                 if not result:
                     log.error(ex)
+            conn.close()
         except Exception as ex:
                 log.debug(data)
                 log.error('Pack slow log failed:%s' % ex)
@@ -257,14 +260,23 @@ def update_ha_info(new_master,old_master):
 def data_collect(time=None):
     '''
         collect the base info and performance data from all the online instance which data collect configuration is on
+        type:
+            base: collect the basic information for the instance  ,will be called one time per day
+            stat: collect the status infomation 
     '''
+    #
+    type="base"
     result=[] 
     instance_list=[]
+    if time:
+        if int(time.split(":")[0]) == 0:
+            type="stat"        
     filter={'i.stat':1,'i.data_collect':1}
     config_list=InstanceGet().get_instance_list(filter, 0)
     for conf in config_list:
         instance={"ip":conf.ip,
-                  "port":conf.port                  
+                  "port":conf.port,
+                  "type":type                  
                   }
         instance_list.append(instance)
     if len(instance_list):
@@ -276,8 +288,46 @@ def data_collect(time=None):
         log.debug(result)
     log.info("%s instance data collect task are invoked." % len(instance_list))    
 
-def data_collect_add():
-    pass      
+def data_collect_save(data):
+    '''
+        parse the data collect from the client script,split the values by the keys
+        
+        keys:
+            base=['variables','table_status','mysql_user','db_name','base']+['timestamp']+['except']
+            state=['status','slave_status']+['timestamp']+['except']        
+    '''
+    # pre-check for safe and translate the str to a dict
+    _keys=['variables','table_status','mysql_user','db_name','base','timestamp','except','status','slave_status']
+    try:
+        data=eval(data)
+        if type(data) != types.DictionaryType:
+            log.warn('Inexpectant data format as type of the data is %s' % type(data))
+            return False        
+        #get instance id
+        instance=data.keys()[0]
+        ip,port=instance.split(":")
+        instance_id=InstanceGet().get_instance_by_ip_port(ip, port)
+        if not instance_id:
+            log.error('Failed to get instance id for %s:%s' % (ip,port))            
+        instance_data=data.get(instance)
+        #caught the exception return by the script
+        script_except=instance_data.pop('except',None)
+        if type(instance_data) != types.DictionaryType:
+            log.error("Invalid data format for %s" % instance)
+            return False
+        if script_except:
+            log.warn("Data collect on %s : %s" % (instance,script_except))
+        #save the data into database 
+        collect_time=instance_data.pop('timestamp',None)
+        _sync=sync_baseinfo.SyncBasic(instance_id,instance,collect_time)
+        for _k in _keys:            
+            if instance_data.get(_k,None):
+                _sync.sync_base(instance_data.pop(_k),_k)                
+    except Exception as ex:
+        log.error(ex)
+        return False
+    
+
     
 def main():
     return

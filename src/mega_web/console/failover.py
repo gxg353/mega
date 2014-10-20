@@ -12,6 +12,11 @@ from apis.task import remote_cmd
 from conf.GlobalConf import MSG_ERR_SERVER_EXITST,MSG_ERR_NAME
 from mega_web.resource.instance_manage import InstanceGet
 
+from lib.logs import Logger
+
+MODEL='web-failover'
+log=Logger(MODEL).log()
+
 class FailoverManage():
     '''
     '''
@@ -112,6 +117,7 @@ class FailoverManage():
         if result:
             record_id=self.q.fetchOne("select last_insert_id()")
         else:
+            log.error(ex)
             record_id=None
         return record_id
     
@@ -127,6 +133,7 @@ class FailoverManage():
         sql="update failover_record set result='%s' where id=%s" % (stat,record_id)
         result,ex= self.q.execute(sql)
         if not result :
+            log.error(ex)
             return False
         else:
             return True
@@ -146,6 +153,7 @@ class FailoverManage():
             values(%s,'%s','%s',%s,'%s','%s');" %(record_id,module,re_time,time_used,result,content)
         result,ex=self.q.execute(sql)
         if not result :
+            log.error(ex)
             return False
         else:
             return True

@@ -49,3 +49,6 @@ CREATE TABLE `slowlog_opt` (
 
 #2014-09-25
 alter table server add column plant varchar(50) not null default '';
+
+2014-10-17
+alter table instance add cnf_file varchar(100) not null default '';

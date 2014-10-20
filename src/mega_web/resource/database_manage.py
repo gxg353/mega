@@ -29,6 +29,7 @@ class DatabaseManage():
                 self.db_id=db[0]['id']
         except:
             self.db_id=None
+            
     def data_check(self):
         if not self.db_name:
             self.msg+=MSG_ERR_NAME
@@ -49,6 +50,7 @@ class DatabaseManage():
             self.db_owner=DEFAULT_OWNER
 
         return True  
+    
     def add_database(self):
         if not self.data_check():
             return False,self.msg
@@ -63,6 +65,7 @@ class DatabaseManage():
         db.save()
         self.msg='Sucess'
         return True,self.msg
+    
     def mod_database(self):
         if not self.db_id:
             return MSG_ERR_DATABASE_NOT_EXITST
@@ -84,6 +87,7 @@ class DatabaseManage():
         
         db.save()
         return True,self.msg
+    
     def stat_database(self,action=None):
         if not self.db_id:
             return False,MSG_ERR_DATABASE_NOT_EXITST
@@ -97,9 +101,12 @@ class DatabaseManage():
                 db.stat=STAT_ONLINE
         db.save()
         return True,self.msg
+    
+    
 class DatabaseGet():
     def __init__(self):
         self.db=Database
+        
     def get_database(self,database):
         db_id=database.get("database_id")
         result=self.get_database_by_id(db_id)
@@ -111,6 +118,7 @@ class DatabaseGet():
         result["ip"]=instance["ip"]
         result["port"]=instance["port"]
         return result
+    
     def get_database_by_id(self,db_id=0):
         
         if db_id:
@@ -118,10 +126,13 @@ class DatabaseGet():
         else:
             result=self.db.objects.all()[0:1].values()[0]
         return result
+    
     def check_database_unique(self,instance_id,name):
         return self.db.objects.filter(instance_id=instance_id,name=name).count()
+    
     def get_database_unique(self,instance_id,name):
         return self.db.objects.filter(instance_id=instance_id,name=name).values()
+    
     def get_database_list(self,str_filter,count=10,offset=0):
         result=None
         if not str_filter:

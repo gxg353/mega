@@ -299,7 +299,7 @@ def data_collect_save(data):
     # pre-check for safe and translate the str to a dict
     _keys=['variables','table_status','mysql_user','db_name','base','timestamp','except','status','slave_status']
     try:
-        data=eval(data)
+        data=eval(str(data))
         if type(data) != types.DictionaryType:
             log.warn('Inexpectant data format as type of the data is %s' % type(data))
             return False        
@@ -308,7 +308,9 @@ def data_collect_save(data):
         ip,port=instance.split(":")
         instance_id=InstanceGet().get_instance_by_ip_port(ip, port)
         if not instance_id:
-            log.error('Failed to get instance id for %s:%s' % (ip,port))            
+            log.error('Failed to get instance id for %s:%s' % (ip,port))        
+            return False    
+        instance_id=instance_id[0]['id']
         instance_data=data.get(instance)
         #caught the exception return by the script
         script_except=instance_data.pop('except',None)
@@ -321,11 +323,12 @@ def data_collect_save(data):
         collect_time=instance_data.pop('timestamp',None)
         _sync=sync_baseinfo.SyncBasic(instance_id,instance,collect_time)
         for _k in _keys:            
-            if instance_data.get(_k,None):
+            if instance_data.get(_k):
                 _sync.sync_base(instance_data.pop(_k),_k)                
     except Exception as ex:
         log.error(ex)
         return False
+    return True
     
 
     

@@ -6,16 +6,16 @@
 <div class="col-sm-9 col-sm-offset-3 col-md-4 col-md-offset-0 main">
 <div class="panel panel-default">
 
-<form action="/resource/database_detail/" method="post">
+<form class="navbar-form navbar-left " action="/resource/database_detail/" method="post">
 	<input type="hidden" name="database_id" value='{{ database.id }}' >
 	<input type="hidden" name="type" value='mod' >
 	<div class="input-group">
-  		<span class="input-group-addon"style="width:150px;">名称</span>
-  		<input type="text" class="form-control" name="database_name" placeholder='NAME' style="width:200px;" maxlength=20 value='{{ database.name }}' readonly= {{ readonly }}>
+  		<span class="input-group-addon"style=>名称</span>
+  		<input type="text" class="form-control" name="database_name" placeholder='NAME'  maxlength=20 value='{{ database.name }}' readonly= {{ readonly }}>
 	</div>
 	<div class="input-group">
-		<span class="input-group-addon"style="width:150px;">联系人</span>
-		<select name="database_owner" class="form-control" style="width:200px;"readonly= {{ readonly }}>
+		<span class="input-group-addon"style=>联系人</span>
+		<select name="database_owner" class="form-control" readonly= {{ readonly }}>
 			<option value={{ database.owner }} >{{ database.owner_name }}</option>
 			{% for owner in owner_list %}
 		   		<option value={{ owner.id }}>{{ owner.name }}</option>
@@ -23,8 +23,8 @@
 		</select>   		
 	</div>
 	<div class="input-group">
-  		<span class="input-group-addon"style="width:150px;">实例</span>
-  		<select name="database_instance" class="form-control" style="width:200px;"readonly={{ readonly}}>
+  		<span class="input-group-addon"style=>实例</span>
+  		<select name="database_instance" class="form-control" readonly={{ readonly}}>
 			<option value={{ database.instance }}>{{ database.ip }}:{{ database.port }}</option>
 			{% for ist in instance_list %}
 		   		<option value={{ ist.id }}>{{ ist.ip }}:{{ ist.port }}</option>
@@ -32,8 +32,8 @@
  		</select> 
  	</div>		
 	<div class="input-group">  	    
-    	<span class="input-group-addon" style="width:150px;">级别</span>
-    	<select name="database_level" class="form-control" style="width:200px;"readonly= {{ readonly }}>
+    	<span class="input-group-addon" style=>级别</span>
+    	<select name="database_level" class="form-control" readonly= {{ readonly }}>
 			<option value={{ database.level }} selected="selected">{{ database.level }}</option>
 			{% for l in level %}
 		   		<option value={{ l }}>{{ l }}</option>
@@ -41,8 +41,8 @@
   		</select>
 	</div>
 	<div class="input-group">
-  		<span class="input-group-addon"style="width:150px;">业务线</span>
-    		<select name="database_business" class="form-control" style="width:200px;"readonly= {{ readonly }}>
+  		<span class="input-group-addon"style=>业务线</span>
+    		<select name="database_business" class="form-control" readonly= {{ readonly }}>
 				<option value={{ database.business_id }} selected="selected">{{ database.business }}</option>
 				{% for bus in business_list %}
 		   			<option value={{ bus.id }}>{{ bus.name }}</option>
@@ -50,8 +50,8 @@
 			</select> 
 	</div>
 	<div class="input-group">			
-  		<span class="input-group-addon"style="width:150px;">上线时间</span>
-  		<input type="datetime" class="form-control" name="database_online" placeholder='ONLINE_DATE' style="width:200px;" maxlength=20 value='{{ database.online_date|date:"Y-m-d H:i:s" }}' onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',isShowClear:false,readOnly:true})" readonly= {{ readonly }} >
+  		<span class="input-group-addon"style=>上线时间</span>
+  		<input type="datetime" class="form-control" name="database_online" placeholder='ONLINE_DATE'  maxlength=20 value='{{ database.online_date|date:"Y-m-d H:i:s" }}' onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',isShowClear:false,readOnly:true})" readonly= {{ readonly }} >
 	</div>
 
 	<button type="button" class="btn btn-default pull-right" onclick="change_readonly('all')">

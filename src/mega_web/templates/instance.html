@@ -4,17 +4,18 @@
 {% endblock %}
 {% block subcontent %}
 <div class="row">
-	<form class="navbar-form navbar-left" role="search" action="/resource/instance/" method="post">
+	<form class="navbar-form " role="search" action="/resource/instance/" method="post">
 		<div class="form-group">
- 	   		<input type="text" name ='ip' class="form-control" placeholder="名称/IP">
+ 	   		<input type="text" name ='ip' class="form-control" placeholder="IP">
 		</div>
   		<button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
-  		<button type="button" class="btn btn-default btn" onclick="window.location='/resource/instance_add/'">
+  		<button type="button" class="btn btn-default " onclick="window.location='/resource/instance_add/'">
   			<span class="glyphicon glyphicon-plus"></span> 
-    	</button>  	
+    	</button>  	  		
 		{% csrf_token %}
-	</form>
+	</form>	
 </div>
+
 <div class="row">
 <div class="col-md-10">
 	<div class="panel panel-default">
@@ -65,17 +66,17 @@
     			</tbody>
   			</table>
 		</div>
+		<ul class="pagination pull-right">
+  			<li><a href="?page=1">&laquo;</a></li>
+			{% for page in page_range %}
+			  	<li><a href="?page={{ page }}">{{ page }}</a></li>
+			{% endfor%}
+			<li><a href="?page=1">&raquo;</a></li>
+		</ul>		
 	</div>
 </div>
 </div>
 </div>
 
 
-<ul class="pagination">
-  <li><a href="?page=1">&laquo;</a></li>
-  {% for page in page_range %}
-  	<li><a href="?page={{ page }}">{{ page }}</a></li>
-  {% endfor%}
-  <li><a href="?page=1">&raquo;</a></li>
-</ul>
 {% endblock %}

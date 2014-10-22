@@ -61,19 +61,19 @@ def fun(request):
 #Sub sites
 ##resource
 def instance(request):
+    page_num=1
     if request.method=="GET":
         page_num=request.GET.get('page')
         instance_list_all=instance_manage.InstanceGet().get_instance_list(None,0)
-        if not page_num:
-            page_num=1
-        page_data=paginator.paginator(instance_list_all, page_num)
-        instance_list=page_data.get('page_data')
-        page_range=page_data.get('page_range')
-        return render_to_response('instance.html',{'instance_list':instance_list,'page_range':page_range},context_instance=RequestContext(request))
     else:
         ip=request.POST.get("ip")
-        instance=instance_manage.InstanceGet().get_instance_list({"ip":ip})
-        return render_to_response('instance.html',{"instance_list":instance},context_instance=RequestContext(request))
+        instance_list_all=instance_manage.InstanceGet().get_instance_list({"ip":ip},0)
+    if not page_num:
+        page_num=1
+    page_data=paginator.paginator(instance_list_all, page_num)
+    instance_list=page_data.get('page_data')
+    page_range=page_data.get('page_range')
+    return render_to_response('instance.html',{'instance_list':instance_list,'page_range':page_range},context_instance=RequestContext(request))
 
 def instance_add(request):
     msg=''
@@ -408,7 +408,6 @@ def slowlog_instance(request):
     if request.method=='GET':
         begin=end=None
         instance_id=request.GET.get('instance_id',1)
-
     else:
         begin=request.POST.get('begin_date')
         end=request.POST.get('end_date')

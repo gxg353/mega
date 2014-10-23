@@ -88,19 +88,27 @@ def instance_add(request):
                                                        },context_instance=RequestContext(request))
 
 def instance_detail(request):
+    inst=instance_manage.InstanceGet()
     if request.method=="GET":
-        instance=instance_manage.InstanceGet().get_instance(request.GET)
+        instance_id=request.GET.get('instance_id')
+        instance=inst.get_instance(request.GET)
     else:
+        instance_id=request.GET.get('instance_id')
         if request.POST.get("type")=="mod":
             instance_manage.InstanceManage(request.POST).mod_instance()    
         else:
             instance_manage.InstanceManage(request.POST).stat_instance()
-        instance=instance_manage.InstanceGet().get_instance(request.POST)
+        instance=inst.get_instance(request.POST)
+    instance_base=inst.get_instance_base(instance_id)
+    failover=FailoverGet().get_instance_failover(instance_id)
+    #database=inst.get_instance_list({"":""}, count, offset)
     return render_to_response('instance_detail.html',{"instance":instance,"readonly":"true","business_list":meta_data.business_list(),
                                                       "owner_list":meta_data.owner_list(),
                                                        "db_type":meta_data.db_type,"level":meta_data.level,
                                                        "ha_type":meta_data.ha_type,"version_list":meta_data.version,
-                                                       "instance_list":meta_data.instance_list()
+                                                       "instance_list":meta_data.instance_list(),
+                                                       "instance_base":instance_base,
+                                                       "failover":failover
                                                    },context_instance=RequestContext(request))
 
 ##server

@@ -179,6 +179,10 @@ class FailoverGet():
         sql="select a.name,concat(b.ip,':',b.port) as old_master,c.vip as rvip,d.vip as wvip from failover a left join  instance b on \
             a.master=b.id left join vip c on a.rvip=c.id left join vip d on a.wvip=d.id where a.id=%s;" % id
         return self.q.query(sql, type='dict').fetchone()
+    def get_failover_by_master(self,master_id):
+        sql="select a.*,b.ip as manager_ip,c.vip as rvip_ip,d.vip as wvip_ip  from failover a left join server b on a.manager=b.id \
+             left join vip c on a.rvip=c.id left join vip d on a.wvip=d.id  where master=%s;" % master_id
+        return self.q.query(sql, type='dict').fetchone()
 
     def get_failover_history(self,id): 
         if not id:
@@ -204,6 +208,24 @@ class FailoverGet():
             return {}
         sql="select result from failover_record where id=%s" %record_id
         return self.q.query(sql, type='dict').fetchone()
+        
+    def get_instance_failover(self,instance_id):
+        instance=InstanceGet().get_instance_by_id(instance_id)
+        if not instance:
+            return []
+        if instance.get('role') == 1:
+            master=instance
+            slaves=InstanceGet().get_instance_slaves(instance_id)
+        else:
+            master=InstanceGet().get_instance_slaves(instance.get('master_id'))
+            if master:
+                master=master[0]
+                slaves=InstanceGet().get_instance_slaves(master.get('id'))
+            else:
+                slaves=[]
+        failover=self.get_failover_by_master(master.get('id'))
+        group=[master]+list(slaves)
+        return {'failover':failover,'group':group}
         
 def main():
     return

@@ -8,7 +8,6 @@ Created on Oct 17, 2014
 '''
 
 from lib.utils import now
-from lib.PyMysql import PyMySQL
 from mega_web.resource.database_manage import DatabaseGet
 from mega_web.resource.database_manage import DatabaseManage
 
@@ -226,7 +225,7 @@ class SyncBasic():
                 status_id=None               
                 log.error('Get variable id failed:%s %s' % (status,ex))                
         return status_id
-        
+
         
         
 def main():

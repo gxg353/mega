@@ -37,7 +37,8 @@ class Instance(models.Model):
     version = models.CharField(max_length=20)
     master_id=models.IntegerField(default=0)
     slowlog= models.IntegerField(default=1)
-    
+    data_collect=models.IntegerField(default=0)
+    cnf_file=models.CharField(max_length=200)
     stat= models.IntegerField(default=1)
     online_date = models.DateTimeField(default=0)
 

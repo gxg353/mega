@@ -1,8 +1,10 @@
 import datetime
-from mega_web.entity.models import Instance,Business,User
+from conf.GlobalConf import *
+from lib.PyMysql import PyMySQL
 from lib.utils import check_ip,is_int
 from server_manage import ServerGet,ServerManage
-from conf.GlobalConf import *
+from mega_web.entity.models import Instance,Business,User
+from mega_service.resource.get_value import get_instance_newest_variable,get_instance_newest_stat
 
 MSG_ERR_INSTANCE_NOT_EXITST='instance does not exists!'
 
@@ -139,8 +141,13 @@ class InstanceManage():
         return True,self.msg
     
 class InstanceGet():
+    '''
+        all the instance info query
+    '''
     def __init__(self):
         self.inst=Instance
+        self.q=PyMySQL()
+        
     def get_instance(self,instance):
         inst_id=instance.get("instance_id")
         result=self.get_instance_by_id(inst_id)
@@ -154,6 +161,18 @@ class InstanceGet():
         result["business"]=business['name']
         result["owner_name"]=owner['name']
         return result
+    
+    def get_instance_base(self,instance_id):
+        '''
+            get the basic info beyond the columns of instance
+            uptime
+            socket
+        '''
+        uptime=get_instance_newest_stat(instance_id,'uptime')
+        uptime=str(datetime.timedelta(seconds=uptime))
+        socket=get_instance_newest_variable(instance_id,'socket')        
+        return {'uptime':uptime,'socket':socket}
+    
     def get_instance_by_id(self,inst_id=0):
         if inst_id:
             result=self.inst.objects.filter(id=inst_id).values()[0]
@@ -192,4 +211,4 @@ class InstanceGet():
             return None 
         result=self.inst.objects.filter(master_id=instance_id).values()
         return result
-        
+    

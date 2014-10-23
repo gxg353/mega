@@ -15,7 +15,6 @@
 					<button type="button" class="btn btn-default" onclick="window.location.href='/console/backup/backup_config/?ip={{ instance.ip }}&port={{ instance.port }}'">备份管理</button>
 					<button type="button" class="btn btn-default" onclick="window.location.href='/tunning/slowlog/report/instance/?instance_id={{ instance.id }}'">慢查询统计</button>
 					<button type="button" class="btn btn-default">性能数据采集</button>
-					<button type="button" class="btn btn-warning" onclick="window.location.href='/console/failover/?ip={{ instance.ip }}'">故障切换</button>
 					{% ifequal instance.stat  0 %}
 						<button type="submit" class="btn btn-success btn">
 				  			<span class="glyphicon glyphicon-cloud-upload"></span> 上线实例
@@ -146,16 +145,47 @@
 			<div class="list-group">
 			  <a href="#" class="list-group-item">
 			    <h4 class="list-group-item-heading">基本信息</h4>
-			    <p class="list-group-item-text">运行时间：</p>			    
-			    <p class="list-group-item-text">配置文件：</p>
-			    <p class="list-group-item-text">socket：</p>
+			    <p class="list-group-item-text">运行时间：{{ instance_base.uptime }}</p>			    
+			    <p class="list-group-item-text">配置文件：{{ instance.cnf_file }}</p>
+			    <p class="list-group-item-text">socket：{{ instance_base.socket }}</p>
 			  </a>
 			</div>
-			<div class="list-group">
-			  <a href="#" class="list-group-item">
-			    <h4 class="list-group-item-heading">高可用信息</h4>
-			    <p class="list-group-item-text">...</p>
+			<div class="list-group">			
+			  <a class="list-group-item">
+				<button type="button" class="btn btn-warning pull-right "  onclick="window.location.href='/console/failover/?ip={{ instance.ip }}'">故障切换</button>			    
+			    <h4 class="list-group-item-heading">高可用</h4>
+			    <p class="list-group-item-text">名称：{{ failover.failover.name }}</p>
+			    <p class="list-group-item-text">写vip：{{ failover.failover.wvip_ip }}</p>
+			    <p class="list-group-item-text">读vip：{{ failover.failover.rvip_ip }}</p>
+			    <p class="list-group-item-text">管理节点：{{ failover.failover.manager_ip }}</p>			    
+			    <p class="list-group-item-text">上一次切换：{{ failover.failover.last_time }}</p>			    
 			  </a>
+			  <div class="table-responsive pre-scrollable" >
+				<table class="table table-hover ">
+					<thead>
+						<tr>
+							<th>角色</th>
+							<th>IP</th>
+							<th>端口</th>
+							<th>上线日期</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for member in failover.group %}
+							<tr>
+								{% ifequal member.role 1 %} 
+									<td>主库</td>
+								{% else %}
+									<td>从库</td>
+								{% endifequal %}								
+								<td>{{ member.ip }}</td>		
+								<td>{{ member.port }}</td>		
+								<td>{{ member.online_date }}</td>
+							</tr>		
+						{% endfor %}
+			  		</tbody>
+			  	</table>
+			  </div>			  
 			</div>
 			<div class="list-group">
 			  <a href="#" class="list-group-item">

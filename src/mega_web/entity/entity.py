@@ -12,6 +12,8 @@ class Server(models.Model):
     owner = models.CharField(max_length=50)
     online_date = models.DateTimeField(default=0)
     stat= models.IntegerField(default=1)
+    type= models.IntegerField(default=1)
+    plant= models.CharField(max_length=50)
 
 class Instance(models.Model):
     class Meta(object):
@@ -35,7 +37,8 @@ class Instance(models.Model):
     version = models.CharField(max_length=20)
     master_id=models.IntegerField(default=0)
     slowlog= models.IntegerField(default=1)
-    
+    data_collect=models.IntegerField(default=0)
+    cnf_file=models.CharField(max_length=200)
     stat= models.IntegerField(default=1)
     online_date = models.DateTimeField(default=0)
 
@@ -117,6 +120,17 @@ class Users(models.Model):
     phone=models.IntegerField()
     stat=models.IntegerField()
     
+class Vip(models.Model):
+    class Meta(object):
+        db_table='vip'
+    
+    id = models.AutoField(primary_key=True)   
+    vip = models.CharField(max_length=50)
+    domain = models.CharField(max_length=50)
+    type = models.IntegerField()
+    stat =  models.IntegerField()
+    plant= models.CharField(max_length=50)
+
     
 class Document(models.Model):
     class Meta(object):

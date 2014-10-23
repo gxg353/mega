@@ -1,24 +1,12 @@
-from django.conf.urls import patterns, include, url
-from django.conf.urls.static import static
-from views import home,monitor,console,resource,portal,fun,tunning
-from views import instance,instance_add,instance_detail
-from views import server,server_add,server_detail
-from views import business,business_add,business_detail
-from views import database,database_add,database_detail
-from views import backup,backup_config,backup_config_list
-from views import task,task_add,task_detail
-from views import user,user_add,user_detail
-from views import slowlog_config,slowlog_report,slowlog_sql
-from views import chart
-from views import document
-from views import my_404_view,my_500_view
-from views import admin,client
-
-
+from views import * 
 from django.conf import settings
-# Uncomment the next two lines to enable the admin:
-#from django.contrib import admin
-#admin.autodiscover()
+from django.contrib import admin
+from django.conf.urls.static import static
+from django.conf.urls import patterns, include, url
+
+
+#admin
+admin.autodiscover()
 
 #for error catch
 handler404 = my_404_view
@@ -27,19 +15,16 @@ handler500 = my_500_view
 
 urlpatterns = patterns('',
     url(r'^$',home),
-    url(r'^resource/$',resource),
     url(r'^portal/$',portal),
-    url(r'^monitor/$',monitor),
     url(r'^tunning/$',tunning),
-    url(r'console/$',console),
-    url(r'charts/$',chart),
-    url(r'admin/$',admin),
-
-    
-#django
-#    (r'^admin/', include(admin.site.urls)),
-
-#sub url
+    url(r'^console/$',console),
+    url(r'^mega-admin/$',mega_admin),
+    url(r'^login/$',login),
+    url(r'^accounts/login/$',login),
+    url(r'^logout/$',logout),
+    #django
+    url(r'^admin/', include(admin.site.urls)),
+    #sub url
     url(r'^resource/instance/$',instance),
     url(r'^resource/instance_add/$',instance_add),
     url(r'^resource/instance_detail/$',instance_detail),
@@ -60,6 +45,8 @@ urlpatterns = patterns('',
     url(r'^resource/user_add/$',user_add),
     url(r'^resource/user_detail/$',user_detail),
     
+    url(r'^resource/vip/$',vip),
+    
     
     url(r'^console/backup/$',backup),
     url(r'^console/backup/backup_config/$',backup_config),
@@ -73,16 +60,30 @@ urlpatterns = patterns('',
     url(r'^tunning/slowlog/config/$',slowlog_config),
     url(r'^tunning/slowlog/report/$',slowlog_report),
     url(r'^tunning/slowlog/report/sql/$',slowlog_sql),
+    url(r'^tunning/slowlog/report/instance/$',slowlog_instance),
+
+    url(r'^console/failover/$',failover),
+    url(r'^console/failover/switch/$',switch),
+    url(r'^console/failover/switch/detail/$',switch_detail),
+    
+    url(r'^monitor/$',monitor),
+    url(r'^monitor/baseinfo/$',baseinfo),
+    url(r'^monitor/baseinfo/instance/$',baseinfo_instance),
+    #url(r'^monitor/baseinfo/server/$',baseinfo_server),
+    #url(r'^monitor/baseinfo/database/$',baseinfo_database),
+    #url(r'^monitor/baseinfo/table/$',baseinfo_table),
+
+    url(r'^monitor/status/$',status),
+    url(r'^monitor/report/$',report),
+
 
     url(r'^portal/document/$',document),
     
-    url(r'^admin/client/$',client),
+    url(r'^mega-admin/client/$',client),
     
-#for static like css ,js ,ima,music     
+    #for static like css ,js ,ima,music     
     url(r'^static/(?P<path>.*)$', 'django.views.static.serve',{'document_root': settings.STATIC_URLS },name="static"),
 
-#other
-    url(r'^fun/$',fun),
-    
-
+    #other
+    url(r'^fun/$',fun),    
 )+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

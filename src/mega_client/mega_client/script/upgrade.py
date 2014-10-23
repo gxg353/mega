@@ -6,9 +6,8 @@ Created on Jul 30, 2014
 
 @module:mega_service.mega_client.upgrade
 '''
-import os,sys,time
+import os
 import commands
-import threading
 from mega_client.logs import Logger
 from mega_client.sender import MegaClient
 from mega_client.utils import get_ip_address
@@ -23,7 +22,6 @@ class Upgrade():
         self.mega_server=MEGA_HOST
         self.cmd='client_upgrade'        
         self.c=MegaClient(host=self.mega_server,cmd=self.cmd)
-
         self.setup_path=''
         
     def _get_pag(self):
@@ -39,7 +37,7 @@ class Upgrade():
         self.setup_path=tmp_dir
         if not os.path.isdir(tmp_dir):
             os.mkdir(tmp_dir)
-        for p in pag:            
+        for p in pag:
             #/mega_client/__init__.py
             file_name=p.items()[0][0].lstrip('/')
             file_content=p.items()[0][1]
@@ -48,30 +46,35 @@ class Upgrade():
                 os.makedirs(file_path)
             f=open(os.path.join(tmp_dir,file_name),'wb+')
             f.write(file_content)
-        f.close()
+            f.close()
         return True
     
     def run(self):
         if not self._get_pag():
             return False
         #install package
-        cmd={
-             'Update package':'cd %s && python %s/setup.py install' % (self.setup_path,self.setup_path),
-             'Replace client source':'cp -ar %s %s' % (self.setup_path,CLIENT_DIR),
-             'Stop mega client':'python /etc/init.d/mega_client upgrade'}
-        for _action in cmd:
-            sys.stdout.flush()             
-            self._do_command(cmd[_action], _action)
-        
-        self._do_command('chmod a+x /etc/init.d/mega_client','Change file mod')
+        os.chdir(self.setup_path)
+        cmd=(
+             ['Remove old package','cat %s/record.info| xargs rm -rf' % CLIENT_DIR ],
+             ['Update package','python %s/setup.py install' %self.setup_path],
+             ['Replace client source','cp -r %s %s' % (self.setup_path,CLIENT_DIR)],
+             ['Change file mod','chmod a+x /etc/init.d/mega_client'],
+             ['Stop mega client','python /etc/init.d/mega_client upgrade']
+             )
+        for c in cmd:
+            result=self._do_command(c[1],c[0])
+            if not result:
+                log.error('Abort upgrade!')
+                break
 
-    
     def _do_command(self,cmd,action):
         _status,_output=commands.getstatusoutput(cmd)
         if _status <> 0:
             log.error('%s failed : %s' % (action,_output))
+            return False
         else:
-            log.info('%s success!' % action)
+            log.info('%s success:%s' % (action,_output))
+            return True
 
 
     

@@ -6,12 +6,13 @@ Created on Jul 29, 2014
 
 @module:mega_service.mega_client.worker
 '''
-import commands
-import sys,os
+import os
+import sys
 import time
+import commands
 
-from setting import SCRIPT_DIR,DEFAULT_TARGET,KEEPALIVE
 import ping
+from setting import SCRIPT_DIR,DEFAULT_TARGET,KEEPALIVE
 from logs import Logger
 
 
@@ -65,6 +66,8 @@ class Worker():
         if status <>0:
             log.error(str(status)+' : '+output)
         return status,output
+    
+    
 class Monitor():
     '''
         client monitor
@@ -76,16 +79,18 @@ class Monitor():
     def monitor(self):
         log.info("Monitor is Starting...")
         _count=0  
-        try:
-            while 1:
+        while 1:
+            try:
                 keepalive=ping.main()
                 if keepalive == 'failed':
                     _count+=1
                     log.error('keepalive check :%s'% keepalive)
+                else:
+                    self.sleep=KEEPALIVE                    
                 if _count >100:
-                    break
+                    self.sleep+=60
                     log.error('keepalive check  :%s for %s times ,abort!'% (keepalive,_count))
                 time.sleep(self.sleep)
-        except Exception as ex:
-            log.error(ex)
+            except Exception as ex:
+                log.error(ex)
         return

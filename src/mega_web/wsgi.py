@@ -1,3 +1,11 @@
+# -*- coding:utf-8 -*-
+'''
+Created on Sep 24, 2014
+
+@author: xchliu
+
+@module:mega_web.wsgi
+'''
 """
 WSGI config for mega_web project.
 
@@ -26,3 +34,8 @@ application = get_wsgi_application()
 # Apply WSGI middleware here.
 # from helloworld.wsgi import HelloWorldApplication
 # application = HelloWorldApplication(application)
+
+def main():
+    return
+if __name__ == "__main__":
+    main()

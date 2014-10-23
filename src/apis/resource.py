@@ -73,7 +73,10 @@ def get_all_server(model=None,stat=0,count=0):
         data=server_manage.ServerGet().get_server_list(filter, count)
         if data:
             for d in data:
-                result.append(dict(d))
+                _d=dict(d.__dict__)
+                for k in _d:
+                    _d[k]=str(_d.get(k,None))
+                result.append(_d)
         err_code=ERR_CODE_SUCCESS
         log.info("Get server list sucess for %s",model)
     except Exception as ex:
@@ -105,7 +108,10 @@ def get_all_db(model=None,stat=0,count=0):
         data=database_manage.DatabaseGet().get_database_list(filter, count)
         if data:
             for d in data:
-                result.append(dict(d.__dict__))
+                _d=dict(d.__dict__)
+                for k in _d:
+                    _d[k]=str(_d.get(k,None))
+                result.append(_d)
         err_code=ERR_CODE_SUCCESS
         log.info('Get server list success for %s',model)
     except Exception as ex:

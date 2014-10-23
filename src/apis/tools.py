@@ -6,14 +6,14 @@ Created on Jul 30, 2014
 
 @module:apis.tools
 '''
-import os,sys
-sys.path.append("..")
+import os
+import sys
 
-from lib.PyMysql import PyMySQL
-from lib.logs import Logger
-from conf.settings import SERVICE_NAME,app_path
-from mega_web.resource.server_manage import ServerGet
 import release
+from lib.logs import Logger
+from lib.PyMysql import PyMySQL
+from conf.settings import SERVICE_NAME
+from mega_web.resource.server_manage import ServerGet
 
 MODEL='API-tool'
 log = Logger(MODEL).log()
@@ -25,10 +25,11 @@ def client_upgrade(host_list=None):
         client upgrade for the given host list
     '''
     _pag=[]
-    log.debug('Receive upgrade request: %s ' % host_list)
-    version=release.version
-    pag_name=SERVICE_NAME+"-"+version
-    _prefix=os.path.join(app_path,'mega_client/dist',pag_name)
+    log.info('Receive upgrade request: %s ' % host_list)
+    pag_name=SERVICE_NAME+"-"+release.version
+    app_path=os.path.dirname(sys.path[0])
+    
+    _prefix=os.path.join(app_path,'mega_client',pag_name)
     #pag_path=os.path.join(_prefix,'mega_client')
     try:
         _pag.append(pag_name)

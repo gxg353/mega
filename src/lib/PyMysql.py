@@ -5,6 +5,8 @@ try:
     import MySQLdb
 except ImportError:
     sys.exit("Exceptions.ImportError: No module named MySQLdb\n");
+
+
 class PyMySQL(object):
     conn   = None
     
@@ -71,10 +73,14 @@ class PyMySQL(object):
         try:
             return self.query(sql).fetchone()[0]
         except:
-            return None
+            return []
 
     def fetchAll(self,sql):
-        return self.query(sql).fetchall()
+        cursor=self.query(sql)
+        if cursor:
+            return cursor.fetchall()
+        else:
+            return None
 
     def insert(self,table,row):
         sqlArr = []

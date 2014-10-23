@@ -1,92 +1,100 @@
 {% extends "resource_base.html" %}
+{% block tag %}
+	<span class=" glyphicon glyphicon-bookmark ">实例添加</span>
+{% endblock %}
+
 {% block subcontent %}
-<div class="well well-lg">快速添加实例</div>
-<form action="/resource/instance_add/" method="post">
+<div class="col-sm-9 col-sm-offset-3 col-md-3 col-md-offset-0 main">
+<div class="panel">
+<form class="navbar-form navbar-left " action="/resource/instance_add/" method="post">
 	<div class="input-group">
-  		<span class="input-group-addon"></span>
-  		<input type="text" class="form-control" name="instance_name" placeholder="NAME" style="width:200px;" maxlength=50>
+  		<span class="input-group-addon" >IP</span>
+  		<input type="text" class="form-control" name="instance_ip" placeholder="IP"  maxlength=15>
 	</div>
-	<br>
+	<div class="input-group">		
+		<span class="input-group-addon">端口</span>
+  		<input type="text" class="form-control" name="instance_port" placeholder="PORT"  maxlength=6>
+	</div>
 	<div class="input-group">
-  		<span class="input-group-addon">*</span>
-  		<input type="text" class="form-control" name="instance_ip" placeholder="IP" style="width:200px;" maxlength=15>
-		<span class="input-group-addon">*</span>
-  		<input type="text" class="form-control" name="instance_port" placeholder="PORT" style="width:200px;" maxlength=6>
+  		<span class="input-group-addon ">名称</span>
+  		<input type="text" class="form-control" name="instance_name" placeholder="NAME"  maxlength=50>
 	</div>
-<br>
-<div class="input-group">
-	<span class="input-group-addon">*</span>
-	<select name="instance_business" class="form-control" style="width:200px;"readonly= {{ readonly }}>
-		{% for bus in business_list %}
-		   <option value={{ bus.id }}>{{ bus.name }}</option>
-		{% endfor %}
-	</select> 
-	<span class="input-group-addon">*</span>
-  	<input type="text" class="form-control" name="instance_online" placeholder="ONLINE_DATE" style="width:200px;" maxlength=20 onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',isShowClear:false,readOnly:true})" readonly='readonly'>	
-  
-</div>
-<br>
-<div class="input-group">
-  		<span class="input-group-addon"></span>
-  		<select name="instance_owner" class="form-control" style="width:200px;"readonly= {{ readonly }}>
-		{% for owner in owner_list %}
-		   <option value={{ owner.id }}>{{ owner.name }}</option>
-		{% endfor %}
-		</select> 
-  		<span class="input-group-addon"></span>
-  		<select name="instance_db_type" class="form-control" style="width:200px;"readonly= {{ readonly }}>
+	<div class="input-group">		
+  		<span class="input-group-addon">类型</span>
+  		<select name="instance_db_type" class="form-control" readonly= {{ readonly }}>
 		{% for d in db_type %}
 		   <option value={{ d }}>{{ d }}</option>
 		{% endfor %}
 		</select>
-</div>
-<br>
-<div class="input-group">
-  		<span class="input-group-addon"></span>
-  		<select name="instance_level" class="form-control" style="width:200px;"readonly= {{ readonly }}>
-		{% for l in level %}
-		   <option value={{ l }}>{{ l }}</option>
-		{% endfor %}
+	</div>
+	<div class="input-group">
+  		<span class="input-group-addon">级别</span>
+  		<select name="instance_level" class="form-control" readonly= {{ readonly }}>
+			{% for l in level %}
+		   		<option value={{ l }}>{{ l }}</option>
+			{% endfor %}
 		</select>
-  		<span class="input-group-addon"></span>
-  		<select name="instance_ha_type" class="form-control" style="width:200px;"readonly= {{ readonly }}>
-		{% for ha in ha_type %}
-		   <option value={{ ha }}>{{ ha }}</option>
-		{% endfor %}
+	</div>		
+	<div class="input-group">		
+  		<span class="input-group-addon">HA</span>
+  		<select name="instance_ha_type" class="form-control" readonly= {{ readonly }}>
+			{% for ha in ha_type %}
+		   		<option value={{ ha }}>{{ ha }}</option>
+			{% endfor %}
 		</select>
-</div>
-<br>
-<div class="input-group">
-  		<span class="input-group-addon">VERSION</span>
-  		<select name="instance_version" class="form-control" style="width:200px;"readonly= {{ readonly }}>
-		{% for v in version_list %}
-		   <option value={{ v }}>{{ v }}</option>
-		{% endfor %}
+	</div>
+	<div class="input-group">
+  		<span class="input-group-addon">版本</span>
+  		<select name="instance_version" class="form-control" readonly= {{ readonly }}>
+			{% for v in version_list %}
+		   		<option value={{ v }}>{{ v }}</option>
+			{% endfor %}
 		</select>
-</div>
-<br>
-<div class="input-group">
-  <span class="input-group-addon">ROLE	</span>
-  	<select name="instance_role" class="form-control" style="width:200px;"readonly= {{ readonly }}>
-		<option value=1 >Master</option>
-		<option value=2 >Slave</option>
-		<option value=3 >Single</option>
-	</select> 
-	<span class="input-group-addon">MASTER</span>
-  	<select name="instance_master" class="form-control" style="width:200px;"readonly= {{ readonly }}>
-	{% for instance in instance_list %}
-		<option value={{ instance.id }}>{{ instance.ip }}:{{instance.port}}</option>
-	{% endfor %}
-	</select>
-		
-</div>
-<br>
-<button type="submit" class="btn btn-default btn">
-  		<span class="glyphicon glyphicon-plus"></span> 添加
-</button>
-{% csrf_token %}
+	</div>
+	<div class="input-group">
+  		<span class="input-group-addon">角色</span>
+  		<select name="instance_role" class="form-control" readonly= {{ readonly }}>
+			<option value=1 >Master</option>
+			<option value=2 >Slave</option>
+			<option value=3 >Single</option>
+		</select> 
+	</div>
+	<div class="input-group">	
+		<span class="input-group-addon">主库</span>
+  		<select name="instance_master" class="form-control" readonly= {{ readonly }}>
+  			<option value=0>None</option>
+			{% for instance in instance_list %}
+				<option value={{ instance.id }}>{{ instance.ip }}:{{instance.port}}</option>
+			{% endfor %}
+	</select>		
+	</div>
+	<div class="input-group">
+		<span class="input-group-addon">业务线</span>
+		<select name="instance_business" class="form-control" readonly= {{ readonly }}>
+			{% for bus in business_list %}
+		   		<option value={{ bus.id }}>{{ bus.name }}</option>
+			{% endfor %}
+		</select> 
+	</div>
+	<div class="input-group">
+  		<span class="input-group-addon">联系人</span>
+  		<select name="instance_owner" class="form-control" readonly= {{ readonly }}>
+		{% for owner in owner_list %}
+		   <option value={{ owner.id }}>{{ owner.name }}</option>
+		{% endfor %}
+		</select> 
+	</div>
+	<div class="input-group">
+		<span class="input-group-addon">上线日期</span>
+  		<input type="text" class="form-control" name="instance_online" placeholder="ONLINE_DATE"  maxlength=20 onClick="WdatePicker({dateFmt:'yyyy-MM-dd HH:mm:ss',isShowClear:false,readOnly:true})" readonly='readonly'>	  
+	</div>
+	<button type="submit" class="btn btn-default btn pull-right">
+  		<span class="glyphicon glyphicon-ok"></span>保存
+	</button>
+	{% csrf_token %}
 </form>
-<br>
-<div class="well well-sm" style="width:200px">提示信息：{{ msg }}</div>
-<!--  <div class="alert alert-success">{{ msg }}</div> -->
+</div>
+</div>
+<span>{{ msg }}</span>		
+
 {% endblock %}

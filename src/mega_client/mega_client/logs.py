@@ -4,15 +4,19 @@ try:
     from setting import LOG_FILE_NAME
 except:
     DEAFULT_LOG_DEBUG=False
-    LOG_FILE_NAME='/tmp/mega-client.log'
+    LOG_FILE_NAME='/tmp/mega_client.log'
 
 
 class Logger:
-    def __init__(self,model):
+    def __init__(self,model,logfile=None):
         if DEAFULT_LOG_DEBUG :
             self.level=0
         else:
-            self.level=3    
+            self.level=3
+        if logfile:
+            self.logfile=logfile
+        else:
+            self.logfile=LOG_FILE_NAME
         self.model=model
     def log(self):
         LEVELS = {0: logging.DEBUG,
@@ -21,10 +25,13 @@ class Logger:
                   1: logging.ERROR}
         level=LEVELS.get(self.level,logging.NOTSET)   
         logging.basicConfig(level=level,
-                            filename=LOG_FILE_NAME,
+                            filename=self.logfile,
                             datefmt='%Y-%m-%d %H:%M:%S',
                             format='%(asctime)s %(name)-12s %(levelname)-5s %(message)s')
         logger=logging.getLogger(self.model)
+        #handler = logging.handlers.RotatingFileHandler(
+        #      self.logfile, maxBytes=1024*1024, backupCount=5) 
+        #logger.addHandler(handler)
         return logger
 
 if __name__=="__main__":

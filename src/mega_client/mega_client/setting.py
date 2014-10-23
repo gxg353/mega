@@ -11,9 +11,8 @@ Created on Jul 29, 2014
 version='mega-client 0.1'
 TCP_HOST=''  # default 0.0.0.0
 TCP_PORT=1105
-MAIL_HOST='172.17.58.25'
-SMS_HOST=('172.17.58.24',8000)
-MEGA_HOST='172.17.62.37'
+MEGA_HOST='mega-server.d.chinabank.com.cn'
+#MEGA_HOST='localhost'
 
 
 KEEPALIVE=300
@@ -23,9 +22,6 @@ SCRIPT_DIR='/home/mysql/admin/mega_client/script/'
 
 #only used for client . 
 CLIENT_DIR='/home/mysql/'
-
-
-
 
 DEAFULT_LOG_DEBUG=True
 LOG_FILE_NAME='/var/log/mega/mega_client.log'

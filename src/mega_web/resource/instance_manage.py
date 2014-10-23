@@ -1,8 +1,10 @@
 import datetime
-from mega_web.entity.models import Instance,Business,User
+from conf.GlobalConf import *
+from lib.PyMysql import PyMySQL
 from lib.utils import check_ip,is_int
 from server_manage import ServerGet,ServerManage
-from conf.GlobalConf import *
+from mega_web.entity.models import Instance,Business,User
+from mega_service.resource.get_value import get_instance_newest_variable,get_instance_newest_stat
 
 MSG_ERR_INSTANCE_NOT_EXITST='instance does not exists!'
 
@@ -24,9 +26,8 @@ class InstanceManage():
         self.inst_version=instance.get("instance_version")
         self.inst_role=instance.get('instance_role')
         self.inst_master=instance.get('instance_master')
-        if not self.inst_id:
-            self.inst_id=InstanceGet().get_instance_by_ip_port(self.inst_ip, self.inst_port)
         self.msg=''
+        
     def data_check(self):
         if not self.inst_ip or not check_ip(self.inst_ip):
             self.msg+=MSG_ERR_IP
@@ -50,6 +51,7 @@ class InstanceManage():
             self.inst_business=DEFAULT_BUSINESS
         
         return True
+    
     def add_instance(self):
         '''
             save new instance
@@ -79,7 +81,10 @@ class InstanceManage():
             inst.master_id=self.inst_master
         inst.save()
         return True,self.msg
+    
     def mod_instance(self):
+        if not self.inst_id:
+            self.inst_id=InstanceGet().get_instance_by_ip_port(self.inst_ip, self.inst_port)
         if not self.inst_id:
             return False,MSG_ERR_INSTANCE_NOT_EXITST
         inst=Instance.objects.get(id=self.inst_id)        
@@ -136,8 +141,13 @@ class InstanceManage():
         return True,self.msg
     
 class InstanceGet():
+    '''
+        all the instance info query
+    '''
     def __init__(self):
         self.inst=Instance
+        self.q=PyMySQL()
+        
     def get_instance(self,instance):
         inst_id=instance.get("instance_id")
         result=self.get_instance_by_id(inst_id)
@@ -151,6 +161,18 @@ class InstanceGet():
         result["business"]=business['name']
         result["owner_name"]=owner['name']
         return result
+    
+    def get_instance_base(self,instance_id):
+        '''
+            get the basic info beyond the columns of instance
+            uptime
+            socket
+        '''
+        uptime=get_instance_newest_stat(instance_id,'uptime')
+        uptime=str(datetime.timedelta(seconds=uptime))
+        socket=get_instance_newest_variable(instance_id,'socket')        
+        return {'uptime':uptime,'socket':socket}
+    
     def get_instance_by_id(self,inst_id=0):
         if inst_id:
             result=self.inst.objects.filter(id=inst_id).values()[0]
@@ -183,3 +205,10 @@ class InstanceGet():
         else:
             result=self.inst.objects.raw(sql)[offset:count]
         return result 
+    
+    def get_instance_slaves(self,instance_id):
+        if not instance_id:
+            return None 
+        result=self.inst.objects.filter(master_id=instance_id).values()
+        return result
+    

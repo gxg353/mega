@@ -1,0 +1,67 @@
+{% extends "admin_mega/admin_base.html" %}
+{% block subcontent %}
+<div class="row placeholders">
+	<div class=" col-sm-2 ">
+    	<a href	="/resource/server/">服务器总数<span class="badge ">{{ count.server }}</span></a>
+    </div>
+    <div class=" col-sm-2 placeholder">
+        <a href	="/resource/server/">离线节点<span class="badge ">{{ count.offline }}</span></a>
+    </div>
+    <div class=" col-sm-2 placeholder">
+        <a href	="/resource/server/">在线节点<span class="badge ">{{ count.online }}</span></a>
+    </div>        
+</div>
+<div class="row">
+	<div class="col-md-8">
+		<div class="panel panel-default">
+			<div class="panel-body">
+				<div class="table-responsive">
+				  <table class="table  table-hover">
+				    <thead>
+				      <tr>
+				      	<th>IP</th>
+				      	<th>版本号</th>
+				      	<th>最近心跳时间</th>
+				        <th>状态</th>
+				        <th>升级</th>
+				      </tr>
+				    </thead>
+				    <tbody>
+				       {% for client in client_list %}
+					     <tr>					     
+					     	<td><a href="/resource/server_detail/?server_id={{ client.server_id }}">{{ client.ip }}</a></td>
+							<td><a href="#">{{ client.version }}</a></td>
+							<td>{{ client.heartbeat|date:"Y-m-d H:i:s" }}</td>
+							<td> 
+							{% ifequal client.stat 1 %} 
+								<span style="color:green">在线</span>
+							{% else %}
+								<span style="color:red">离线</span>
+							{% endifequal %}
+							</td>
+					     	<td>
+								<a href="?action=client_upgrade&ip={{ client.ip }}"><span class="glyphicon glyphicon-open"></span></a>
+							</td>				
+				         </tr>
+					   {% endfor %}
+				     </tbody>
+				  </table>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+{{ msg }}
+<div class="row">
+
+<ul class="pagination">
+  <li><a href="?page=1">&laquo;</a></li>
+  {% for page in page_range %}
+  	<li><a href="?page={{ page }}">{{ page }}</a></li>
+  {% endfor%}
+  <li><a href="?page=1">&raquo;</a></li>
+
+</ul>
+</div>
+{% endblock %}

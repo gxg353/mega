@@ -1,40 +1,38 @@
 {% extends "resource_base.html" %}
+{% block tag %}
+	<span class=" glyphicon glyphicon-bookmark ">用户添加</span>
+{% endblock %}
+
 {% block subcontent %}
-<div class="well well-lg">用户管理</div>
-<form action="/resource/user_add/" method="post">
-	<div class="input-group">
-  		<span class="input-group-addon">*</span>
-  		<input type="text" class="form-control" name="name" placeholder="NAME" style="width:200px;" maxlength=15>
-  		<span class="input-group-addon">*</span>
-  		<input type="text" class="form-control" name="sign" placeholder="SIGN" style="width:200px;" maxlength=15>
-  	</div>
-  	<br>
-<div class="input-group">
-  		<span class="input-group-addon">*</span>
-  		<input type="text" class="form-control" name="role" placeholder="ROLE" style="width:200px;" maxlength=15>
-		<span class="input-group-addon">*</span>
-  		<input type="text" class="form-control" name="pwd" placeholder="PWD" style="width:200px;" maxlength=15>
-</div>
-
-<br>
-<div class="input-group">
-  <span class="input-group-addon">*</span>
-  <input type="text" class="form-control" name="phone" placeholder="PHONE" style="width:200px;" maxlength=11>
-</div>
-<br>
-<!--  
-<div class="input-group">
-  <span class="input-group-addon">*</span>
-  <input type="text" class="form-control" name="user_bussiness" placeholder="BUSSINESS" style="width:200px;" maxlength=20>
-</div>
--->
-<br>
-<button type="submit" class="btn btn-default btn">
-  		<span class="glyphicon glyphicon-plus"></span> 添加
-</button>
-{% csrf_token %}
-</form>
-<br>
-<div class="well well-sm" style="width:200px">提示信息：{{ msg }}</div>
-
+<div class="col-sm-9 col-sm-offset-3 col-md-3 col-md-offset-0 main">
+	<div class="panel panel-default">		
+		<form action="/resource/user_add/" method="post">
+			<div class="input-group">
+		  		<span class="input-group-addon"style="width:150px;">名称</span>
+		  		<input type="text" class="form-control" name="name" placeholder="NAME" style="width:200px;" maxlength=15>
+		  	</div>	
+		  	<div class="input-group">
+		  		<span class="input-group-addon"style="width:150px;">签名</span>
+		  		<input type="text" class="form-control" name="sign" placeholder="SIGN" style="width:200px;" maxlength=15>
+		  	</div>		  	
+			<div class="input-group">
+		  		<span class="input-group-addon"style="width:150px;">角色</span>
+		  		<input type="text" class="form-control" name="role" placeholder="ROLE" style="width:200px;" maxlength=15>
+			</div>
+			<div class="input-group">		  	
+				<span class="input-group-addon"style="width:150px;">密码</span>
+		  		<input type="text" class="form-control" name="pwd" placeholder="PWD" style="width:200px;" maxlength=15>
+			</div>
+			<div class="input-group">
+			  <span class="input-group-addon"style="width:150px;">电话</span>
+			  <input type="text" class="form-control" name="phone" placeholder="PHONE" style="width:200px;" maxlength=11>
+			</div>
+			<button type="submit" class="btn btn-default pull-right">
+		  		<span class="glyphicon glyphicon-ok"></span> 添加
+			</button>
+			{% csrf_token %}
+		</form>
+	</div>
+</div>		
+{{msg}}
 {% endblock %}

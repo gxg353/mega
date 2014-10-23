@@ -1,0 +1,129 @@
+{% extends "resource_base.html" %}
+{% block tag %}
+	<span class=" glyphicon glyphicon-bookmark ">VIP管理</span>
+{% endblock %}
+
+{% block subcontent %}
+<div class="row">
+	<form class="navbar-form navbar-left" role="search" action="/resource/vip/" method='get'>
+		<div class="form-group">
+		    <input type="text" name="vip" class="form-control" placeholder="Search...">
+		</div>
+		<button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
+  		<button type="button" class="btn btn-default btn" onclick="window.location='/resource/vip/'">
+  			<span class="glyphicon glyphicon-plus"></span>
+  		</button>
+		{% csrf_token %}
+</form>
+</div>
+<div class="row">
+<div class="col-xs-6 col-sm-6  col-md-6 col-lg-6"> 
+	<div class="panel panel-default " style='height:350px;'>
+    	<div class="table-responsive pre-scrollable" style='min-width: 500px; height: 400px; margin: 0 auto'>
+		<div class="table-responsive">
+  		<table class="table table-striped table-hover">
+    	<thead>
+      		<tr>
+      			<th>域名</th>
+      			<th>VIP</th>
+      			<th>类型</th>
+      			<th>状态</th>
+      			<th>机房</th>
+      			<th></th>
+      		</tr>
+    	</thead>
+    	<tbody>
+       	{% for vip in vip_list %}
+	     	<tr>
+			{#	<td><a href="/resource/user_detail/?user_id={{ user.owner }}">{{ user.owner_name }}</a></td> #}
+				<td>{{ vip.domain }}</td>
+				<td>{{ vip.vip }}</td>
+				<td>
+					{% ifequal  vip.type 1 %}
+						写VIP
+					{% else %}
+						读VIP
+					{% endifequal %}
+				</td>
+				<td>
+					{% ifequal  vip.stat 1 %}
+						<span style="color:green">已占用</span>
+					{% else %}
+						未占用
+					{% endifequal %}
+				</td>
+				<td>{{ vip.plant }}
+				</td>
+				<td><button type="button" class="btn btn-default btn-sm" onclick="vip_mod('{{ vip.id }}','{{ vip.vip }}','{{ vip.domain }}','{{ vip.plant }}','{{ vip.type }}','{{ vip.stat }}')">
+						<span class="glyphicon glyphicon-hand-right"></span>					
+					</button>
+				</td>
+         	</tr>
+	   	{% endfor %}
+     	</tbody>
+  	</table>
+		</div> 
+	</div>
+</div>
+</div>
+<div class="col-sm-9 col-sm-offset-3 col-md-3 col-md-offset-0 main">
+	<div class="panel panel-default ">
+ 	<div class="panel-heading">添加/修改</div> 
+       <form action="/resource/vip/" method="post">
+       		<input id='action' type="hidden" name="action" value='add' >
+		    <input id='id' type="hidden" name="id" value=0 >
+       		       		
+			<div class="input-group">
+  				<span class="input-group-addon" style="width:100px;">VIP</span>
+  				<input id='vip_ip' type="text" class="form-control" style="width:150px;" name="vip" placeholder="VIP" maxlength=50>
+  			</div>
+
+  			<div class="input-group">
+  				<span class="input-group-addon" style="width:100px;">域名</span>
+  				<input id='domain' type="text" class="form-control" style="width:150px;" name="domain" placeholder="域名"  maxlength=50>
+  			</div>
+			<div class="input-group">
+  				<span class="input-group-addon" style="width:100px;">机房</span>
+  				<select id='plant' name="plant" class="form-control" style="width:150px;">
+				{% for plant in plant_list %}
+		   			<option value={{ plant }}>{{ plant }}</option>
+				{% endfor %}
+				</select> 
+			</div>  			
+  			<div class="input-group">
+  				<span class="input-group-addon" style="width:100px;">类型</span>
+	  			<select id='type' name="type" class="form-control" style="width:150px;">
+				   <option value=1>写VIP</option>
+				   <option value=2>读VIP</option>			
+				</select>
+			</div>
+			<div class="input-group">			 
+  			<span class="input-group-addon" style="width:100px;">状态</span>
+  			<select id='stat' name="stat" class="form-control" style="width:150px;">
+			   <option value=0>未占用</option>
+			   <option value=1>已占用</option>			   
+			</select> 
+  			</div>
+  			<button type="submit" class="btn btn-default btn pull-right">
+  				<span class="glyphicon glyphicon-save"></span> 保存
+  			</button>  			
+  			{% csrf_token %}
+	   </form>
+</div>
+</div>
+    {{ msg }}   
+
+</div>
+<script>
+function vip_mod(id,ip,domain,plant,type,stat){
+	document.all.id.value=id;
+	document.all.action.value='mod';
+	document.all.vip_ip.value=ip;
+	document.all.domain.value=domain;
+	document.all.plant.value=plant;
+	document.all.type.value=type;
+	document.all.stat.value=stat
+}
+</script>
+
+{% endblock %}

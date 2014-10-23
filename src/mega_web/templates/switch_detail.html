@@ -1,0 +1,93 @@
+{% extends "console_base.html" %}
+1.切换操作的基本信息
+2.切换进度
+3.切换结果
+{% block tag %}
+	<span class=" glyphicon glyphicon-bookmark ">高可用切换详细信息</span>
+{% endblock %}
+
+{% block subcontent %}
+<div class="row">
+	<div class="col-md-3">
+		<div class="panel panel-default"style='height:320px;'>
+		  <div class="panel-heading">切换信息</div>
+			<ul class="list-group">
+			    <li class="list-group-item">名称：{{failover.name}}</li>
+			    <li class="list-group-item">写VIP：{{failover.wvip}}</li>
+			    <li class="list-group-item">读VIP：{{failover.rvip}}</li>
+			    <li class="list-group-item">新主库：{{failover.new_master}}</li>
+			    <li class="list-group-item">当前主库：{{failover.old_master}}</li>
+			    <li class="list-group-item">切换方式：{{failover.method}}</li>
+			    <li class="list-group-item">切换结果：{{failover.result}}</li>			    
+		  	</ul>
+		</div>
+	</div>
+	<div class="col-md-5">
+		<div class="panel panel-default" style='height:320px;'>
+		  <div class="panel-heading">切换历史</div>
+		      	<div class="table-responsive pre-scrollable" style='height: 270px; margin: 0 auto'>
+					<table class="table table-striped">		  
+				      	<thead>
+					      <tr>
+					        <th>方式</th>
+					        <th>时间</th>
+					        <th>旧主库</th>
+					        <th>新主库</th>
+					        <th>结果</th>
+					        <th>详细</th>
+					      </tr>
+					    </thead>		      
+					    <tbody>
+					    {% for his in failover_his %}
+					    	<tr>
+					    		<td>{{ his.method }}</td>
+					    		<td>{{ his.re_time }}</td>
+					    		<td>{{ his.old_master }}</td>
+					    		<td>{{ his.new_master }}</td>
+					    		<td>{{ his.result }}</td>
+					    	</tr>
+					    {% endfor %}
+		  				</tbody>
+		  			</table>
+				</div>
+		</div>
+	</div>
+</div>
+<div class='row'>
+	<div class="col-md-8">
+		<div class="panel panel-default" style='height:500px;'>
+		  <div class="panel-heading">切换日志</div>
+		      	<div class="table-responsive pre-scrollable" style='height: 470px; margin: 0 auto'>
+					<table class="table table-striped">		  
+				      	<thead>
+					      <tr>
+					        <th>模块</th>
+					        <th>时间</th>
+					        <th>耗时</th>
+					        <th>结果</th>
+					        <th>内容</th>
+					      </tr>
+					    </thead>		      	
+				    	<tbody>
+					    {% for log in failover_log %}
+					    	<tr>
+					    	<td>{{ log.module }}</td>
+					    	<td>{{ log.re_time }}</td>
+					    	<td>{{ log.time_used }}</td>
+					    	<td>{{ log.result }}</td>
+					    	<td>{{ log.content }}</td>
+					    	</tr>
+				    	{% endfor %}
+			  			</tbody>
+		  			</table>
+		  		</div>		  		
+		</div>
+	</div>	
+</div>
+<script language="JavaScript"> 
+	function myrefresh(){ 
+		window.location.reload(); 
+	} 
+	setTimeout('myrefresh()',10000); //10秒刷新 
+</script> 
+{% endblock %}

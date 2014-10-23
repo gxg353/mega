@@ -1,69 +1,82 @@
 {% extends "resource_base.html" %}
+{% block tag %}
+	<span class=" glyphicon glyphicon-bookmark ">实例管理</span>
+{% endblock %}
 {% block subcontent %}
-<div class="form-group">
-<form action="/resource/instance_add/" method="get">
-	<button type="submit" class="btn btn-default btn">
-  		<span class="glyphicon glyphicon-plus"></span> Add
-	</button>
-	{% csrf_token %}
-</form>
-<form class="navbar-form navbar-left" role="search" action="/resource/instance/" method="post">
-    <input type="text" name ='ip' class="form-control" placeholder="Search...">
-  	<button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
-	{% csrf_token %}
-</form>
+<div class="row">
+	<form class="navbar-form " role="search" action="/resource/instance/" method="post">
+		<div class="form-group">
+ 	   		<input type="text" name ='ip' class="form-control" placeholder="IP">
+		</div>
+  		<button type="submit" class="btn btn-default"><span class="glyphicon glyphicon-search"></span></button>
+  		<button type="button" class="btn btn-default " onclick="window.location='/resource/instance_add/'">
+  			<span class="glyphicon glyphicon-plus"></span> 
+    	</button>  	  		
+		{% csrf_token %}
+	</form>	
 </div>
 
-<br>
-
-<div class="table-responsive">
-  <table class="table table-striped">
-    <thead>
-      <tr>
-      	<th>NAME</th>
-        <th>IP</th>
-        <th>PORT</th>
-        <th>ROLE</th>
-        <th>LEVEL</th>
-        <th>OWNER</th>
-        <th>BUSINESS</th>
-        <th>ONLINE</th>
-        <th>STAT</th>
-      </tr>
-    </thead>
-    <tbody>
-       {% for instance in instance_list %}
-	     <tr>
-	     	<td><a href="/resource/instance_detail/?instance_id={{ instance.id }}">{{ instance.name }}</a></td>
-			<td><a href="/resource/server_detail/?server_ip={{ instance.ip }}">{{ instance.ip }}</a></td>
-			<td> {{ instance.port }} </td>
-			<td> {% ifequal instance.role 1 %} 
-					Master
-				{% else %}
-					Slave
-				{% endifequal %}
-			 </td>
-			<td> {{ instance.level }} </td>
-			<td><a href="/resource/user_detail/?user_id={{ instance.owner_id }}">{{ instance.owner }}</a></td>
-			<td> {{ instance.business }}
-			<td> {{ instance.online_date|date:"Y-m-d H:i:s" }} </td>
-			<td>
-			{% ifequal instance.stat 1 %} 
-				<span style="color:green">Online</span>
-			{% else %}
-				<span style="color:red">Offline</span>
-			{% endifequal %}
-			  </td>
-		</tr>
-	   {% endfor %}
-     </tbody>
-  </table>
+<div class="row">
+<div class="col-md-10">
+	<div class="panel panel-default">
+		<div class="panel-body">
+			<div class="table-responsive" >
+  				<table class="table table-striped table-hover">
+    				<thead>
+      					<tr>
+      						<th>名称</th>
+        					<th>服务器</th>
+        					<th>端口</th>
+        					<th>角色</th>
+        					<th>级别</th>
+        					<th>联系人</th>
+        					<th>业务线</th>
+        					<th>上线日期</th>
+        					<th>状态        					
+        						<span class="glyphicon glyphicon-question-sign" data-toggle="tooltip" data-placement="top" title="已下线：实例上无业务线数据库"></span>         					
+        					</th>
+      					</tr>
+    				</thead>
+    			<tbody>
+       				{% for instance in instance_list %}
+	     				<tr>
+	     					<td><a href="/resource/instance_detail/?instance_id={{ instance.id }}">{{ instance.name }}</a></td>
+							<td><a href="/resource/server_detail/?server_id={{ instance.server_id }}">{{ instance.ip }}</a></td>
+							<td> {{ instance.port }} </td>
+							<td>
+								{% ifequal instance.role 1 %} 
+									Master
+								{% else %}
+									Slave
+								{% endifequal %}
+							</td>
+							<td> {{ instance.level }} </td>
+							<td><a href="/resource/user_detail/?user_id={{ instance.owner_id }}">{{ instance.owner }}</a></td>
+							<td> {{ instance.business }}
+							<td> {{ instance.online_date|date:"Y-m-d H:i:s" }} </td>
+							<td>
+								{% ifequal instance.stat 1 %} 
+									<span style="color:green">在线</span>
+								{% else %}
+									<span style="color:red">已下线</span>
+								{% endifequal %}
+			  				</td>
+						</tr>
+	  				{% endfor %}
+    			</tbody>
+  			</table>
+		</div>
+		<ul class="pagination pull-right">
+  			<li><a href="?page=1">&laquo;</a></li>
+			{% for page in page_range %}
+			  	<li><a href="?page={{ page }}">{{ page }}</a></li>
+			{% endfor%}
+			<li><a href="?page=1">&raquo;</a></li>
+		</ul>		
+	</div>
 </div>
-<ul class="pagination">
-  <li><a href="?page=1">&laquo;</a></li>
-  {% for page in page_range %}
-  	<li><a href="?page={{ page }}">{{ page }}</a></li>
-  {% endfor%}
-  <li><a href="?page=1">&raquo;</a></li>
-</ul>
+</div>
+</div>
+
+
 {% endblock %}

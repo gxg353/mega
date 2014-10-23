@@ -47,14 +47,16 @@ def slowlog_statics_per_hour(v_time):
     if data_list and len(data_list) >0 :
         _list=(1,5,10,100)
         for data in data_list:
-            _counts=[]
             c=''
+            _pre_c=0            
+            _counts=[]
             for l in _list:
                 _c=0
-                _sql="select count(*) from slowlog_info where instance_id=%s and dbname='%s' and start_time between '%s' and '%s' and query_time<%s;" \
-                        %(data.get('instance_id'),data.get('dbname'),_pre_time,_time,l)
+                _sql="select count(*) from slowlog_info where instance_id=%s and dbname='%s' and start_time between '%s' and '%s' and query_time between %s and %s;" \
+                        %(data.get('instance_id'),data.get('dbname'),_pre_time,_time,_pre_c,l)
                 _c=PyMySQL().fetchOne(_sql)
                 _counts.append(int(_c))
+                _pre_c=l
             _counts.append(int(data.get('counts')-sum(_counts)))
             #make sure all the values bigger than zero
             _counts=map(lambda x :abs(x),_counts)
@@ -64,7 +66,7 @@ def slowlog_statics_per_hour(v_time):
             row_id=PyMySQL().fetchOne(sql_3)
             c=data.get('count_all')
             if not row_id or row_id == 0:
-                _sql="insert into slowlog_time_day(instance_id,db,log_time,counts,lt_one,lt_five,lt_ten,lt_hundred,gt_hundred) values(%s,'%s',from_unixtime('%s'),%s,%s,%s,%s,%s,%s)" % (data.get('instance_id'), 
+                _sql="insert into slowlog_time_day(instance_id,db,log_time,counts,lt_one,lt_five,lt_ten,lt_hundred,gt_hundred) values(%s,'%s',from_unixtime(%s),%s,%s,%s,%s,%s,%s)" % (data.get('instance_id'), 
                                                                                                                                               data.get('dbname'),data.get('start_time'),
                                                                                                                                               data.get('counts'),c[0],c[1],c[2],c[3],c[4])
             else:
@@ -77,8 +79,10 @@ def slowlog_statics_per_hour(v_time):
     return True
         
 def slowlog_pack(sql):
-
-    sql_parsed=SQLParse(sql).var_replace()
+    try:
+        sql_parsed=SQLParse(sql).var_replace()
+    except:
+        sql_parsed=sql    
     sql_hash=md5(sql_parsed.encode('utf8')).hexdigest()
     _sql="select count(*) from sql_format where hash_code='%s'" % sql_hash
     _counts=PyMySQL().fetchOne(_sql)

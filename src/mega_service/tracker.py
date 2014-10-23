@@ -1,5 +1,4 @@
 import time
-import multiprocessing
 from lib.logs import Logger
 from lib.PyMysql import PyMySQL
 from mega_service.task import Task

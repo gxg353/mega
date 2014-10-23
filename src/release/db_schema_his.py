@@ -36,3 +36,19 @@ alter table  instance add column slowlog int not null default 1;
 alter table slowlog_info add hash_code varchar(50) not null after id;
 alter table slowlog_info add instance_id int not null after hash_code;
 alter table slowlog_info add stat int not null default 0;
+
+#2014-08-27
+CREATE TABLE `slowlog_opt` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `hash_code` varchar(64) NOT NULL,
+  `opt_method` varchar(50) NOT NULL,
+  `opt_explain` varchar(200) NOT NULL,
+  `opt_time` datetime NOT NULL DEFAULT '0000-00-00 00:00:00',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+
+#2014-09-25
+alter table server add column plant varchar(50) not null default '';
+
+2014-10-17
+alter table instance add cnf_file varchar(100) not null default '';

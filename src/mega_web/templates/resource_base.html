@@ -4,37 +4,30 @@ Resource-Mega
 {% endblock %}
 
 {% block content %}
+<div class="dropdown ">
+  <button class="btn btn-success dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown">添加
+  	<span class="caret"></span>
+  </button>
+  <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+    <li role="presentation"><a role="menuitem" tabindex="-1" href="/resource/instance_add/">实例</a></li>
+    <li role="presentation"><a role="menuitem" tabindex="-1" href="/resource/server_add/">服务器</a></li>
+    <li role="presentation"><a role="menuitem" tabindex="-1" href="/resource/business_add/">业务线</a></li>
+    <li role="presentation"><a role="menuitem" tabindex="-1" href="/resource/database_add/">数据库</a></li>
+    <li role="presentation"><a role="menuitem" tabindex="-1" href="/resource/user_add/">用户</a></li>
+    <li role="presentation"><a role="menuitem" tabindex="-1" href="/resource/vip/">VIP</a></li>
+    
+<!--      <li role="presentation" class="divider"></li>
+    <li role="presentation"><a role="menuitem" tabindex="-1" href="#">Separated link</a></li>
+-->
+  </ul>
+  {% block tag %}
+  {% endblock %}
+</div>
 
-    <div class="container-fluid">
-      <div class="row">
-        <div class="col-sm-3 col-md-1 sidebar">
-          <ul class="nav nav-sidebar">
-            <li><a href="/resource/">Overview</a></li>
-            <li><a href="/resource/instance/">实例</a></li>
-            <li><a href="/resource/database/">数据库</a></li>
-            <li><a href="/resource/business/">业务线</a></li>
-            <li><a href="/resource/server/">服务器</a></li>
-            <li><a href="/resource/user/">用户</a></li>
-
-          </ul>
-      <!--      <ul class="nav nav-sidebar">
-            <li><a href="">Nav item</a></li>
-            <li><a href="">Nav item again</a></li>
-            <li><a href="">One more nav</a></li>
-            <li><a href="">Another nav item</a></li>
-            <li><a href="">More navigation</a></li>
-          </ul>
-          <ul class="nav nav-sidebar">
-            <li><a href="">Nav item again</a></li>
-            <li><a href="">One more nav</a></li>
-            <li><a href="">Another nav item</a></li>
-          </ul>
-          -->
-        </div>
-       </div>
-    </div>
-  <div class="col-sm-12 col-sm-offset-1 col-md-10 col-md-offset-1 main">
+<div class="col-sm-12 col-sm-offset-0 col-md-12  main">
     {% block subcontent %}
     {% endblock %}
-  </div>
+</div>
 {% endblock %}
+
+col-md-offset-1

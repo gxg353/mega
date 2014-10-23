@@ -1,7 +1,9 @@
 {% extends "console_base.html" %}
+{% block tag %}
+	<span class=" glyphicon glyphicon-bookmark ">任务调度</span>
+{% endblock %}
+
 {% block subcontent %}
-<div class="well">任务调度
-</div>
 
 <form action="/console/task/task_add/" method="get">
 	<button type="submit" class="btn btn-default btn">

@@ -1,7 +1,10 @@
 #-*- coding: utf-8 -*-
-from django.shortcuts import render_to_response,RequestContext
-from resource import instance_manage,server_manage,business_manage,database_manage,resource_manage,user_manage
+from django.shortcuts import render_to_response,RequestContext,HttpResponse
+from django.contrib.auth.decorators import login_required
+
+from resource import instance_manage,server_manage,business_manage,database_manage,resource_manage,user_manage,vip_manage
 from console.backup import Backup,Backup_Config
+from console.failover import FailoverGet,FailoverManage
 from lib import paginator
 from lib.meta_data import MetaData 
 from mega_portal.file_manage import UploadFileForm
@@ -10,73 +13,67 @@ from mega_service.task import Task
 from mega_web.console.task import TaskManage 
 from mega_web.admin.views import * 
 from mega_web.tunning import slowlog
+from mega_web.monitor import alert_manage
 
 meta_data=MetaData()
 
+@login_required
 def home(request):
     slow_log=slowlog.get_chart_total()
-    return render_to_response('home.html',{'slowlog':slow_log},context_instance=RequestContext(request))
+    alert_list=alert_manage.get_alert_list()
+    return render_to_response('home.html',{'slowlog':slow_log,'alert_list':alert_list},context_instance=RequestContext(request))
    
-
+@login_required
 def monitor(request):
-    if request.method=="GET":
-        return render_to_response('monitor.html')
-    else:
-        return render_to_response('monitor.html')
+    if request.method=='POST':
+        alert_id=request.POST.get('alert_id')
+        alert_manage.update_alert(alert_id)
+    alert_list=alert_manage.get_alert_list()
+    return render_to_response('monitor.html',{'alert_list':alert_list},context_instance=RequestContext(request))
 
+@login_required
 def console(request):
     if request.method=="GET":
-        return render_to_response('console.html')
+        return render_to_response('console.html',context_instance=RequestContext(request))
     else:
-        return render_to_response('console.html')
+        return render_to_response('console.html',context_instance=RequestContext(request))
 
 def tunning(request):
     if request.method=="GET":
-        return render_to_response('tunning.html')
+        return render_to_response('tunning.html',context_instance=RequestContext(request))
     else:
-        return render_to_response('tunning.html')
+        return render_to_response('tunning.html',context_instance=RequestContext(request))
 
 def portal(request):
     if request.method=="GET":
-        return render_to_response('portal.html')
+        return render_to_response('portal.html',context_instance=RequestContext(request))
     else:
-        return render_to_response('portal.html')
+        return render_to_response('portal.html',context_instance=RequestContext(request))
 
 def fun(request):
     if request.method=="GET":
-        return render_to_response('fun.html')
+        return render_to_response('fun.html',context_instance=RequestContext(request))
     else:
-        return render_to_response('fun.html')
-    
-def resource(request):
-    if request.method=="GET":
-        count=resource_manage.get_total_count()
-        return render_to_response('resource.html',{'count':count})
-    else:
-        return render_to_response('resource.html')
+        return render_to_response('fun.html',context_instance=RequestContext(request))
 
-def chart(request):
-    return
-    #cht=visit.Visit(request)
-    #return render_to_response('visit.html',{'visit': cht})
 
 
 #Sub sites
 ##resource
 def instance(request):
+    page_num=1
     if request.method=="GET":
         page_num=request.GET.get('page')
         instance_list_all=instance_manage.InstanceGet().get_instance_list(None,0)
-        if not page_num:
-            page_num=1
-        page_data=paginator.paginator(instance_list_all, page_num)
-        instance_list=page_data.get('page_data')
-        page_range=page_data.get('page_range')
-        return render_to_response('instance.html',{'instance_list':instance_list,'page_range':page_range},context_instance=RequestContext(request))
     else:
         ip=request.POST.get("ip")
-        instance=instance_manage.InstanceGet().get_instance_list({"ip":ip})
-        return render_to_response('instance.html',{"instance_list":instance},context_instance=RequestContext(request))
+        instance_list_all=instance_manage.InstanceGet().get_instance_list({"ip":ip},0)
+    if not page_num:
+        page_num=1
+    page_data=paginator.paginator(instance_list_all, page_num)
+    instance_list=page_data.get('page_data')
+    page_range=page_data.get('page_range')
+    return render_to_response('instance.html',{'instance_list':instance_list,'page_range':page_range},context_instance=RequestContext(request))
 
 def instance_add(request):
     msg=''
@@ -91,23 +88,27 @@ def instance_add(request):
                                                        },context_instance=RequestContext(request))
 
 def instance_detail(request):
+    inst=instance_manage.InstanceGet()
     if request.method=="GET":
-        instance=instance_manage.InstanceGet().get_instance(request.GET)
+        instance_id=request.GET.get('instance_id')
+        instance=inst.get_instance(request.GET)
     else:
+        instance_id=request.GET.get('instance_id')
         if request.POST.get("type")=="mod":
             instance_manage.InstanceManage(request.POST).mod_instance()    
         else:
             instance_manage.InstanceManage(request.POST).stat_instance()
-        instance=instance_manage.InstanceGet().get_instance(request.POST)
-    if instance.get("stat")==1:
-        stat_action='下'
-    else:
-        stat_action='上'
-    return render_to_response('instance_detail.html',{"instance":instance,"readonly":"true","stat_action":stat_action,
-                                                      "business_list":meta_data.business_list(),"owner_list":meta_data.owner_list(),
+        instance=inst.get_instance(request.POST)
+    instance_base=inst.get_instance_base(instance_id)
+    failover=FailoverGet().get_instance_failover(instance_id)
+    #database=inst.get_instance_list({"":""}, count, offset)
+    return render_to_response('instance_detail.html',{"instance":instance,"readonly":"true","business_list":meta_data.business_list(),
+                                                      "owner_list":meta_data.owner_list(),
                                                        "db_type":meta_data.db_type,"level":meta_data.level,
                                                        "ha_type":meta_data.ha_type,"version_list":meta_data.version,
-                                                       "instance_list":meta_data.instance_list()
+                                                       "instance_list":meta_data.instance_list(),
+                                                       "instance_base":instance_base,
+                                                       "failover":failover
                                                    },context_instance=RequestContext(request))
 
 ##server
@@ -137,7 +138,9 @@ def server_add(request):
         result,msg=server_manage.ServerManage(request.POST).add_server()
         if result:
             msg='Sucess'
-    return render_to_response('server_add.html',{'owner_list':meta_data.owner_list(),'os_list':meta_data.os,'msg':msg},context_instance=RequestContext(request))
+    return render_to_response('server_add.html',{'owner_list':meta_data.owner_list(),'os_list':meta_data.os,'msg':msg,
+                                                 'plant_list':meta_data.plant_list},
+                              context_instance=RequestContext(request))
 def server_detail(request):
     if request.method=="GET":
         server=server_manage.ServerGet().get_server(request.GET)
@@ -148,11 +151,7 @@ def server_detail(request):
         else:
             server_manage.ServerManage(request.POST).stat_server()
             server=server_manage.ServerGet().get_server(request.POST)
-    if server.get("stat")==1:
-        stat_action='下'
-    else:
-        stat_action='上'
-    return render_to_response('server_detail.html',{"server":server,"stat_action":stat_action,
+    return render_to_response('server_detail.html',{"server":server,'plant_list':meta_data.plant_list,
                                                     'os_list':meta_data.os,'owner_list':meta_data.owner_list()
                                                     },context_instance=RequestContext(request))
    
@@ -192,11 +191,7 @@ def business_detail(request):
         else:
             business_manage.BusinessManage(request.POST).stat_business()
             business=business_manage.BusinessGet().get_business(request.POST)
-    if business.get("stat")==1:
-        stat_action='下'
-    else:
-        stat_action='上'
-    return render_to_response('business_detail.html',{"business":business,"stat_action":stat_action,'owner_list':meta_data.owner_list()},context_instance=RequestContext(request))
+    return render_to_response('business_detail.html',{"business":business,'owner_list':meta_data.owner_list()},context_instance=RequestContext(request))
 
 #database
 def database(request):
@@ -217,7 +212,7 @@ def database(request):
             page_range=paginator.paginator(database_list)['page_range']
         return render_to_response('database.html',{"database_list":database_list,'page_range':page_range},context_instance=RequestContext(request))
 def database_add(request):
-    instance_list=instance_manage.InstanceGet().get_instance_list(None) #.values("id","ip","port")
+    instance_list=instance_manage.InstanceGet().get_instance_list(None,count=0) #.values("id","ip","port")
     if request.method=="GET":
         return render_to_response('database_add.html',{"instance_list":instance_list,"business_list":meta_data.business_list(),
                                                        "level":meta_data.level,'owner_list':meta_data.owner_list()},context_instance=RequestContext(request))
@@ -235,12 +230,7 @@ def database_detail(request):
         else:
             database_manage.DatabaseManage(request.POST).stat_database()
             database=database_manage.DatabaseGet().get_database(request.POST)
-    if database.get("stat")==1:
-        stat_action='下'
-    else:
-        stat_action='上'
-    
-    return render_to_response('database_detail.html',{"database":database,"stat_action":stat_action,
+    return render_to_response('database_detail.html',{"database":database,
                                                       "instance_list":meta_data.instance_list(),"business_list":meta_data.business_list(),
                                                       "level":meta_data.level,'owner_list':meta_data.owner_list()},context_instance=RequestContext(request))
 
@@ -274,11 +264,24 @@ def user_detail(request):
     else:
         user_id=request.GET.get('user_id')
     user=user_manage.UserGet().get_user_by_id(user_id)
-    if user.get("stat")==1:
-        stat_action='禁用'
+    return render_to_response('user_detail.html',{"user":user,"msg":msg,},context_instance=RequestContext(request))
+
+#vip
+def vip(request):
+    msg=''
+    if request.method=="GET":
+        vip=request.GET.get('vip')
+        if vip:
+            vip_list=vip_manage.VipGet().get_vip_by_ip(vip)
+        else:
+            vip_list=meta_data.vip_list()
     else:
-        stat_action='启用'
-    return render_to_response('user_detail.html',{"user":user,"msg":msg,"stat_action":stat_action},context_instance=RequestContext(request))
+        if request.POST.get('action') == 'add':                        
+            result,msg=vip_manage.VipManage(request.POST).add_vip()
+        else:
+            result,msg=vip_manage.VipManage(request.POST).mod_vip()
+        vip_list=meta_data.vip_list()        
+    return render_to_response('vip.html',{"msg":msg,'vip_list':vip_list,'plant_list':meta_data.plant_list},context_instance=RequestContext(request))
 
 #backup
 
@@ -383,23 +386,127 @@ def slowlog_config(request):
     return render_to_response('slowlog_config.html',{'instance_list':meta_data.instance_list()},context_instance=RequestContext(request))
 
 def slowlog_report(request):
-    groupbyinstance=slowlog.get_chart_groupbyinstance()
-    total=slowlog.get_chart_total()
-    groupbytime=slowlog.get_chart_groupbytime()
-    topsql=slowlog.get_chart_topsql()
+    if request.method=='GET':
+        begin=end=None
+    else:
+        begin=request.POST.get('begin_date')
+        end=request.POST.get('end_date')
+    groupbyinstance=slowlog.get_chart_groupbyinstance(begin,end)
+    total=slowlog.get_chart_total(None,begin,end)
+    groupbytime=slowlog.get_chart_groupbytime(begin,end)
+    topsql=slowlog.get_chart_topsql(begin,end)
     return render_to_response('slowlog_report.html',{'groupbyinstance':groupbyinstance,'total':total,'topsql':topsql,'groupbytime':groupbytime},
                               context_instance=RequestContext(request))
 
 def slowlog_sql(request):
+    msg=''
     if request.method=='GET':
         hash_code=request.GET.get('hash_code')
-        groupbyinstance=slowlog.get_sql_hosts(hash_code)
-        total=slowlog.get_sql_time(hash_code)
-        sql_info=slowlog.get_sql_info(hash_code)
-    return render_to_response('slowlog_report_sql.html',{'groupbyinstance':groupbyinstance,'total':total,'sql_info':sql_info},context_instance=RequestContext(request))
-        
+    else:
+        hash_code=request.POST.get('hash_code')
+        msg=slowlog.add_opt_record(request.POST)
+    groupbyinstance=slowlog.get_sql_hosts(hash_code)
+    total=slowlog.get_sql_time(hash_code)
+    sql_info=slowlog.get_sql_info(hash_code)
+    opt_record=slowlog.get_opt_record(hash_code)
+    return render_to_response('slowlog_report_sql.html',{'groupbyinstance':groupbyinstance,'total':total,'sql_info':sql_info,'msg':msg,"opt_record":opt_record},
+                              context_instance=RequestContext(request))
+
+def slowlog_instance(request):
+    if request.method=='GET':
+        begin=end=None
+        instance_id=request.GET.get('instance_id',1)
+    else:
+        begin=request.POST.get('begin_date')
+        end=request.POST.get('end_date')
+        instance_id=request.POST.get('instance_id',1)
+    
+    #total=slowlog.get_chart_total(instance_id,begin,end)
+    total=slowlog.get_chart_total(instance_id)
+    instance=instance_manage.InstanceGet().get_instance_by_id(instance_id)
+    groupbydb=slowlog.get_chart_groupbydb(instance_id,begin,end)
+    topsql=slowlog.get_instance_topsql(instance_id,begin,end)
+    return render_to_response('slowlog_report_instance.html',{'instance_list':meta_data.instance_list(),'total':total,'instance':instance,'groupbydb':groupbydb,'topsql':topsql},
+                              context_instance=RequestContext(request))
+@login_required    
+def failover(request):
+    msg=''
+    if request.method=='GET':
+        ip=request.GET.get('ip')
+        failover_list=FailoverGet().get_failover_list(ip=ip)
+
+    if request.method=='POST':
+        action=request.POST.get('action')
+        if action=='add':
+            result,msg=FailoverManage(request.POST).add_failover()
+        else:
+            result,msg=FailoverManage(request.POST).mod_failover()
+        failover_list=FailoverGet().get_failover_list()
+    wvips=meta_data.vip_list(type=1)
+    rvips=meta_data.vip_list(type=2)
+    managers=meta_data.server_list(('type',2))
+    masters=meta_data.instance_list({'i.role':1})
+    return render_to_response('failover.html',{'msg':msg,'wvips':wvips,'rvips':rvips,'managers':managers,'masters':masters,'failover_list':failover_list},context_instance=RequestContext(request))
+
+def switch(request):    
+    failover=request.GET
+    slaves=[]
+    if failover.get('method'):
+        result=FailoverManage(failover).change_master(failover.get('id'),failover.get('slave'),failover.get('method'))
+        #return HttpResponse('123')
+        return HttpResponse(result)
+    else:
+        masterid=failover.get('masterid')
+        slaves=instance_manage.InstanceGet().get_instance_slaves(masterid)
+    return render_to_response('switch.html',{'failover':failover,'slaves':slaves,'methods':meta_data.failover_method})
+
+@login_required    
+def switch_detail(request):
+    '''
+        only recieve get request
+    '''
+    if request.method=='POST':
+        return render_to_response('switch_detail.html')
+    #failover
+    failoverid=request.GET.get('failoverid')
+    new_masterid=request.GET.get('new_master')
+    method=request.GET.get('method','')    
+    new_master=instance_manage.InstanceGet().get_instance_by_id(new_masterid)
+    failover=FailoverGet().get_failover_by_id(failoverid)
+    if failover:
+        failover['method']=method
+        failover['new_master']=new_master.get('ip')+':'+str(new_master.get('port'))
+        #history
+        failover_his=FailoverGet().get_failover_history(failoverid)
+        #log
+        record_id=FailoverGet().get_newest_record(failoverid)
+        failover_log=FailoverGet().get_failover_history_detail(record_id)
+        result=FailoverGet().get_failover_result(record_id)
+        failover['result']=result.get('result')
+        return render_to_response('switch_detail.html',{'failover':failover,'failover_his':failover_his,'failover_log':failover_log})
+    return render_to_response('switch_detail.html')
+
+@login_required    
+def baseinfo(request):
+    return render_to_response('baseinfo.html')
+
+@login_required    
+def baseinfo_instance(reqeust):
+    return render_to_response('baseinfo_instance.html')
+
+@login_required    
+def status(request):    
+    return render_to_response('status.html')
+
+@login_required    
+def report(request):    
+    return render_to_response('report.html')
+
 def my_404_view(request):
-        return render_to_response('404.html')
+    response = render_to_response('404.html',context_instance=RequestContext(request))
+    response.status_code = 404
+    return response
+    
 def my_500_view(request):
-        return render_to_response('500.html')
+    return render_to_response('500.html')
 

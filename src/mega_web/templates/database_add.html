@@ -1,56 +1,53 @@
 {% extends "resource_base.html" %}
+{% block tag %}
+	<span class=" glyphicon glyphicon-bookmark ">数据库添加</span>
+{% endblock %}
 {% block subcontent %}
-
-<div class="well well-lg">数据库管理</div>
-<form action="/resource/database_add/" method="post">
-	<div class="input-group">
-  		<span class="input-group-addon">*</span>
-  		<input type="text" class="form-control" name="database_name" placeholder="NAME" style="width:200px;" maxlength=15>
-  	</div>
-  	<br>
-<div class="input-group">
-	<span class="input-group-addon">*</span>
-	<select name="database_instance" class="form-control" style="width:200px;">
-		{% for ist in instance_list %}
-		   <option value={{ ist.id }}>{{ ist.ip }} : {{ ist.port }}</option>
-		{% endfor %}
-	</select> 	
+<div class="col-sm-9 col-sm-offset-3 col-md-4 col-md-offset-0 main">
+	<div class="panel panel-default">
+		<form action="/resource/database_add/" method="post">
+			<div class="input-group">
+  				<span class="input-group-addon" style="width:150px;">名称</span>
+  				<input type="text" class="form-control" name="database_name" placeholder="NAME" style="width:200px;" maxlength=15>
+  			</div>
+			<div class="input-group">
+				<span class="input-group-addon" style="width:150px;">实例</span>
+				<select name="database_instance" class="form-control" style="width:200px;" readonly= {{ readonly }}>
+					{% for ist in instance_list %}
+		   				<option value={{ ist.id }}>{{ ist.ip }} : {{ ist.port }}</option>
+					{% endfor %}
+				</select> 	
+			</div>
+			<div class="input-group">
+  				<span class="input-group-addon" style="width:150px;">级别</span>
+  				<select name="database_level" class="form-control" style="width:200px;" readonly= {{ readonly }}>
+					{% for l in level %}
+		   				<option value={{ l }}>{{ l }}</option>
+					{% endfor %}
+				</select>  		
+			</div>
+			<div class="input-group">
+  				<span class="input-group-addon" style="width:150px;">联系人</span>
+  				<select name="database_owner" class="form-control" style="width:200px;"readonly= {{ readonly }}>
+					{% for owner in owner_list %}
+		   				<option value={{ owner.id }}>{{ owner.name }}</option>
+					{% endfor %}
+				</select> 
+			</div>
+			<div class="input-group">
+				<span class="input-group-addon" style="width:150px;">业务线</span>
+					<select name="database_business" class="form-control" style="width:200px;"readonly= {{ readonly }}>
+						{% for bus in business_list %}
+		   					<option value={{ bus.id }}>{{ bus.name }}</option>
+						{% endfor %}
+					</select> 	
+			</div>
+			<button type="submit" class="btn btn-default  pull-right">
+  				<span class="glyphicon glyphicon-ok"></span> 添加
+			</button>
+			{% csrf_token %}
+		</form>
+	</div>
 </div>
-<br>
-<div class="input-group">
-  		<span class="input-group-addon">*</span>
-  		<select name="database_level" class="form-control" style="width:200px;">
-		{% for l in level %}
-		   <option value={{ l }}>{{ l }}</option>
-		{% endfor %}
-		</select>
-  		
-</div>
-<br>
-<div class="input-group">
-  		<span class="input-group-addon">*</span>
-  		<select name="database_owner" class="form-control" style="width:200px;">
-		{% for owner in owner_list %}
-		   <option value={{ owner.id }}>{{ owner.name }}</option>
-		{% endfor %}
-		</select> 
-</div>
-<br>
-<div class="input-group">
-	<span class="input-group-addon">*</span>
-	<select name="database_business" class="form-control" style="width:200px;">
-		{% for bus in business_list %}
-		   <option value={{ bus.id }}>{{ bus.name }}</option>
-		{% endfor %}
-	</select> 	
-</div>
-<br>
-<button type="submit" class="btn btn-default btn">
-  		<span class="glyphicon glyphicon-plus"></span> 添加
-</button>
-{% csrf_token %}
-</form>
-<br>
-<div class="well well-sm" style="width:400px">提示信息：{{ msg }}</div>
-
+{{msg}}
 {% endblock %}

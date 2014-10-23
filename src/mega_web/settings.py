@@ -1,17 +1,18 @@
 # Django settings for mega_web project.
 import os
-DEBUG = True
-#DEBUG = False
 from conf.settings import DbConfig
+from conf.GlobalConf import DEV
 
-TEMPLATE_DEBUG = DEBUG
-
+TEMPLATE_DEBUG=DEBUG=DEV
 PROJECT_PATH=os.path.dirname(__file__)
 STATIC_URLS = os.path.join(PROJECT_PATH,'static/')
 MEDIA_PATH=os.path.join(PROJECT_PATH,'media/')
+
+ALLOWED_HOSTS=['*']
+#ADMIN
 ADMINS = (
-    # ('Your Name', 'your_email@example.com'),
-)
+            ('Xiaocheng', 'wyliuxiaocheng@jd.com'),
+         )
 
 MANAGERS = ADMINS
 
@@ -121,15 +122,15 @@ TEMPLATE_DIRS = (
 INSTALLED_APPS = (
      'mega_web',
      'mega_web.entity',
-     'chartit',             
-#     'django.contrib.auth',
-     #'django.contrib.contenttypes',
-     #'django.contrib.sessions',
-     #'django.contrib.sites',
-     #'django.contrib.messages',
-     #'django.contrib.staticfiles',
+#     'chartit',             
+     'django.contrib.auth',
+     'django.contrib.contenttypes',
+     'django.contrib.sessions',
+     'django.contrib.sites',
+     'django.contrib.messages',
+     'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
-     #'django.contrib.admin',
+     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
 )

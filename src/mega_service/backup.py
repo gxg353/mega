@@ -38,8 +38,6 @@ class Backuper():
         if len(_data)>0:
             log.debug('Get backup task:')
             log.debug(_data)
-        else:
-            log.debug(sql)
         return _data
     
     def push_task(self):

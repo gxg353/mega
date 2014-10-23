@@ -15,7 +15,6 @@ except:
     from mega_client.mega_client.sender import MegaClient
 
 
-
 MODEL='API-task'
 log=Logger(MODEL).log()
 

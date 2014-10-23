@@ -4,70 +4,117 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="A database manage platform">
+    <meta name="author" content="xchliu">
     <title>{% block title %}{% endblock %}</title>
-    <link rel="shortcut icon" href="/static/img/favicon.ico	" type="image/x-icon" />
-  	
-  	<script language="javascript" type="text/javascript" src="/static/My97DatePicker/WdatePicker.js"></script>
-  	<script src="/static/jquery-2.1.1.min.js"></script>
-  	
-    <!-- Bootstrap -->
-    <link href="/static/bootstrap/css/boot.css" rel="stylesheet">
-    <link href="/static/dashboard.css" rel="stylesheet">
-    
-  </head>
-  <body>
-    <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-      	<div class="container-fluid">
-        	<div class="navbar-header">      	
-            	<a class="navbar-brand" href="/">Mega
-            	</a>            	
-        	</div>
-        	<div class="navbar-collapse collapse">
-        		<ul class="nav navbar-nav ">
-        		    <form class="navbar-form navbar-right">
-            			<input type="text" class="form-control" placeholder="什么也搜不到的">
-          			</form>
+    <link rel="shortcut icon" href="/static/img/favicon.ico	" type="image/x-icon" />  	
 
-        			<li><a href="/"><span class="glyphicon glyphicon-home"></span><b>首页</b></a></li>
-            		<li><a href="/resource/"><span class="glyphicon glyphicon-th"></span><b>资源池</b></a></li>
-            		<li><a href="/resource/"><span class="glyphicon glyphicon-dashboard"></span><b>仪表盘</b></a></li>
-            		
-            		<li><a href="/console/"><span class="glyphicon glyphicon-cog"></span><b>控制台</b></a></li>
-            		<li><a href="/tunning/"><span class="glyphicon glyphicon-pushpin"></span><b>调优室</b></a></li>
-            		<li><a href="/portal/"><span class="glyphicon glyphicon-send"></span><b>传送门</b></a>  </li>
-  				</ul>
-  			    <ul class="nav navbar-nav navbar-right">
-  					<li class="dropdown ">
-          				<a href="#" class="dropdown-toggle" data-toggle="dropdown">登录<span class ="glyphicon glyphicon-user"></span><span class="caret"></span></a>
-          				<ul class="dropdown-menu" role="menu">
-            				<li><a href="#">登录</a></li>
-            				<li><a href="#">注销</a></li>
-            				<li class="divider"></li>
-            				<li><a href="/admin/">后台</a></li>
-            				<li><a href="#">mega</a></li>
-          				</ul>
-        			</li> 
-        		</ul>         		        		
-        	</div>
-         </div>        
-  		</div>
-    
-  <div>  
- 	{% block content %}
-    {% endblock %}
-  </div>
-  <footer>  
-
-  </footer>  
- <!-- jQuery (necessary for Bootstrap's JavaScript plugins) --> 
- <!--   <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.0/jquery.min.js"></script>    
- 		<script src="http://code.jquery.com/jquery.js"></script>   --> 
-		<script src="/static/higncharts.js"></script>
-    
-     
+  	<script language="javascript" type="text/javascript" src="/static/My97DatePicker/WdatePicker.js"></script>  	
+   	<script src="/static/jquery-2.1.1.min.js"></script> 
     <!-- Include all compiled plugins (below), or include individual files as needed -->
     <script src="/static/bootstrap/js/bootstrap.min.js"></script>
     <script src="/static/docs.min.js"></script>
-  </body>
-  
+  	<script src="/static/higncharts.js"></script>     
+  	
+    <!-- Bootstrap -->
+    <link href="/static/bootstrap/css/boot.css" rel="stylesheet">    
+    <link href="/static/dashboard.css" rel="stylesheet">
+    <link href="/static/footer.css" rel="stylesheet">
+    
+    <!-- dropdown auto show -->
+    <style type="text/css">
+    .navbar .nav > li .dropdown-menu {
+			margin: 0;
+	}
+	.navbar .nav > li:hover .dropdown-menu {
+			display: block;
+	}
+    </style>
+  </head>
+ <body>
+  <div class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+    <div class="container-fluid">
+      <div class="navbar-header">      	
+         <a class="navbar-brand" href="/">Mega</a>            	
+      </div>
+      <div class="navbar-collapse collapse">
+        <ul class="nav navbar-nav ">
+        	<form class="navbar-form navbar-left">
+            	<input type="text" class="form-control" placeholder="Search in Mega">
+          	</form>
+        	<li class="dropdown ">
+          		<a id="resource" href="#"  class="dropdown-toggle" data-toggle="dropdown"><span class ="glyphicon glyphicon-th"></span>资源池</a>
+          		<ul class="dropdown-menu" role="menu">
+            		<li><a href="/resource/vip/">VIP</a></li>		
+            		<li><a href="/resource/instance/">实例</a></li>
+            		<li><a href="/resource/user/">用户</a></li>
+            		<li><a href="/resource/database/">数据库</a></li>
+            		<li><a href="/resource/business/">业务线</a></li>
+            		<li><a href="/resource/server/">服务器</a></li>
+          		</ul>
+          	</li>
+        	<li class="dropdown "> 
+            	<a href="#" class="dropdown-toggle" data-toggle="dropdown"><span class="glyphicon glyphicon-dashboard"></span><b>仪表盘</b></a>
+            	<ul class="dropdown-menu" role="menu">
+            		<li><a href="/monitor/">报警</a></li>
+            		<li><a href="/monitor/report/">报表</a></li>            	
+            		<li><a href="/monitor/status/">性能</a></li>            	
+				</ul>            		
+            </li>
+            <li class="dropdown ">
+            	<a id="console" href="#"  class="dropdown-toggle" data-toggle="dropdown"><span class ="glyphicon glyphicon-cog"></span>控制台</a>
+          		<ul class="dropdown-menu" role="menu">
+            		<li><a href="/console/backup/">备份管理</a></li>
+            		<li><a href="/console/task/">任务调度</a></li>
+            		<li><a href="/console/failover/">故障切换</a></li>
+				</ul>
+			</li>
+			<li class="dropdown ">
+            	<a id="console" href="#"  class="dropdown-toggle" data-toggle="dropdown"><span class ="glyphicon glyphicon-pushpin"></span>调优室</a>
+          		<ul class="dropdown-menu" role="menu">
+            		<li><a href="/tunning/slowlog/report/">慢查询</a></li>
+				</ul>
+			</li>
+			<li class="dropdown ">
+            	<a id="console" href="#"  class="dropdown-toggle" data-toggle="dropdown"><span class ="glyphicon glyphicon-send"></span>传送门</a>
+          		<ul class="dropdown-menu" role="menu">
+          			<li><a href="/portal/">链接</a></li>
+            		<li><a href="/portal/document/">文件上传</a></li>
+            		<li><a href="http://wiki.db.cbpmgt.com/wiki/index.php/Mega" target="_blank">帮助文档</a></li>
+				</ul>
+			</li>
+  		</ul>
+  		<ul class="nav navbar-nav navbar-right">
+  			<li class="dropdown ">
+          		<a id="login" href="#"  class="dropdown-toggle" data-toggle="dropdown"><span class ="glyphicon glyphicon-user">{{ user.username }}</span><span class="caret"></span></a>
+          		<ul class="dropdown-menu" role="menu">
+          			{% if user.is_authenticated %}
+          				<li><a href="/logout/">注销</a></li>
+          			{% else %}
+            			<li><a href="/login/">登录</a></li>
+            		{% endif %}
+            		<li class="divider"></li>
+            		<li><a href="/mega-admin/">mega</a></li>
+          		</ul>
+        	</li> 
+        </ul>
+      </div>
+    </div>        
+  </div>
+  <div class="container-fluid">  
+	{% block content %}
+	{% endblock %}
+  </div>
+  <div class="footer">
+      <div class=" pull-right ">
+      <p>&copy; 2014
+        <span class="text-muted">Help With:
+        	<a href='https://www.python.org/' target="_blank">Python</a>
+        	<a href='http://www.djangoproject.com' target="_blank">Django</a> 
+        	<a href='http://getbootstrap.com' target="_blank">Bootstrap</a> 
+        	<a href='http://www.highcharts.com' target="_blank">Highchart</a>
+        	<a href='https://github.com/' target="_blank">GitHub</a></span>
+      </div>
+  </div>
+ </body>
 </html>

@@ -3,6 +3,7 @@ from mega_service.backup import Backuper
 from mega_service.slowlog.slow_log import SlowLog
 from mega_service.slowlog.slowlog_archive import slowlog_pack,slowlog_statics_per_hour
 from mega_service.task import Task
+from mega_service.resource import sync_baseinfo,sync_stat
 from mega_web.resource.instance_manage import InstanceGet
 from lib.logs import Logger
 from lib.PyMysql import PyMySQL
@@ -171,9 +172,10 @@ def slowlog_statics(time=None):
     #get the slow log in the prior hour 
     #undo slow log
     sql="select * from slowlog_info where stat=0 limit 100" 
-    try:
-        while 1:
-            cursor=PyMySQL().query(sql, type='dict')
+    while 1:
+        try:
+            conn=PyMySQL()
+            cursor=conn.query(sql, type='dict')
             if not cursor:
                 break
             data_list=cursor.fetchall()
@@ -191,19 +193,144 @@ def slowlog_statics(time=None):
                 else:
                     instance_id=instance_id[0]['id']
                 _sql="update slowlog_info set hash_code='%s',instance_id=%s,stat=1 where id = %s" %(sql_hash,instance_id,data.get('id'))
-                result,ex=PyMySQL().execute(_sql)
+                result,ex=conn.execute(_sql)
                 if not result:
                     log.error(ex)
-    except Exception as ex:
+            conn.close()
+        except Exception as ex:
                 log.debug(data)
-                log.error('Pack slow log failed:%s' % ex) 
-        
+                log.error('Pack slow log failed:%s' % ex)
+                break
     # do the hourly statics 
     try:
         slowlog_statics_per_hour(time)
     except Exception as ex:
         log.error('Statics slow log hourly failed:%s' % ex) 
+
+def update_ha_info(new_master,old_master):
+    '''
+        switch the role inside a ha group
+        master format:'1.1.1.1:3306' 
+    '''
+    log.info('swith master role from %s to %s' % (old_master,new_master))
+    try:
+        _new_host,_new_port=new_master.split(':')
+        _old_host,_old_port=old_master.split(':')
+        _new_instance_id=InstanceGet().get_instance_by_ip_port(_new_host, _new_port)
+        _old_instance_id=InstanceGet().get_instance_by_ip_port(_old_host,_old_port)
+        if not _old_instance_id: 
+            log.error('Instance not found' % _old_instance_id )
+            return False        
+        if not  _new_instance_id:
+            log.error('Instance not found' % _new_instance_id )
+            return False        
+        _new_instance_id=_new_instance_id[0].get('id')
+        _old_instance_id=_old_instance_id[0].get('id') 
+        _new_instance=InstanceGet().get_instance_by_id(_new_instance_id)
+        #if the new master is master already,return false
+        if _new_instance.get('role') == 1:
+            log.warn("Instance %s is already master!" % new_master)
+            return False
+        if _new_instance.get('master_id') == _old_instance_id:
+            #change the master id for the slaves
+            sql="update instance set master_id=%s where master_id=%s" %(_new_instance_id,_old_instance_id)
+            result,ex=PyMySQL().execute(sql)
+            if not result:
+                return False            
+                log.error(ex)
+            #change the old master stat
+            sql="update instance set master_id=%s,role=2 where id=%s" %(_new_instance_id,_old_instance_id)
+            result,ex=PyMySQL().execute(sql)
+            if not result:
+                return False            
+                log.error(ex)
+            #change the new master role
+            sql="update instance set role=1 where id=%s" %(_new_instance_id)
+            result,ex=PyMySQL().execute(sql)
+            if not result:
+                return False            
+                log.error(ex)   
+        else:
+            log.error("%s 's master id is %s ,not %s" %(new_master,_new_instance.get('master_id'),_old_instance_id))                     
+    except Exception as ex:        
+        log.error('update ha info failed:%s' % ex)
+        return False
+    return True
+
+def data_collect(time=None):
+    '''
+        collect the base info and performance data from all the online instance which data collect configuration is on
+        type:
+            base: collect the basic information for the instance  ,will be called one time per day
+            stat: collect the status infomation 
+    '''
+    #
+    type="base"
+    result=[] 
+    instance_list=[]
+    if time:
+        if int(time.split(":")[0]) == 0:
+            type="stat"        
+    filter={'i.stat':1,'i.data_collect':1}
+    config_list=InstanceGet().get_instance_list(filter, 0)
+    for conf in config_list:
+        instance={"ip":conf.ip,
+                  "port":conf.port,
+                  "type":type                  
+                  }
+        instance_list.append(instance)
+    if len(instance_list):
+        log.debug(instance_list)
+        script=Task().get_task_by_name('datacollect')
+        for instance in instance_list:
+            result.append(remote_cmd(instance['ip'],instance['port'],script,'python',args=instance))
+    if result:
+        log.debug(result)
+    log.info("%s instance data collect task are invoked." % len(instance_list))    
+
+def data_collect_save(data):
+    '''
+        parse the data collect from the client script,split the values by the keys
+        
+        keys:
+            base=['variables','table_status','mysql_user','db_name','base']+['timestamp']+['except']
+            state=['status','slave_status']+['timestamp']+['except']        
+    '''
+    # pre-check for safe and translate the str to a dict
+    _keys=['variables','table_status','mysql_user','db_name','base','timestamp','except','status','slave_status']
+    try:
+        data=eval(str(data))
+        if type(data) != types.DictionaryType:
+            log.warn('Inexpectant data format as type of the data is %s' % type(data))
+            return False        
+        #get instance id
+        instance=data.keys()[0]
+        ip,port=instance.split(":")
+        instance_id=InstanceGet().get_instance_by_ip_port(ip, port)
+        if not instance_id:
+            log.error('Failed to get instance id for %s:%s' % (ip,port))        
+            return False    
+        instance_id=instance_id[0]['id']
+        instance_data=data.get(instance)
+        #caught the exception return by the script
+        script_except=instance_data.pop('except',None)
+        if type(instance_data) != types.DictionaryType:
+            log.error("Invalid data format for %s" % instance)
+            return False
+        if script_except:
+            log.warn("Data collect on %s : %s" % (instance,script_except))
+        #save the data into database 
+        collect_time=instance_data.pop('timestamp',None)
+        _sync=sync_baseinfo.SyncBasic(instance_id,instance,collect_time)
+        for _k in _keys:            
+            if instance_data.get(_k):
+                _sync.sync_base(instance_data.pop(_k),_k)                
+    except Exception as ex:
+        log.error(ex)
+        return False
+    return True
     
+
     
 def main():
     return
